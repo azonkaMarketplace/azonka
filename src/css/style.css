@@ -10975,17 +10975,31 @@ pre {
 }
 
 .required{
-    color: red;
-    padding: 0 5px
+    color: #a50404;
+    padding: 0 5px;
+    margin-bottom: 10px;
+    font-size: 0.8em;
 }
 .form-popup{
     margin: 20px auto;
+}
+
+.invalid {
+    border: 1px solid red;
 }
 
 @media (max-width: 767px) {
     .shopLocationContainer{
         margin-bottom: 15px;
     }
+}
+
+.label.rl-label{
+    margin-top: 14px;
+}
+.form-popup input[type="text"]{
+    margin-bottom: 0;
+    margin-top: 24px;
 }
 /* .hover-menu + ul{
     visibility: hidden;
