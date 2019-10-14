@@ -19,6 +19,28 @@ import searchIcon from "../../images/search-icon.png";
 
 class Header extends Component {
     state = {featureDrpdown: false, showLeftMenu: false, showRightMenu: false}
+    componentDidMount(){
+        this.watchForMouseOverEvent()
+    }
+    watchForMouseOverEvent = () => {
+        Array.from(document.querySelectorAll('.hover-menu')).forEach(element => {
+            const $drpMenu = document.querySelector('.small-menu')
+            element.addEventListener('mouseenter', (e) => {
+                if($drpMenu.classList.contains('closed')){
+                    $drpMenu.classList.remove('closed')
+                    $drpMenu.classList.add('open')
+                }
+            })
+            
+        })
+        document.querySelector('body').addEventListener('click', (e) => {
+            const $drpMenu = document.querySelector('.small-menu')
+            if($drpMenu.classList.contains('open')){
+                $drpMenu.classList.remove('open')
+                $drpMenu.classList.add('closed')
+            }
+        })
+    }
     toggleFeatureDrpdown = (event) => {
         event.preventDefault();
         this.setState({
@@ -41,6 +63,15 @@ class Header extends Component {
         this.setState({
             showRightMenu: !this.state.showRightMenu
         })
+    }
+    showSmallDropdown = () => {
+
+    }
+    toggleShowSmallDropdown = () => {
+        console.log('called')
+        // this.setState({
+        //     showDrpDownSmall: !this.state.showDrpDownSmall
+        // })
     }
     render() {
         const useTag1 = '<use xlink:href="#svg-arrow"></use>'
@@ -79,20 +110,29 @@ class Header extends Component {
                         <div className="user-board">
                             <div className="user-quickview">
                                 <Link to="/author-profile.html">
-                                    <div className="outer-ring">
+                                    <div className="outer-ring hover-menu"
+                                        // onMouseEnter={this.toggleShowSmallDropdown} onMouseLeave={this.toggleShowSmallDropdown}
+                                    >
                                         <div className="inner-ring"></div>
                                         <figure className="user-avatar">
                                             <img src={avatar_01} alt="avatar"/>
                                         </figure>
                                     </div>
                                 </Link>
-                                <p className="user-name">Johnny Fisher</p>
-                                <svg className="svg-arrow" dangerouslySetInnerHTML={{__html: useTag1}}>
+                                <p className="user-name hover-menu" ref="hoverElement" 
+                                    // onMouseEnter={this.toggleShowSmallDropdown} onMouseLeave={this.toggleShowSmallDropdown}
+                                >Johnny Fisher</p>
+                                <svg className="svg-arrow  hover-menu" dangerouslySetInnerHTML={{__html: useTag1}}
+                                    // onMouseEnter={this.toggleShowSmallDropdown} onMouseLeave={this.toggleShowSmallDropdown}
+                                >
                                     
                                 </svg>
-                                <p className="user-money">$745.00</p>
+                                <p className="user-money hover-menu">$745.00</p>
                                 
-                                <ul className="dropdown small hover-effect closed">
+                                <ul 
+                                    className={`dropdown small hover-effect closed small-menu `}
+                                    
+                                    >
                                     <li className="dropdown-item">
                                         <div className="dropdown-triangle"></div>
                                         <Link to="/author-profile.html">Profile Page</Link>
