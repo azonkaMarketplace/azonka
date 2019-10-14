@@ -18,7 +18,7 @@ class Home extends Component {
                 <div className="survey xmalert alert-box" style={{visibility: `${this.state.showPopUp ? 'visible': 'hidden'}`, opacity: 1,
                     position: "fixed", zIindex: 100000, transition: "all 0.3s ease-in-out 0s", 
                     top: "auto", bottom: "30px", left: "auto", right: "30px"}} >							
-                    <figure class="survey-img" >								
+                    <figure className="survey-img" >								
                         <img src={alertLogo} alt="survey-img"/>							
                     </figure>							
                     <p className="text-header">Alerts &amp; Notifications</p>							

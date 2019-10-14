@@ -10974,5 +10974,26 @@ pre {
     min-height: 45vh;
 }
 
+.required{
+    color: red;
+    padding: 0 5px
+}
+.form-popup{
+    margin: 20px auto;
+}
+
+@media (max-width: 767px) {
+    .shopLocationContainer{
+        margin-bottom: 15px;
+    }
+}
+/* .hover-menu + ul{
+    visibility: hidden;
+}
+
+.hover-menu:hover + ul{
+    visibility: visible !important;
+} */
+
 
 /*# sourceMappingURL=style.css.map */

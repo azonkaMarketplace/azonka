@@ -9,6 +9,8 @@ import Header from "./components/HeaderFooter/Header";
 import Footer from "./components/HeaderFooter/Footer";
 import Home from "./components/Home";
 
+import Register from "./components/Auth/Register";
+
 //Banners
 
 
@@ -26,6 +28,7 @@ class App extends Component {
               <Header />
               <Switch>
                   <Route exact path="/" component={Home} />
+                  <Route exact path="/users/register" component={Register} />
               </Switch>
               <Footer />
           </Router>
