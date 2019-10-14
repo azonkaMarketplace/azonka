@@ -11001,13 +11001,59 @@ pre {
     margin-bottom: 0;
     margin-top: 24px;
 }
-/* .hover-menu + ul{
-    visibility: hidden;
+
+.otp-image{
+    position: relative;
+    width: 30%;
+    max-width: 120px;
+    height: 90px;
 }
 
-.hover-menu:hover + ul{
-    visibility: visible !important;
-} */
+.otp-image::before{
+    content: ''
+}
 
+.one-time-pwd-input{
+    border: none !important;
+    background: none !important;
+    font-family: Roboto, sans-serif;
+    font-size: 2em;
+    color: #000;
+    width: 50% !important;
+    margin: 20% auto 10px auto !important;
+}
 
-/*# sourceMappingURL=style.css.map */
+.one-time-pwd-input::placeholder{
+    color: #000;
+    font-size: 2em;
+}
+.otp-container{
+    width: 100%;
+    margin: 40px auto;
+    text-align: center;
+}
+.center-content{
+    text-align: center
+}
+.resend-otp{
+    color: #1cbdf9;
+    /* width: 35%; */
+    font-size: 1em;
+    cursor: pointer;
+    font-family: roboto, sans-serif;
+    margin: 0 auto;
+    display: inline-block;
+}
+
+.resend-otp:hover{
+    text-decoration: underline;
+}
+
+.verify-btn{
+    width: 50% !important;
+    display: inline-block !important;
+}
+
+.right-content{
+    text-align: right;
+}

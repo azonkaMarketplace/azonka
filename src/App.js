@@ -8,7 +8,8 @@ import  "./css/style.css";
 import Header from "./components/HeaderFooter/Header";
 import Footer from "./components/HeaderFooter/Footer";
 import Home from "./components/Home";
-
+import VerifyEmail from "./components/Auth/VerifyEmail";
+import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 
 import { ToastProvider} from 'react-toast-notifications'
@@ -31,6 +32,8 @@ class App extends Component {
                 <Switch>
                     <Route exact path="/" component={Home} />
                     <Route exact path="/users/register" component={Register} />
+                    <Route exact path="/users/verify" component={VerifyEmail} />
+                    <Route exact path="/users/login" component={Login} />
                 </Switch>
                 <Footer />
             </Router>

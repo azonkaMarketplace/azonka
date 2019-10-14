@@ -28,7 +28,7 @@ class Register extends Component {
         const {target: { name, value}} = event;
         const index = this.state.inValidElments.indexOf(name)
         let newInvalidElements = []
-        if(index != -1){
+        if(index !== -1){
             this.state.inValidElments.splice(index, 1)
         }
         newInvalidElements = [...this.state.inValidElments]
