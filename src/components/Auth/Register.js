@@ -16,7 +16,8 @@ class Register extends Component {
         companyAddress:'',
         contactLine: '',
         inValidElments: [],
-        validationMessage: {}
+        validationMessage: {},
+        agreeToTerms: true
     }
     extendedUserTypeChange = (event, value) => {
         console.log('value', event.target.value)
@@ -96,9 +97,14 @@ class Register extends Component {
             formdata
         }
     }
+    
     handleFormSubmit = (event) => {
         event.preventDefault();
+        const {add} = this.props.toastManager;
         const userData = {...this.state}
+
+        if(!this.state.agreeToTerms)
+            return add('You must agree to terms and condition', { appearance: 'error' })
         const validationResponse = this.validateFormData(userData)
         const { isValid} = validationResponse;
         if(!isValid){
@@ -115,7 +121,6 @@ class Register extends Component {
             emailAddress, phoneNumber, referalCode, contactLine,
             companyAddress, companyName, extendedUserType, password, repeatPassword
         }))
-        const {add} = this.props.toastManager;
         setTimeout(() => {
             add('Successful, Please check your mail to continue', { appearance: 'success' })
         }, 1500)
@@ -124,10 +129,15 @@ class Register extends Component {
             return this.props.history.push(`/users/verify?email=${this.state.emailAddress}`)
         }, 2000)
     }
+    agreeTotermsChange = e => {
+        this.setState({
+            agreeToTerms: !this.state.agreeToTerms
+        })
+    }
     render() {
         return (
             <ToastProvider>
-                <div className="form-popup">
+                <div className="form-popup custom-input">
                     <div className="form-popup-content">
                         <h4 className="popup-title">Register Account</h4>
                         <hr className="line-separator"/>
@@ -255,6 +265,17 @@ class Register extends Component {
                                     </Zoom>
                                 ) : null
                             }
+                            <div className="terms-condition-container">
+                                <input type="checkbox" id="agreeToTerms"
+                                    name="i agree" value="sellers" checked={this.state.agreeToTerms} />
+                                <label className="label-check" onClick={(event) => this.agreeTotermsChange(event)}>
+                                    <span className="checkbox primary primary"><span></span></span>
+                                    I agree
+                                </label>
+                                <span className="terms">
+                                    terms and condition
+                                </span>
+                            </div>
                             <button className="button mid dark" onClick={this.handleFormSubmit}>Register <span className="primary">Now!</span></button>
                         </form>
                     </div>
