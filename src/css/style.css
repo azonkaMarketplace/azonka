@@ -10997,7 +10997,8 @@ pre {
 .label.rl-label{
     margin-top: 14px;
 }
-.form-popup input[type="text"]{
+.custom-input input[type="text"], .custom-input input[type="email"],
+.custom-input input[type="password"]{
     margin-bottom: 0;
     margin-top: 24px;
 }
@@ -11035,17 +11036,19 @@ pre {
 .center-content{
     text-align: center
 }
-.resend-otp{
+.resend-otp, .terms{
     color: #1cbdf9;
-    /* width: 35%; */
     font-size: 1em;
     cursor: pointer;
     font-family: roboto, sans-serif;
+}
+
+.resend-otp{
     margin: 0 auto;
     display: inline-block;
 }
 
-.resend-otp:hover{
+.resend-otp:hover, .terms:hover{
     text-decoration: underline;
 }
 
@@ -11054,6 +11057,18 @@ pre {
     display: inline-block !important;
 }
 
+.terms{
+    font-size: 13px;
+    margin-left: 8px;
+}
 .right-content{
     text-align: right;
+}
+
+.close-modal{
+    position: absolute;
+    top: -5px;
+    right: 5px;
+    padding: 7px;
+    font-size: 1.4em;
 }

@@ -37,6 +37,7 @@ class VerifyEmail extends Component {
             return add('Please provide passcode', { appearance: 'error' })
         }
         //call the api
+        localStorage.removeItem('userRegDetails')
     }
     handleOnChange = e => {
         const {target: { name, value, size}} = e;
@@ -57,7 +58,7 @@ class VerifyEmail extends Component {
                         <input type="text" value={this.state.passcode}
                         size={6} name="passcode" onChange={this.handleOnChange} className="one-time-pwd-input" placeholder="------"/>
                         <div className="otp-container">
-                            <img src={oneTimePassword} className="otp-image"  />
+                            <img src={oneTimePassword} className="otp-image" alt="one time password"  />
                         </div>
                         <div className="resend-otp-container center-content">
                             <span className="resend-otp" onClick={this.resendEmailPasscode}>Resend Passcode?</span>
