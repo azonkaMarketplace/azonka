@@ -12,9 +12,21 @@ import VerifyEmail from "./components/Auth/VerifyEmail";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 
+
+import AuthRoute from "./components/Auth/AuthRoute";
 import { ToastProvider} from 'react-toast-notifications'
 //Banners
 
+import Profile from "./components/Profile";
+import AccountSetting from "./components/AccountSetting";
+import Purchases from "./components/Purchases";
+import Cart from "./components/Cart";
+import BuyCredit from "./components/BuyCredit";
+import Sales from "./components/Sales";
+import ManageItems from "./components/ManageItems";
+import Commission from "./components/Commission";
+import WithDrawal from "./components/WithDrawal";
+import UploadItem from "./components/UploadItem";
 
 import Reducer from './reducers';
 const createStoreWithMiddleware = applyMiddleware(ReduxThunk)(createStore)
@@ -34,6 +46,16 @@ class App extends Component {
                     <Route exact path="/users/register" component={Register} />
                     <Route exact path="/users/verify" component={VerifyEmail} />
                     <Route exact path="/users/login" component={Login} />
+                    <AuthRoute exact path="/users/profile" component={Profile} />
+                    <AuthRoute exact path="/users/profile/account" component={AccountSetting} />
+                    <AuthRoute exact path="/users/purchases" component={Purchases} />
+                    <AuthRoute exact path="/users/cart" component={Cart} />
+                    <AuthRoute exact path="/users/buycredit" component={BuyCredit} />
+                    <AuthRoute exact path="/users/sales" component={Sales} />
+                    <AuthRoute exact path="/users/commissions" component={Commission} />
+                    <AuthRoute exact path="/users/withdrawal" component={WithDrawal} />
+                    <AuthRoute exact path="/users/items/upload" component={UploadItem} />
+                    <AuthRoute exact path="/users/items/manage" component={ManageItems} />
                 </Switch>
                 <Footer />
             </Router>
