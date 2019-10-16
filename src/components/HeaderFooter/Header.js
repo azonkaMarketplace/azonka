@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+
 import logo from "../../images/logo.png";
 import pullIcon from "../../images/pull-icon.png";
 import avatar_01 from "../../images/avatars/avatar_01.jpg";
@@ -15,27 +17,31 @@ import monsters_s from "../../images/items/monsters_s.jpg";
 import flat_s from "../../images/items/flat_s.jpg"
 import avatar_08 from "../../images/avatars/avatar_08.jpg"
 import searchIcon from "../../images/search-icon.png";
+import * as actions from "../../actions";
 
 
 class Header extends Component {
     state = {featureDrpdown: false, showLeftMenu: false, showRightMenu: false}
     componentDidMount(){
         this.watchForMouseOverEvent()
+        this.props.fetchUser()
     }
     watchForMouseOverEvent = () => {
         Array.from(document.querySelectorAll('.hover-menu')).forEach(element => {
             const $drpMenu = document.querySelector('.small-menu')
-            element.addEventListener('mouseenter', (e) => {
-                if($drpMenu.classList.contains('closed')){
-                    $drpMenu.classList.remove('closed')
-                    $drpMenu.classList.add('open')
-                }
-            })
+            if($drpMenu){
+                element.addEventListener('mouseenter', (e) => {
+                    if($drpMenu.classList.contains('closed')){
+                        $drpMenu.classList.remove('closed')
+                        $drpMenu.classList.add('open')
+                    }
+                })
+            }
             
         })
         document.querySelector('body').addEventListener('click', (e) => {
             const $drpMenu = document.querySelector('.small-menu')
-            if($drpMenu.classList.contains('open')){
+            if($drpMenu && $drpMenu.classList.contains('open')){
                 $drpMenu.classList.remove('open')
                 $drpMenu.classList.add('closed')
             }
@@ -67,6 +73,9 @@ class Header extends Component {
     showSmallDropdown = () => {
 
     }
+    setAccountTypeToSeller = () => {
+        sessionStorage.setItem('reg-type', 'seller')
+    }
     toggleShowSmallDropdown = () => {
         console.log('called')
         // this.setState({
@@ -82,6 +91,9 @@ class Header extends Component {
         const useTag6 = '<use xlink:href="#svg-arrow"></use>'
         const useTag7 = '<use xlink:href="#svg-arrow"></use>'
         const useTag9 = '<use xlink:href="#svg-arrow"></use>'
+        const user = this.props.currentUser
+        const cart = this.props.cart
+        const likes = this.props.likes
         return (
             <div>
                 <div className="header-wrap">
@@ -102,241 +114,330 @@ class Header extends Component {
                                 <img src={logo_mobile} alt="logo-mobile" />
                             </figure>
                         </Link>
-
-                        <div className="mobile-account-options-handler right secondary" onClick={this.toggleRightMenu}>
-                            <span className="icon-user"></span>
-                        </div>
+                        {
+                            user ? 
+                            <div className="mobile-account-options-handler right secondary" onClick={this.toggleRightMenu}>
+                                <span className="icon-user"></span>
+                            </div> : null
+                        }
+                        
 
                         <div className="user-board">
-                            <div className="user-quickview">
-                                <Link to="/author-profile.html">
-                                    <div className="outer-ring hover-menu"
-                                        // onMouseEnter={this.toggleShowSmallDropdown} onMouseLeave={this.toggleShowSmallDropdown}
-                                    >
-                                        <div className="inner-ring"></div>
-                                        <figure className="user-avatar">
-                                            <img src={avatar_01} alt="avatar"/>
-                                        </figure>
-                                    </div>
-                                </Link>
-                                <p className="user-name hover-menu" ref="hoverElement" 
-                                    // onMouseEnter={this.toggleShowSmallDropdown} onMouseLeave={this.toggleShowSmallDropdown}
-                                >Johnny Fisher</p>
-                                <svg className="svg-arrow  hover-menu" dangerouslySetInnerHTML={{__html: useTag1}}
-                                    // onMouseEnter={this.toggleShowSmallDropdown} onMouseLeave={this.toggleShowSmallDropdown}
-                                >
-                                    
-                                </svg>
-                                <p className="user-money hover-menu">$745.00</p>
-                                
-                                <ul 
-                                    className={`dropdown small hover-effect closed small-menu `}
-                                    
-                                    >
-                                    <li className="dropdown-item">
-                                        <div className="dropdown-triangle"></div>
-                                        <Link to="/author-profile.html">Profile Page</Link>
-                                    </li>
-                                    <li className="dropdown-item">
-                                        <Link to="/dashboard-settings.html">Account Settings</Link>
-                                    </li>
-                                    <li className="dropdown-item">
-                                        <Link to="/dashboard-purchases.html">Your Purchases</Link>
-                                    </li>
-                                    <li className="dropdown-item">
-                                        <Link to="/dashboard-statement.html">Sales Statement</Link>
-                                    </li>
-                                    <li className="dropdown-item">
-                                        <Link to="/dashboard-buycredits.html">Buy Credits</Link>
-                                    </li>
-                                    <li className="dropdown-item">
-                                        <Link to="/dashboard-withdrawals.html">Withdrawals</Link>
-                                    </li>
-                                    <li className="dropdown-item">
-                                        <Link to="/dashboard-uploaditem.html">Upload Item</Link>
-                                    </li>
-                                    <li className="dropdown-item">
-                                        <Link to="/dashboard-manageitems.html">Manage Items</Link>
-                                    </li>
-                                </ul>
-
-                            </div>
-                            <div className="account-information">
-                                <Link to="/favourites.html">
-                                    <div className="account-wishlist-quickview">	
-                                        <span className="icon-heart"></span>
-                                    </div>
-                                </Link>
-                                <div className="account-cart-quickview">
-                                    <span className="icon-present">
-                                        <svg className="svg-arrow" dangerouslySetInnerHTML={{__html:userTag2}}>
-                                        </svg>
-                                    </span>
-                                    <span className="pin soft-edged secondary">7</span>
-                                    <ul className="dropdown cart closed">
-                                        <li className="dropdown-item">
-                                            <Link to="/item-v1.html" className="link-to"></Link>
-                                            <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag3 }}>
-                                            </svg>
-                                            <div className="dropdown-triangle"></div>
-                                            <figure className="product-preview-image tiny">
-                                                <img src={pixel_s} alt="pixels" />
-                                            </figure>
-                                            <p className="text-header tiny">Pixel Diamond Gaming Shop</p>
-                                            <p className="category tiny primary">Shopify</p>
-                                            <p className="price tiny"><span>$</span>86</p>
-                                        </li>
-                                        <li className="dropdown-item">
-                                            <Link to="/item-v1.html" className="link-to"></Link>
-                                            <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag4 }} >
-                                            </svg>
-                                            <figure className="product-preview-image tiny">
-                                                <img src={monsters_s} alt="monsters" />
-                                            </figure>
-                                            <p className="text-header tiny">Little Monsters - 40 Pack Button Badge Maker</p>
-                                            <p className="category tiny primary">Graphics</p>
-                                            <p className="price tiny"><span>$</span>10</p>
-                                        </li>
-                                        <li className="dropdown-item">
-                                            <Link to="/item-v1.html" className="link-to"></Link>
-                                            <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag5 }}>
-                                            </svg>
-                                            <figure className="product-preview-image tiny">
-                                                <img src={flat_s} alt="flat" />
-                                            </figure>
-                                            <p className="text-header tiny">Flatland - Hero Image Composer</p>
-                                            <p className="category tiny primary">Shopify</p>
-                                            <p className="price tiny"><span>$</span>12</p>
-                                        </li>
-                                        <li className="dropdown-item">
-                                            <p className="text-header tiny">Total</p>
-                                            <p className="price"><span>$</span>108.00</p>
-                                            <Link to="/cart.html" className="button primary half">Go to Cart</Link>
-                                            <Link to="/checkout.html" className="button secondary half">Go to Checkout</Link>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div className="account-email-quickview">
-                                    <span className="icon-envelope">
-                                        <svg className="svg-arrow" dangerouslySetInnerHTML={{__html:useTag6}}>
-                                        </svg>
-                                    </span>
-                                    <span className="pin soft-edged secondary">!</span>
-
-                                    <ul className="dropdown notifications closed">
-                                        <li className="dropdown-item">
-                                            <div className="dropdown-triangle"></div>
-                                            <Link to="/dashboard-openmessage.html" className="link-to"></Link>
-                                            <figure className="user-avatar">
-                                                <img src={avatar_06} alt="avatar" />
-                                            </figure>
-                                            <p className="text-header tiny"><span>Sarah-Imaginarium</span></p>
-                                            <p className="subject">Product Question</p>
-                                            <p className="timestamp">May 18th, 2014</p>
-                                            <span className="notification-type secondary-new icon-envelope"></span>
-                                        </li>
-                                        <li className="dropdown-item">
-                                            <Link to="/dashboard-openmessage.html" className="link-to"></Link>
-                                            <figure className="user-avatar">
-                                                <img src={avatar_04} alt="avatar" />
-                                            </figure>
-                                            <p className="text-header tiny"><span>Red Thunder Graphics</span></p>
-                                            <p className="subject">Support Inquiry</p>
-                                            <p className="timestamp">May 5th, 2014</p>
-                                            <span className="notification-type icon-envelope-open"></span>
-                                        </li>
-                                        <li className="dropdown-item">
-                                            <Link to="/dashboard-openmessage.html" className="link-to"></Link>
-                                            <figure className="user-avatar">
-                                                <img src={avatar_04}alt="" />
-                                            </figure>
-                                            <p className="text-header tiny"><span>Twisted Themes</span></p>
-                                            <p className="subject">Collaboration</p>
-                                            <p className="timestamp">Feb 24th, 2014</p>
-                                            <span className="notification-type secondary-new icon-envelope"></span>
-                                        </li>
-                                        <li className="dropdown-item">
-                                            <Link to="/dashboard-openmessage.html" className="link-to"></Link>
-                                            <figure className="user-avatar">
-                                                <img src={avatar_08} alt="vavatr" />
-                                            </figure>
-                                            <p className="text-header tiny"><span>GregSpiegel1820</span></p>
-                                            <p className="subject">How to Install the Theme...</p>
-                                            <p className="timestamp">Jan 3rd, 2014</p>
-                                            <span className="notification-type icon-action-undo"></span>
-                                            <Link to="/dashboard-inbox.html" className="button secondary">View all Messages</Link>
-                                        </li>
-                                    </ul>
-
-                                </div>
-                                <div className="account-settings-quickview">
-                                    <span className="icon-settings">
-                                        <svg className="svg-arrow" dangerouslySetInnerHTML={{__html:useTag7}}>
-                                        </svg>
-                                    </span>
-                                    <span className="pin soft-edged primary">49</span>
-
-                                    <ul className="dropdown notifications no-hover closed">
-                                        <li className="dropdown-item">
-                                            <div className="dropdown-triangle"></div>
-                                            <Link to="/author-profile.html">
+                            {
+                                user ? (
+                                    <div className="user-quickview">
+                                        <Link to="/author-profile.html">
+                                            <div className="outer-ring hover-menu"
+                                            // onMouseEnter={this.toggleShowSmallDropdown} onMouseLeave={this.toggleShowSmallDropdown}
+                                            >
+                                                <div className="inner-ring"></div>
                                                 <figure className="user-avatar">
-                                                    <img src={avatar_02} alt="avatar" />
+                                                    <img src={avatar_01} alt="avatar" />
                                                 </figure>
-                                            </Link>
-                                            <p className="title">
-                                                <Link to="/author-profile.html"><span>MeganV.</span></Link> added
+                                            </div>
+                                        </Link>
+                                        <p className="user-name hover-menu" ref="hoverElement"
+                                        // onMouseEnter={this.toggleShowSmallDropdown} onMouseLeave={this.toggleShowSmallDropdown}
+                                        >Johnny Fisher</p>
+                                        <svg className="svg-arrow  hover-menu" dangerouslySetInnerHTML={{ __html: useTag1 }}
+                                        // onMouseEnter={this.toggleShowSmallDropdown} onMouseLeave={this.toggleShowSmallDropdown}
+                                        >
+
+                                        </svg>
+                                        <p className="user-money hover-menu">$745.00</p>
+
+                                        <ul
+                                            className={`dropdown small hover-effect closed small-menu `}
+
+                                        >
+                                            <li className="dropdown-item">
+                                                <div className="dropdown-triangle"></div>
+                                                <Link to="/author-profile.html">Profile Page</Link>
+                                            </li>
+                                            <li className="dropdown-item">
+                                                <Link to="/dashboard-settings.html">Account Settings</Link>
+                                            </li>
+                                            <li className="dropdown-item">
+                                                <Link to="/dashboard-purchases.html">Your Purchases</Link>
+                                            </li>
+                                            <li className="dropdown-item">
+                                                <Link to="/dashboard-statement.html">Sales Statement</Link>
+                                            </li>
+                                            <li className="dropdown-item">
+                                                <Link to="/dashboard-buycredits.html">Buy Credits</Link>
+                                            </li>
+                                            <li className="dropdown-item">
+                                                <Link to="/dashboard-withdrawals.html">Withdrawals</Link>
+                                            </li>
+                                            <li className="dropdown-item">
+                                                <Link to="/dashboard-uploaditem.html">Upload Item</Link>
+                                            </li>
+                                            <li className="dropdown-item">
+                                                <Link to="/dashboard-manageitems.html">Manage Items</Link>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+                                ) : null
+                            }
+                            {
+                                user ? (
+                                    <div className="account-information">
+                                        <Link to="/favourites.html">
+                                            <div className="account-wishlist-quickview">
+                                                <span className="icon-heart">
+                                                {
+                                                    likes > 0 ? cart : null
+                                                }
+                                                </span>
+                                            </div>
+                                        </Link>
+                                        <div className="account-cart-quickview">
+                                            <span className="icon-present">
+                                                <svg className="svg-arrow" dangerouslySetInnerHTML={{ __html: userTag2 }}>
+                                                </svg>
+                                            </span>
+                                            <span className="pin soft-edged secondary">
+                                            {
+                                                    cart > 0 ? cart : null
+                                                }
+                                            </span>
+                                            <ul className="dropdown cart closed">
+                                                <li className="dropdown-item">
+                                                    <Link to="/item-v1.html" className="link-to"></Link>
+                                                    <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag3 }}>
+                                                    </svg>
+                                                    <div className="dropdown-triangle"></div>
+                                                    <figure className="product-preview-image tiny">
+                                                        <img src={pixel_s} alt="pixels" />
+                                                    </figure>
+                                                    <p className="text-header tiny">Pixel Diamond Gaming Shop</p>
+                                                    <p className="category tiny primary">Shopify</p>
+                                                    <p className="price tiny"><span>$</span>86</p>
+                                                </li>
+                                                <li className="dropdown-item">
+                                                    <Link to="/item-v1.html" className="link-to"></Link>
+                                                    <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag4 }} >
+                                                    </svg>
+                                                    <figure className="product-preview-image tiny">
+                                                        <img src={monsters_s} alt="monsters" />
+                                                    </figure>
+                                                    <p className="text-header tiny">Little Monsters - 40 Pack Button Badge Maker</p>
+                                                    <p className="category tiny primary">Graphics</p>
+                                                    <p className="price tiny"><span>$</span>10</p>
+                                                </li>
+                                                <li className="dropdown-item">
+                                                    <Link to="/item-v1.html" className="link-to"></Link>
+                                                    <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag5 }}>
+                                                    </svg>
+                                                    <figure className="product-preview-image tiny">
+                                                        <img src={flat_s} alt="flat" />
+                                                    </figure>
+                                                    <p className="text-header tiny">Flatland - Hero Image Composer</p>
+                                                    <p className="category tiny primary">Shopify</p>
+                                                    <p className="price tiny"><span>$</span>12</p>
+                                                </li>
+                                                <li className="dropdown-item">
+                                                    <p className="text-header tiny">Total</p>
+                                                    <p className="price"><span>$</span>108.00</p>
+                                                    <Link to="/cart.html" className="button primary half">Go to Cart</Link>
+                                                    <Link to="/checkout.html" className="button secondary half">Go to Checkout</Link>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div className="account-email-quickview">
+                                            <span className="icon-envelope">
+                                                <svg className="svg-arrow" dangerouslySetInnerHTML={{ __html: useTag6 }}>
+                                                </svg>
+                                            </span>
+                                            <span className="pin soft-edged secondary">!</span>
+
+                                            <ul className="dropdown notifications closed">
+                                                <li className="dropdown-item">
+                                                    <div className="dropdown-triangle"></div>
+                                                    <Link to="/dashboard-openmessage.html" className="link-to"></Link>
+                                                    <figure className="user-avatar">
+                                                        <img src={avatar_06} alt="avatar" />
+                                                    </figure>
+                                                    <p className="text-header tiny"><span>Sarah-Imaginarium</span></p>
+                                                    <p className="subject">Product Question</p>
+                                                    <p className="timestamp">May 18th, 2014</p>
+                                                    <span className="notification-type secondary-new icon-envelope"></span>
+                                                </li>
+                                                <li className="dropdown-item">
+                                                    <Link to="/dashboard-openmessage.html" className="link-to"></Link>
+                                                    <figure className="user-avatar">
+                                                        <img src={avatar_04} alt="avatar" />
+                                                    </figure>
+                                                    <p className="text-header tiny"><span>Red Thunder Graphics</span></p>
+                                                    <p className="subject">Support Inquiry</p>
+                                                    <p className="timestamp">May 5th, 2014</p>
+                                                    <span className="notification-type icon-envelope-open"></span>
+                                                </li>
+                                                <li className="dropdown-item">
+                                                    <Link to="/dashboard-openmessage.html" className="link-to"></Link>
+                                                    <figure className="user-avatar">
+                                                        <img src={avatar_04} alt="" />
+                                                    </figure>
+                                                    <p className="text-header tiny"><span>Twisted Themes</span></p>
+                                                    <p className="subject">Collaboration</p>
+                                                    <p className="timestamp">Feb 24th, 2014</p>
+                                                    <span className="notification-type secondary-new icon-envelope"></span>
+                                                </li>
+                                                <li className="dropdown-item">
+                                                    <Link to="/dashboard-openmessage.html" className="link-to"></Link>
+                                                    <figure className="user-avatar">
+                                                        <img src={avatar_08} alt="vavatr" />
+                                                    </figure>
+                                                    <p className="text-header tiny"><span>GregSpiegel1820</span></p>
+                                                    <p className="subject">How to Install the Theme...</p>
+                                                    <p className="timestamp">Jan 3rd, 2014</p>
+                                                    <span className="notification-type icon-action-undo"></span>
+                                                    <Link to="/dashboard-inbox.html" className="button secondary">View all Messages</Link>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+                                        <div className="account-settings-quickview">
+                                            <span className="icon-settings">
+                                                <svg className="svg-arrow" dangerouslySetInnerHTML={{ __html: useTag7 }}>
+                                                </svg>
+                                            </span>
+                                            <span className="pin soft-edged primary">49</span>
+
+                                            <ul className="dropdown notifications no-hover closed">
+                                                <li className="dropdown-item">
+                                                    <div className="dropdown-triangle"></div>
+                                                    <Link to="/author-profile.html">
+                                                        <figure className="user-avatar">
+                                                            <img src={avatar_02} alt="avatar" />
+                                                        </figure>
+                                                    </Link>
+                                                    <p className="title">
+                                                        <Link to="/author-profile.html"><span>MeganV.</span></Link> added
                                                 <Link to="/item-v1.html"><span>Pixel Diamond Gaming Shop</span></Link> to favourites
                                             </p>
-                                            <p className="timestamp">2 Hours ago</p>
-                                            <span className="notification-type primary-new icon-heart"></span>
-                                        </li>
-                                        <li className="dropdown-item">
-                                            <Link to="/author-profile.html">
-                                                <figure className="user-avatar">
-                                                    <img src={avatar_03} alt="avatar" />
-                                                </figure>
-                                            </Link>
-                                            <p className="title">
-                                                <Link to="/author-profile.html"><span>Thomas_Ket</span></Link> wrote you an
+                                                    <p className="timestamp">2 Hours ago</p>
+                                                    <span className="notification-type primary-new icon-heart"></span>
+                                                </li>
+                                                <li className="dropdown-item">
+                                                    <Link to="/author-profile.html">
+                                                        <figure className="user-avatar">
+                                                            <img src={avatar_03} alt="avatar" />
+                                                        </figure>
+                                                    </Link>
+                                                    <p className="title">
+                                                        <Link to="/author-profile.html"><span>Thomas_Ket</span></Link> wrote you an
                                         <Link to="/author-reputation.html"><span>Author’s Reputation</span></Link>
-                                            </p>
-                                            <p className="timestamp">17 Hours ago</p>
-                                            <span className="notification-type icon-star"></span>
-                                        </li>
-                                        <li className="dropdown-item">
-                                            <Link to="/author-profile.html">
-                                                <figure className="user-avatar">
-                                                    <img src={avatar_04} alt="avatar" />
-                                                </figure>
-                                            </Link>
-                                            <p className="title">
-                                                <Link to="/author-profile.html"><span>Red Thunder Graphics</span></Link> commented on
+                                                    </p>
+                                                    <p className="timestamp">17 Hours ago</p>
+                                                    <span className="notification-type icon-star"></span>
+                                                </li>
+                                                <li className="dropdown-item">
+                                                    <Link to="/author-profile.html">
+                                                        <figure className="user-avatar">
+                                                            <img src={avatar_04} alt="avatar" />
+                                                        </figure>
+                                                    </Link>
+                                                    <p className="title">
+                                                        <Link to="/author-profile.html"><span>Red Thunder Graphics</span></Link> commented on
                                         <Link to="/item-v1.html"><span>3D Layers - Web Mockup</span></Link>
-                                            </p>
-                                            <p className="timestamp">8 Days Ago</p>
-                                            <span className="notification-type primary-new icon-bubble"></span>
-                                        </li>
-                                        <li className="dropdown-item">
-                                            <Link to="/author-profile.html">
-                                                <figure className="user-avatar">
-                                                    <img src={avatar_05} alt="avatar" />
-                                                </figure>
-                                            </Link>
-                                            <p className="title">
-                                                <Link to="/author-profile.html"><span>DaBebop</span></Link> purchased
+                                                    </p>
+                                                    <p className="timestamp">8 Days Ago</p>
+                                                    <span className="notification-type primary-new icon-bubble"></span>
+                                                </li>
+                                                <li className="dropdown-item">
+                                                    <Link to="/author-profile.html">
+                                                        <figure className="user-avatar">
+                                                            <img src={avatar_05} alt="avatar" />
+                                                        </figure>
+                                                    </Link>
+                                                    <p className="title">
+                                                        <Link to="/author-profile.html"><span>DaBebop</span></Link> purchased
                                         <Link to="/item-v1.html"><span>Miniverse - Hero Image Composer</span></Link>
-                                            </p>
-                                            <p className="timestamp">1 Week ago</p>
-                                            <span className="notification-type icon-tag"></span>
-                                            <Link to="/dashboard-notifications.html" className="button primary">View all Notifications</Link>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                                                    </p>
+                                                    <p className="timestamp">1 Week ago</p>
+                                                    <span className="notification-type icon-tag"></span>
+                                                    <Link to="/dashboard-notifications.html" className="button primary">View all Notifications</Link>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                ) : cart >= 0 || likes >= 0 ?  (
+                                    <div className="account-information">
+                                        <Link to="/favourites.html">
+                                            <div className="account-wishlist-quickview">
+                                                <span className="icon-heart"></span>
+                                                <span className="pin soft-edged secondary">{
+                                                    likes > 0 ? cart : null
+                                                }</span>
+                                            </div>
+                                        </Link>
+                                        <div className="account-cart-quickview">
+                                            <span className="icon-present">
+                                            </span>
+                                            <span className="pin soft-edged secondary">
+                                                {
+                                                    cart > 0 ? cart : null
+                                                }
+                                            </span>
+                                            <ul className="dropdown cart closed">
+                                                <li className="dropdown-item">
+                                                    <Link to="/item-v1.html" className="link-to"></Link>
+                                                    <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag3 }}>
+                                                    </svg>
+                                                    <div className="dropdown-triangle"></div>
+                                                    <figure className="product-preview-image tiny">
+                                                        <img src={pixel_s} alt="pixels" />
+                                                    </figure>
+                                                    <p className="text-header tiny">Pixel Diamond Gaming Shop</p>
+                                                    <p className="category tiny primary">Shopify</p>
+                                                    <p className="price tiny"><span>$</span>86</p>
+                                                </li>
+                                                <li className="dropdown-item">
+                                                    <Link to="/item-v1.html" className="link-to"></Link>
+                                                    <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag4 }} >
+                                                    </svg>
+                                                    <figure className="product-preview-image tiny">
+                                                        <img src={monsters_s} alt="monsters" />
+                                                    </figure>
+                                                    <p className="text-header tiny">Little Monsters - 40 Pack Button Badge Maker</p>
+                                                    <p className="category tiny primary">Graphics</p>
+                                                    <p className="price tiny"><span>$</span>10</p>
+                                                </li>
+                                                <li className="dropdown-item">
+                                                    <Link to="/item-v1.html" className="link-to"></Link>
+                                                    <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag5 }}>
+                                                    </svg>
+                                                    <figure className="product-preview-image tiny">
+                                                        <img src={flat_s} alt="flat" />
+                                                    </figure>
+                                                    <p className="text-header tiny">Flatland - Hero Image Composer</p>
+                                                    <p className="category tiny primary">Shopify</p>
+                                                    <p className="price tiny"><span>$</span>12</p>
+                                                </li>
+                                                <li className="dropdown-item">
+                                                    <p className="text-header tiny">Total</p>
+                                                    <p className="price"><span>$</span>108.00</p>
+                                                    <Link to="/cart.html" className="button primary half">Go to Cart</Link>
+                                                    <Link to="/checkout.html" className="button secondary half">Go to Checkout</Link>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        
+                                    </div>
+                                ) : null
+                            }
+                            
                             <div className="account-actions">
-                                <Link to="/" className="button primary">Become a Seller</Link>
-                                <Link to="/" className="button secondary">Logout</Link>
+                                <Link to="/users/register" style={{color:'#fff'}} onClick={this.setAccountTypeToSeller} className="button primary">Become a Seller</Link>
+                                {
+                                    user ? 
+                                    (
+                                        <Link to="/logout" style={{color:'#fff'}} className="button secondary">Logout</Link>
+                                    )
+                                    : <Link to="/users/login" style={{color:'#fff'}} className="button secondary">Login</Link>
+                                }
                             </div>
                         </div>
                     </header>
@@ -499,7 +600,11 @@ class Header extends Component {
                             </ul>
                         </li>
                     </ul>
-
+                    <div>
+                        <button className="button secondary login-button" onClick={this.toggleLeftMenu}>
+                            <Link to="/users/login" style={{color:"#fff"}}>Login</Link>
+                        </button>
+                    </div>
                 </div>
 
                 <div id="account-options-menu" className={`side-menu right ${this.state.showRightMenu ? 'open' : 'closed' } `}>
@@ -754,4 +859,14 @@ class Header extends Component {
     }
 }
 
-export default Header;
+const mapStateToProps = state => {
+
+    const {home: {currentUser, cart, likes}} = state
+    return {
+        currentUser,
+        cart, 
+        likes
+    }
+}
+
+export default connect(mapStateToProps, actions)(Header);
