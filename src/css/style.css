@@ -1805,7 +1805,8 @@ header,
 }
 
 .dropdown.dark .dropdown-item {
-    border-color: #2b373a
+    border-color: #2b373a;
+    padding-left: 0 !important;
 }
 
 .dropdown.dark .dropdown-item.active>a {

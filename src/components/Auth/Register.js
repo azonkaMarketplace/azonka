@@ -19,6 +19,12 @@ class Register extends Component {
         validationMessage: {},
         agreeToTerms: true
     }
+    componentDidMount(){
+        if(sessionStorage.getItem('reg-type'))
+            this.setState({
+                extendedUserType: sessionStorage.getItem('reg-type')
+            })
+    }
     extendedUserTypeChange = (event, value) => {
         console.log('value', event.target.value)
         this.setState({
