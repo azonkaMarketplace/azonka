@@ -11073,3 +11073,16 @@ pre {
     padding: 7px;
     font-size: 1.4em;
 }
+.hide-on-sm{
+    padding: 20px 10px;
+}
+@media (min-width:1024px){
+    .hide-on-sm{
+        display: none;
+    }
+}
+
+.normalize-sidebar{
+    background: #fff !important;
+    padding-left: 0 !important;
+}

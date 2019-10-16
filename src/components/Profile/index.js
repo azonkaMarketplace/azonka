@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-
+import UserLayout from "../HOC/UserLayout";
 class index extends Component {
     render() {
         return (
-            <div>
-                
-            </div>
+            <UserLayout>
+            </UserLayout>
         );
     }
 }

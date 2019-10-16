@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
-
+import UserLayout from "../HOC/UserLayout";
+import * as actions from "../../actions";
+import { connect } from "react-redux";
 class index extends Component {
     render() {
         return (
-            <div>
-                
-            </div>
+            <UserLayout>
+            </UserLayout>
         );
     }
 }
 
-export default index;
+const mapStateToProps = state => {
+    return {}
+}
+
+export default connect(mapStateToProps, actions)(index);

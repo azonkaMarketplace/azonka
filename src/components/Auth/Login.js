@@ -60,11 +60,13 @@ class Login extends Component {
 
         const { emailAddress, password} = this.state;
         localStorage.setItem('azonta-user', JSON.stringify({
-            emailAddress, password
+            emailAddress, password,
+            cart: 2,
+            likes: 4
         }))
 
         return setTimeout(() => {
-            return this.props.history.push(`/users/home`)
+            return this.props.history.push(`/users/profile`)
         }, 2000)
     }
     resendEmailPassword = e => {
