@@ -11086,3 +11086,23 @@ pre {
     background: #fff !important;
     padding-left: 0 !important;
 }
+
+.form-box-items{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+    grid-gap: 0 10px;
+}
+
+.form-box-item{
+    float: none !important;
+    clear: both !important;
+    width: auto !important;
+}
+
+.profile-image .button{
+    margin: 18px 0 0 20px !important;
+}
+
+.last-item{
+    grid-column: 1/-1;
+}
