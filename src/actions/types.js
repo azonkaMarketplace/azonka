@@ -1,2 +1,3 @@
 export const FETCH_USER = 'FETCH_USERs'
 export const SWITCH_ACTIVE_LINK = 'SWITCH_ACTIVE_LINK';
+export const TOGGLE_VIEW_TYPE = 'TOGGLE_VIEW_TYPE'

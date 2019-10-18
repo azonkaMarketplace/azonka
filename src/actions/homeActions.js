@@ -1,4 +1,4 @@
-import { FETCH_USER, SWITCH_ACTIVE_LINK } from "./types";
+import { FETCH_USER, SWITCH_ACTIVE_LINK,TOGGLE_VIEW_TYPE } from "./types";
 
 export const fetchUser = () => {
     const user =  JSON.parse(localStorage.getItem('azonta-user'))
@@ -32,4 +32,8 @@ export const fetchUser = () => {
 
 export const switchActiveLink = clickedLink => {
     return {type: SWITCH_ACTIVE_LINK, payload: clickedLink}
+}
+
+export const toggleViewType = viewType => {
+    return {type: TOGGLE_VIEW_TYPE, payload: viewType}
 }

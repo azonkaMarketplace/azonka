@@ -11106,3 +11106,114 @@ pre {
 .last-item{
     grid-column: 1/-1;
 }
+
+.product-grid{
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(250px,1fr)) !important;
+}
+
+.product-item-fr{
+    float:none !important
+}
+
+.font-icon{
+ color: #fff;
+}
+
+.font-contianer{
+    margin-left: 10px;
+}
+
+@media screen and (max-width: 935px){
+    .headline.buttons.primary{
+        height: 150px !important;
+    }
+    .headline.buttons.primary::before{
+        height: 150px !important;
+    }
+    .view-selectors{
+        margin-bottom: 10px;
+    }
+}
+
+.list-product-item{
+    display: flex;
+    width: 100%;
+    background: #fff;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+
+.list-product-info{
+    flex: 0.4
+}
+
+.list-author-data{
+    flex: 0.2
+}
+
+.list-item-actions{
+    flex:0.1;
+    background: #fff;
+}
+
+.list-item-actions .circle{
+    background: #b5c0c0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.list-item-actions .circle:hover{
+    background: #007bff;
+
+}
+
+.list-price-info{
+    flex: 0.1;
+}
+
+.list-image{
+    flex: 0.2;
+}
+
+@media screen and (max-width: 935px){
+    .section .content .headline .view-selectors, .dashboard-content .headline .view-selectors{
+        margin: 10px auto !important;
+    }
+    .section .content .headline.buttons .button, .dashboard-content .headline.buttons .button{
+        margin: 10px auto !important;
+    }
+    .section .content .headline.buttons, .dashboard-content .headline.buttons{
+        height: 160px !important;
+    }
+    .headline.buttons.primary::before{
+        height: 160px !important;
+    }
+    .sidebar.left.author-profile .dropdown.hover-effect{
+        display: none;
+    }
+}
+
+@media screen and (max-width: 400px){
+    #view-selectors{
+        display: none !important;
+    }
+    .section .content .headline.buttons, .dashboard-content .headline.buttons{
+        height: 90px !important;
+    }
+    .headline.buttons.primary::before{
+        height: 90px !important;
+    }
+    .headline h4{
+        line-height: 35px !important;
+    }
+}
+
+.product-preview-image.small{
+    height: 100px;
+    width: 100px;
+    margin: 0 auto;
+}

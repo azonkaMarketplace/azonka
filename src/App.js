@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from 'redux';
 import ReduxThunk from 'redux-thunk';
+import  "@fortawesome/fontawesome-free/css/all.css";
 import  "./css/style.css";
 
 import Header from "./components/HeaderFooter/Header";

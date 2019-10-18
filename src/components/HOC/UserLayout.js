@@ -7,6 +7,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import * as actions from "../../actions";
 
 class UserLayout extends Component {
+
     componentDidMount(){
 
         this.props.fetchUser()
@@ -174,7 +175,6 @@ const styles = theme => ({
 
 const mapStateToProps = state => {
     const {home: { currentUser, cart, likes, homeActiveLink}} = state;
-    console.log('state', state)
     return {
         currentUser, 
         cart,
