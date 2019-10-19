@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import logo from "../../images/logo.png";
 import pullIcon from "../../images/pull-icon.png";
+import logoHeader from "../../images/logo_header.png";
 import avatar_01 from "../../images/avatars/avatar_01.jpg";
 import avatar_02 from "../../images/avatars/avatar_02.jpg";
 import avatar_03 from "../../images/avatars/avatar_03.jpg";
@@ -86,7 +87,7 @@ class Header extends Component {
                         <Link to="/">
                             {/* PUT LOGO FOR DESKTOP */}
                             <figure className="logo">
-                                {/* <img src={logo} alt="logo"/> */}
+                                <img src={logoHeader} alt="logo"/>
                             </figure>
                         </Link>
 
@@ -97,7 +98,7 @@ class Header extends Component {
                         <Link to="/index.html">
                             {/* put logo for mobile */}
                             <figure className="logo-mobile">
-                                {/* <img src={logo_mobile} alt="logo-mobile" /> */}
+                                <img src={logoHeader} alt="logo-mobile" />
                             </figure>
                         </Link>
                         {

@@ -19,15 +19,16 @@ class ListCard extends Component {
         ))
     }
     render() {
-        const {image} = this.props;
+        const {image, feature} = this.props;
         return (
                 <div className="list-product-item">
-                    <div className="list-image">
+                    <div className="list-image" style={{position:'relative'}}>
                         <a href="item-v1.html">
                             <figure className="product-preview-image small">
                                 <img src={image} alt="product" />
                             </figure>
                         </a>
+                        { feature ? <span class="pin featured list-card-featured">Featured</span> : null}
                     </div>
                     
                 <div className="list-product-info">

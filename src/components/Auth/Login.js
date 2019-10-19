@@ -170,7 +170,7 @@ class Login extends Component {
                             Remember username and password
 						</label>
                         <p>Forgot your password? <span style={{cursor:'pointer'}} onClick={this.toggleModal} className="primary">Click here!</span></p>
-                        <button className="button mid dark" onClick={this.handleFormSubmit}>Login <span className="primary">Now!</span></button>
+                        <button className="button mid secondary" onClick={this.handleFormSubmit}>Login <span className="primary">Now!</span></button>
                     </form>
                     <hr className="line-separator double" />
                 </div>

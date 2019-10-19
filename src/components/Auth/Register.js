@@ -132,7 +132,7 @@ class Register extends Component {
         }, 1500)
 
         return setTimeout(() => {
-            return this.props.history.push(`/users/verify?email=${this.state.emailAddress}`)
+            return this.props.history.push(`/users/verify`)
         }, 2000)
     }
     agreeTotermsChange = e => {
@@ -282,7 +282,7 @@ class Register extends Component {
                                     terms and condition
                                 </span>
                             </div>
-                            <button className="button mid dark" onClick={this.handleFormSubmit}>Register <span className="primary">Now!</span></button>
+                            <button className="button mid secondary" onClick={this.handleFormSubmit}>Register <span className="primary">Now!</span></button>
                         </form>
                     </div>
                 </div>

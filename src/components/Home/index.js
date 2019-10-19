@@ -3,6 +3,7 @@ import alertLogo from "../../images/dashboard/alert-logo.png";
 import notifCloseIcon from "../../images/dashboard/notif-close-icon.png";
 import Zoom from 'react-reveal/Zoom';
 import SubscribeBanner from "../Banners/SubscribeBanner";
+import logoHeader from "../../images/logo_header.png";
 
 class Home extends Component {
     state = { showPopUp: true}
@@ -12,6 +13,15 @@ class Home extends Component {
             showPopUp: false
         })
     }
+    componentDidMount(){
+        //remove popup after 5secs
+
+        setTimeout(()=> {
+            this.setState({
+                showPopUp: false
+            })
+        }, 5000)
+    }
     renderPopup(){
         return  (
             <Zoom right>
@@ -19,13 +29,13 @@ class Home extends Component {
                     position: "fixed", zIindex: 100000, transition: "all 0.3s ease-in-out 0s", 
                     top: "auto", bottom: "30px", left: "auto", right: "30px"}} >							
                     <figure className="survey-img" >								
-                        <img src={alertLogo} alt="survey-img"/>							
+                        <img src={logoHeader} alt="survey-img"/>							
                     </figure>							
                     <p className="text-header">Alerts &amp; Notifications</p>							
                     <p className="info">We added alerts &amp; notifications to the template!.<br />
                     Try our previewer and code generator and use them in your page!</p>							
                     <p className="timestamp"></p>							
-                    <a href="alerts-notifications.html" className="button mid dark">Check it <span className="primary">out!</span></a>							
+                    <a href="alerts-notifications.html" className="button mid secondary">Check it <span className="primary">out!</span></a>							
                         <img className="close-btn" src={notifCloseIcon} alt="close-icon" onClick={this.closePopup} />						
                     </div>
             </Zoom>

@@ -25,12 +25,12 @@ class index extends Component {
         }
         return (<div className="">
                 <ListCard image={cardImage}  rating={5}/>
-                <ListCard image={cardImage}  rating={1}/>
-                <ListCard image={cardImage}  rating={3}/>
+                <ListCard image={cardImage}  rating={1} feature/>
+                <ListCard image={cardImage}  rating={3} feature/>
                 <ListCard image={cardImage}  rating={2}/>
-                <ListCard image={cardImage}  rating={4}/>
+                <ListCard image={cardImage}  rating={4} feature/>
                 <ListCard image={cardImage}  rating={3}/>
-                <ListCard image={cardImage}  rating={5}/>
+                <ListCard image={cardImage}  rating={5} feature/>
             </div>)
     }
     render() {

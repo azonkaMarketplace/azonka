@@ -5,7 +5,6 @@ import oneTimePassword from "../../images/oneTimePassword.PNG";
 
 class VerifyEmail extends Component {
     state = {
-        emailAddress:'',
         passcode: '',
         userDetails:{}
     }
@@ -16,9 +15,9 @@ class VerifyEmail extends Component {
             return this.props.history.push('/users/login')
         }
 
-        if(this.state.emailAddress.trim() === ''){
+        if(query['passcode']){
             this.setState({
-                email: query['email'],
+                passcode: query['passcode'],
                 userDetails: userRegDetails
             })
         }
@@ -55,16 +54,21 @@ class VerifyEmail extends Component {
                     <h4 className="popup-title verify-email">Verify Email</h4>
                     <hr className="line-separator"/>
                     <form id="register-form" noValidate>
-                        <input type="text" value={this.state.passcode}
-                        size={6} name="passcode" onChange={this.handleOnChange} className="one-time-pwd-input" placeholder="------"/>
+                        <div style={{textAlign:'center', display:'flex', justifyContent:'center'}}>
+                            <input type="text" value={this.state.passcode}
+                                size={6} name="passcode" onChange={this.handleOnChange} className="one-time-pwd-input" placeholder="------"/>
+                        </div>
+                        
                         <div className="otp-container">
-                            <img src={oneTimePassword} className="otp-image" alt="one time password"  />
+                            <span style={{fontSize: 40}}>
+                                <i class="fas fa-user-lock"></i>
+                            </span>
                         </div>
                         <div className="resend-otp-container center-content">
                             <span className="resend-otp" onClick={this.resendEmailPasscode}>Resend Passcode?</span>
                         </div>
                         <div className="right-content">
-                            <button className="button mid dark verify-btn" onClick={this.verifyEmail}>Verify</button>
+                            <button className="button mid secondary" onClick={this.verifyEmail}>Verify</button>
                         </div>
                     </form>
                 </div>
