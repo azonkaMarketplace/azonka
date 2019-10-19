@@ -62,7 +62,9 @@ class Login extends Component {
         localStorage.setItem('azonta-user', JSON.stringify({
             emailAddress, password,
             cart: 2,
-            likes: 4
+            likes: 4,
+            type:'agent',
+            id: 234234
         }))
 
         return setTimeout(() => {

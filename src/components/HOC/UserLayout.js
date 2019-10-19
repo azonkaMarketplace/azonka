@@ -12,6 +12,18 @@ class UserLayout extends Component {
 
         this.props.fetchUser()
     }
+    renderReferral = () => {
+        const {currentUser} = this.props;
+        if(currentUser && currentUser.type === 'agent')
+            return (
+                <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'referals'? 'active': ''}`}
+                    onClick={() => this.sideMenuListItemClick('referals')}
+                >
+                    <Link to={`/users/${currentUser.id}/referals`}>Referals</Link>
+                </li>
+            )
+        return null
+    }
     renderAvatar = () => {
         const {currentUser, classes} = this.props
         return currentUser ? currentUser.imageUrl ? (
@@ -85,6 +97,7 @@ class UserLayout extends Component {
                                     >
                                         <Link to="/users/profile/account">Account Setting</Link>
                                     </li>
+                                    {this.renderReferral()}
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'cart'? 'active': ''}`}
                                     onClick={() => this.sideMenuListItemClick('cart')}
                                     >

@@ -11,7 +11,7 @@ import avatar_04 from "../../images/avatars/avatar_04.jpg";
 import avatar_05 from "../../images/avatars/avatar_05.jpg";
 import avatar_06 from "../../images/avatars/avatar_06.jpg";
 // import avatar_07 from "../../images/avatars/avatar_07.png";
-import logo_mobile from "../../images/logo_mobile.png";
+// import logo_mobile from "../../images/logo_mobile.png";
 import pixel_s from "../../images/items/pixel_s.jpg";
 import monsters_s from "../../images/items/monsters_s.jpg";
 import flat_s from "../../images/items/flat_s.jpg"
@@ -84,8 +84,9 @@ class Header extends Component {
                     <header >
                         {/* LOGO  */}
                         <Link to="/">
+                            {/* PUT LOGO FOR DESKTOP */}
                             <figure className="logo">
-                                <img src={logo} alt="logo"/>
+                                {/* <img src={logo} alt="logo"/> */}
                             </figure>
                         </Link>
 
@@ -94,14 +95,18 @@ class Header extends Component {
                         </div>
 
                         <Link to="/index.html">
+                            {/* put logo for mobile */}
                             <figure className="logo-mobile">
-                                <img src={logo_mobile} alt="logo-mobile" />
+                                {/* <img src={logo_mobile} alt="logo-mobile" /> */}
                             </figure>
                         </Link>
                         {
                             user ? 
-                            <div className="mobile-account-options-handler right secondary" onClick={this.toggleRightMenu}>
-                                <span className="icon-user"></span>
+                            <div className="mobile-account-options-handler right secondary"
+                               onClick={this.toggleRightMenu}>
+                                <div className="user-avatar-placeholder">
+                                    <i class="fas fa-user-alt" style={{color:'#fff', fontSize:35}}></i>
+                                </div>
                             </div> : null
                         }
                         
@@ -146,6 +151,9 @@ class Header extends Component {
                                             </li>
                                             <li className="dropdown-item normalize-sidebar">
                                                 <Link to="/dashboard-purchases.html">Your Cart</Link>
+                                            </li>
+                                            <li className="dropdown-item normalize-sidebar">
+                                                <Link to="/users/:id/referals">Referals</Link>
                                             </li>
                                             <li className="dropdown-item normalize-sidebar">
                                                 <Link to="/dashboard-purchases.html">WishList</Link>
@@ -526,6 +534,9 @@ class Header extends Component {
                         </li>
                         <li className="dropdown-item">
                             <Link to="/users/profile/account">Account Settings</Link>
+                        </li>
+                        <li className="dropdown-item">
+                            <Link to="/users/:id/referals">Referals</Link>
                         </li>
                         <li className="dropdown-item">
                             <Link to="/dashboard-purchases.html">Your Purchases</Link>

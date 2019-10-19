@@ -11089,7 +11089,7 @@ pre {
 
 .form-box-items{
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+    grid-template-columns: repeat(auto-fill, minmax(400px,1fr));
     grid-gap: 0 10px;
 }
 
@@ -11216,4 +11216,37 @@ pre {
     height: 100px;
     width: 100px;
     margin: 0 auto;
+}
+
+.header-wrap{
+    background-color: #fff !important;
+    border-bottom: 2px solid #f3f3f3;
+}
+
+.pin.secondary, .button.secondary{
+    background-color: #ff5722 !important
+}
+
+.outer-ring{
+    background: linear-gradient(to right, #10fac0, #ff5722) !important;
+}
+
+.user-name, .user-money{
+    color: #000;
+}
+
+@media screen and (max-width: 1100px){
+    .user-money, .user-name{
+        color: #fff;
+    }
+    .sidebar.left.author-profile .dropdown.hover-effect{
+        display: none;
+    }
+}
+
+div.user-avatar-placeholder{
+    line-height: 100px;
+    display: block;
+    width: 50%;
+    margin: auto;
 }

@@ -6,7 +6,6 @@ export const fetchUser = () => {
     let cart = 0
     let userData = null
     let anonynmousUser = {}
-    console.log('here', user)
     //if there is no authenticated user, check if there is userdata stored in localstorage
     //this enables user to carry out operation without registering or logging
     if(!user)

@@ -25,7 +25,7 @@ class ListCard extends Component {
                     <div className="list-image">
                         <a href="item-v1.html">
                             <figure className="product-preview-image small">
-                                <img src={image} alt="product-image" />
+                                <img src={image} alt="product" />
                             </figure>
                         </a>
                     </div>
