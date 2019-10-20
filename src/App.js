@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from 'redux';
 import ReduxThunk from 'redux-thunk';
+import  "@fortawesome/fontawesome-free/css/all.css";
 import  "./css/style.css";
 
 import Header from "./components/HeaderFooter/Header";
@@ -11,6 +12,7 @@ import Home from "./components/Home";
 import VerifyEmail from "./components/Auth/VerifyEmail";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
+import Referral from "./components/Referrals";
 
 
 import AuthRoute from "./components/Auth/AuthRoute";
@@ -56,6 +58,7 @@ class App extends Component {
                     <AuthRoute exact path="/users/withdrawal" component={WithDrawal} />
                     <AuthRoute exact path="/users/items/upload" component={UploadItem} />
                     <AuthRoute exact path="/users/items/manage" component={ManageItems} />
+                    <AuthRoute exact path="/users/:id/referals" component={Referral} />
                 </Switch>
                 <Footer />
             </Router>

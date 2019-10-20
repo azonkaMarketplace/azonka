@@ -7,9 +7,22 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import * as actions from "../../actions";
 
 class UserLayout extends Component {
+
     componentDidMount(){
 
         this.props.fetchUser()
+    }
+    renderReferral = () => {
+        const {currentUser} = this.props;
+        if(currentUser && currentUser.type === 'agent')
+            return (
+                <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'referals'? 'active': ''}`}
+                    onClick={() => this.sideMenuListItemClick('referals')}
+                >
+                    <Link to={`/users/${currentUser.id}/referals`}>Referals</Link>
+                </li>
+            )
+        return null
     }
     renderAvatar = () => {
         const {currentUser, classes} = this.props
@@ -84,6 +97,7 @@ class UserLayout extends Component {
                                     >
                                         <Link to="/users/profile/account">Account Setting</Link>
                                     </li>
+                                    {this.renderReferral()}
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'cart'? 'active': ''}`}
                                     onClick={() => this.sideMenuListItemClick('cart')}
                                     >
@@ -174,7 +188,6 @@ const styles = theme => ({
 
 const mapStateToProps = state => {
     const {home: { currentUser, cart, likes, homeActiveLink}} = state;
-    console.log('state', state)
     return {
         currentUser, 
         cart,

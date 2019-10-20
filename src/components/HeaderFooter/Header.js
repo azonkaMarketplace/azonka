@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import logo from "../../images/logo.png";
 import pullIcon from "../../images/pull-icon.png";
+import logoHeader from "../../images/logo_header.png";
 import avatar_01 from "../../images/avatars/avatar_01.jpg";
 import avatar_02 from "../../images/avatars/avatar_02.jpg";
 import avatar_03 from "../../images/avatars/avatar_03.jpg";
@@ -11,7 +12,7 @@ import avatar_04 from "../../images/avatars/avatar_04.jpg";
 import avatar_05 from "../../images/avatars/avatar_05.jpg";
 import avatar_06 from "../../images/avatars/avatar_06.jpg";
 // import avatar_07 from "../../images/avatars/avatar_07.png";
-import logo_mobile from "../../images/logo_mobile.png";
+// import logo_mobile from "../../images/logo_mobile.png";
 import pixel_s from "../../images/items/pixel_s.jpg";
 import monsters_s from "../../images/items/monsters_s.jpg";
 import flat_s from "../../images/items/flat_s.jpg"
@@ -84,8 +85,9 @@ class Header extends Component {
                     <header >
                         {/* LOGO  */}
                         <Link to="/">
+                            {/* PUT LOGO FOR DESKTOP */}
                             <figure className="logo">
-                                <img src={logo} alt="logo"/>
+                                <img src={logoHeader} alt="logo"/>
                             </figure>
                         </Link>
 
@@ -94,14 +96,18 @@ class Header extends Component {
                         </div>
 
                         <Link to="/index.html">
+                            {/* put logo for mobile */}
                             <figure className="logo-mobile">
-                                <img src={logo_mobile} alt="logo-mobile" />
+                                <img src={logoHeader} alt="logo-mobile" />
                             </figure>
                         </Link>
                         {
                             user ? 
-                            <div className="mobile-account-options-handler right secondary" onClick={this.toggleRightMenu}>
-                                <span className="icon-user"></span>
+                            <div className="mobile-account-options-handler right secondary"
+                               onClick={this.toggleRightMenu}>
+                                <div className="user-avatar-placeholder">
+                                    <i class="fas fa-user-alt" style={{color:'#fff', fontSize:35}}></i>
+                                </div>
                             </div> : null
                         }
                         
@@ -148,6 +154,9 @@ class Header extends Component {
                                                 <Link to="/dashboard-purchases.html">Your Cart</Link>
                                             </li>
                                             <li className="dropdown-item normalize-sidebar">
+                                                <Link to="/users/:id/referals">Referals</Link>
+                                            </li>
+                                            <li className="dropdown-item normalize-sidebar">
                                                 <Link to="/dashboard-purchases.html">WishList</Link>
                                             </li>
                                             <li className="dropdown-item normalize-sidebar">
@@ -178,9 +187,9 @@ class Header extends Component {
                                     <div className="account-information">
                                         <Link to="/favourites.html">
                                             <div className="account-wishlist-quickview">
-                                                <span className="icon-heart">
-                                                
-                                                </span>
+                                                {/* <span className="icon-heart">
+                                                </span> */}
+                                                <span className="fA-Icon"><i class="far fa-heart"></i></span>
                                                 <span className="pin soft-edged secondary">
                                             {
                                                     likes > 0 ? likes : null
@@ -189,10 +198,11 @@ class Header extends Component {
                                             </div>
                                         </Link>
                                         <div className="account-cart-quickview">
-                                            <span className="icon-present">
+                                            {/* <span className="icon-present">
                                                 <svg className="svg-arrow" dangerouslySetInnerHTML={{ __html: userTag2 }}>
                                                 </svg>
-                                            </span>
+                                            </span> */}
+                                            <span className="fA-Icon"><i class="fas fa-shopping-cart"></i></span>
                                             <span className="pin soft-edged secondary">
                                             {
                                                     cart > 0 ? cart : null
@@ -246,15 +256,15 @@ class Header extends Component {
                                     <div className="account-information">
                                         <Link to="/favourites.html">
                                             <div className="account-wishlist-quickview">
-                                                <span className="icon-heart"></span>
+                                                {/* <span className="icon-heart"></span> */}
+                                                <span className="fA-Icon"><i class="far fa-heart"></i></span>
                                                 <span className="pin soft-edged secondary">{
                                                     likes > 0 ? cart : null
                                                 }</span>
                                             </div>
                                         </Link>
                                         <div className="account-cart-quickview">
-                                            <span className="icon-present">
-                                            </span>
+                                            <span className="fA-Icon"><i class="fas fa-shopping-cart"></i></span>
                                             <span className="pin soft-edged secondary">
                                                 {
                                                     cart > 0 ? cart : null
@@ -526,6 +536,9 @@ class Header extends Component {
                         </li>
                         <li className="dropdown-item">
                             <Link to="/users/profile/account">Account Settings</Link>
+                        </li>
+                        <li className="dropdown-item">
+                            <Link to="/users/:id/referals">Referals</Link>
                         </li>
                         <li className="dropdown-item">
                             <Link to="/dashboard-purchases.html">Your Purchases</Link>
