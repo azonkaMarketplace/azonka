@@ -187,9 +187,9 @@ class Header extends Component {
                                     <div className="account-information">
                                         <Link to="/favourites.html">
                                             <div className="account-wishlist-quickview">
-                                                <span className="icon-heart">
-                                                
-                                                </span>
+                                                {/* <span className="icon-heart">
+                                                </span> */}
+                                                <span className="fA-Icon"><i class="far fa-heart"></i></span>
                                                 <span className="pin soft-edged secondary">
                                             {
                                                     likes > 0 ? likes : null
@@ -198,10 +198,11 @@ class Header extends Component {
                                             </div>
                                         </Link>
                                         <div className="account-cart-quickview">
-                                            <span className="icon-present">
+                                            {/* <span className="icon-present">
                                                 <svg className="svg-arrow" dangerouslySetInnerHTML={{ __html: userTag2 }}>
                                                 </svg>
-                                            </span>
+                                            </span> */}
+                                            <span className="fA-Icon"><i class="fas fa-shopping-cart"></i></span>
                                             <span className="pin soft-edged secondary">
                                             {
                                                     cart > 0 ? cart : null
@@ -255,15 +256,15 @@ class Header extends Component {
                                     <div className="account-information">
                                         <Link to="/favourites.html">
                                             <div className="account-wishlist-quickview">
-                                                <span className="icon-heart"></span>
+                                                {/* <span className="icon-heart"></span> */}
+                                                <span className="fA-Icon"><i class="far fa-heart"></i></span>
                                                 <span className="pin soft-edged secondary">{
                                                     likes > 0 ? cart : null
                                                 }</span>
                                             </div>
                                         </Link>
                                         <div className="account-cart-quickview">
-                                            <span className="icon-present">
-                                            </span>
+                                            <span className="fA-Icon"><i class="fas fa-shopping-cart"></i></span>
                                             <span className="pin soft-edged secondary">
                                                 {
                                                     cart > 0 ? cart : null

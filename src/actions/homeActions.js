@@ -1,4 +1,6 @@
-import { FETCH_USER, SWITCH_ACTIVE_LINK,TOGGLE_VIEW_TYPE } from "./types";
+import { FETCH_USER, SWITCH_ACTIVE_LINK,TOGGLE_VIEW_TYPE,INITIAL_REGISTRATION,
+SUCCESSFUL_REGISTRATION, UNSUCCESSFUL_REGISTRATION, CLEAR_ERROR } from "./types";
+import axios from "axios";
 
 export const fetchUser = () => {
     const user =  JSON.parse(localStorage.getItem('azonta-user'))
@@ -35,4 +37,33 @@ export const switchActiveLink = clickedLink => {
 
 export const toggleViewType = viewType => {
     return {type: TOGGLE_VIEW_TYPE, payload: viewType}
+}
+
+export const initiateRegistration = () => {
+    return {type: INITIAL_REGISTRATION, payload: ''}
+}
+
+export const registerUser = (userData) => {
+    console.log('data', userData)
+    return async (dispatch) => {
+        try{
+            const response = await axios.post('/api/v1/registration/signup',{
+                ...userData
+            })
+            console.log(response.data);
+            if(response.status === 200 ){
+                 dispatch({type: SUCCESSFUL_REGISTRATION, payload: ''})
+                 return window.location.href = window.origin + '/users/verify'
+            }
+        } catch(error){
+            console.log('un able to o', error.message)
+            dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'some errors were encountered'})
+        }
+        
+        
+    }
+}
+
+export const clearError = () => {
+    return { type: CLEAR_ERROR, payload: ''}
 }

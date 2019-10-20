@@ -11277,3 +11277,8 @@ header .account-information .account-wishlist-quickview>span:first-child, header
     margin-left: -10px;
     z-index: 1000000000;
 }
+
+.fA-Icon{
+    font-size: 20px;
+    margin-top: 8px;
+}

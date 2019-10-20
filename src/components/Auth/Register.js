@@ -2,15 +2,33 @@ import React, {  Component } from 'react';
 import { ToastProvider, withToastManager } from 'react-toast-notifications';
 import Validator from 'validator';
 import Zoom from "react-reveal/Zoom";
+import { connect } from 'react-redux';
+import Button from '@material-ui/core/Button';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import ErrorIcon from '@material-ui/icons/Error';
+import CloseIcon from '@material-ui/icons/Close';
+import { amber, green } from '@material-ui/core/colors';
+import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
+import WarningIcon from '@material-ui/icons/Warning';
+import withStyles from "@material-ui/core/styles/withStyles";
+import * as actions from "../../actions";
 
 
 class Register extends Component {
+    constructor(props){
+        super(props)
+    }
     state = {
-        extendedUserType: 'buyer',
+        extendedUserType: 'user',
         emailAddress:'',
         phoneNumber:'',
         referalCode:'',
         repeatPassword: '',
+        firstName:'',
+        lastName: '',
+        gender:'',
         password:'',
         companyName:'',
         companyAddress:'',
@@ -26,7 +44,6 @@ class Register extends Component {
             })
     }
     extendedUserTypeChange = (event, value) => {
-        console.log('value', event.target.value)
         this.setState({
             extendedUserType: value
         })
@@ -47,7 +64,7 @@ class Register extends Component {
 
     validateFormData = (formdata) => {
         const { emailAddress, phoneNumber, password, repeatPassword, companyAddress,
-        contactLine, companyName, extendedUserType} = formdata;
+        contactLine, companyName, extendedUserType,gender, firstName, lastName} = formdata;
         let isValid = true;
         const inValidElments = []
         const validationMessage = {}
@@ -61,6 +78,21 @@ class Register extends Component {
             isValid = false
             inValidElments.push('phoneNumber')
             validationMessage['phoneNumber'] = 'Phone number must be a number'
+        }
+        if(!(firstName.trim())){
+            isValid = false
+            inValidElments.push('firstName')
+            validationMessage['firstName'] = 'First name required'
+        }
+        if(!(lastName.trim())){
+            isValid = false
+            inValidElments.push('lastName')
+            validationMessage['lastName'] = 'Last name required'
+        }
+        if(!(gender.trim())){
+            isValid = false
+            inValidElments.push('gender')
+            validationMessage['gender'] = 'Please select one'
         }
         if(!(password.trim() !== '' && password.length >= 6)){
             isValid = false;
@@ -103,7 +135,20 @@ class Register extends Component {
             formdata
         }
     }
-    
+
+    static getDerivedStateFromProps(props, state){
+        const { loading, error} = props; 
+        return {loading, error}
+    }
+    processForm = () => {
+        const {  error} = this.state; 
+        const {toastManager: { add}} = this.props;
+        if(error === 'some errors were encountered'){
+            add('some errors were encountered', { appearance: 'error' })
+        }
+        console.log('called', this.state)
+        return null
+    }
     handleFormSubmit = (event) => {
         event.preventDefault();
         const {add} = this.props.toastManager;
@@ -122,32 +167,86 @@ class Register extends Component {
         }
         const { emailAddress, phoneNumber, referalCode, 
         password, repeatPassword, extendedUserType, 
-        companyAddress, companyName, contactLine} = this.state;
+        companyAddress, companyName, firstName, lastName, gender, contactLine} = this.state;
         localStorage.setItem('userRegDetails', JSON.stringify({
             emailAddress, phoneNumber, referalCode, contactLine,
-            companyAddress, companyName, extendedUserType, password, repeatPassword
+            companyAddress, companyName, extendedUserType, password, repeatPassword,
+            firstName, lastName, gender
         }))
-        setTimeout(() => {
-            add('Successful, Please check your mail to continue', { appearance: 'success' })
-        }, 1500)
-
-        return setTimeout(() => {
-            return this.props.history.push(`/users/verify`)
-        }, 2000)
+        this.props.initiateRegistration()
+        this.props.registerUser({
+            emailAddress, phoneNumber, referalCode, password,
+            repeatPassword, type:extendedUserType, companyAddress, companyName,
+            firstName, lastName, gender, contactLine, profileImage:''
+        })
+        // return setTimeout(() => {
+        //     return this.props.history.push(`/users/verify`)
+        // }, 2000)
     }
     agreeTotermsChange = e => {
         this.setState({
             agreeToTerms: !this.state.agreeToTerms
         })
     }
+    closeSnackBar = () => {
+        console.log('closeing snackbar', this.state)
+        this.props.clearError()
+    }
     render() {
+        const { classes } = this.props;
         return (
-            <ToastProvider>
                 <div className="form-popup custom-input">
                     <div className="form-popup-content">
                         <h4 className="popup-title">Register Account</h4>
                         <hr className="line-separator"/>
                         <form id="register-form" noValidate>
+                        <div className="">
+                            <label htmlFor="firstName" className="rl-label">First Name</label>
+                            <input type="text" value={this.state.firstName} 
+                                className={`${this.state.inValidElments.includes('firstName') ? 'invalid' : '' }`}
+                                onChange={this.handleInputChange} id="new_pwd" name="firstName" placeholder="Enter your firstname" />
+                            {
+                                this.state.inValidElments.includes('firstName') ?
+                                (
+                                    <div className="error-message required">
+                                        {this.state.validationMessage['firstName']}
+                                    </div>
+                                ): null 
+                            }
+                        </div>
+                        <div className="">
+                            <label htmlFor="lastName" className="rl-label">Last Name</label>
+                            <input type="text" value={this.state.lastName} 
+                                className={`${this.state.inValidElments.includes('lastName') ? 'invalid' : '' }`}
+                                onChange={this.handleInputChange} id="lastName" name="lastName" placeholder="Enter your lastname"/>
+                            {
+                                this.state.inValidElments.includes('lastName') ?
+                                (
+                                    <div className="error-message required">
+                                        {this.state.validationMessage['lastName']}
+                                    </div>
+                                ): null 
+                            }
+                        </div>
+                        <div>
+                            <label htmlFor="lastName" className="rl-label">Gender</label>
+                            <select name="gender" onChange={this.handleInputChange}
+                                value={this.state.gender}
+                                className={`${this.state.inValidElments.includes('gender') ? 'invalid' : '' }`}
+                            >
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                            {
+                                this.state.inValidElments.includes('gender') ?
+                                (
+                                    <div className="error-message required">
+                                        {this.state.validationMessage['gender']}
+                                    </div>
+                                ): null 
+                            }
+                        </div>
                             <label htmlFor="emailAddress"  className="rl-label required">Email Address</label>
                             <input type="email" id="email_address2" className={`${this.state.inValidElments.includes('emailAddress') ? 'invalid' : '' }`} value={this.state.emailAddress} name="emailAddress" onChange={this.handleInputChange} placeholder="Enter your email address here..."/>
                             {
@@ -200,8 +299,8 @@ class Register extends Component {
                             }
                             <div>
                                 <input type="radio" id="agent" name="extenedUserType"
-                                value="agent" checked={this.state.extendedUserType === 'buyer'} onChange={this.extendedUserTypeChange} />
-                                <label  className="label-check" onClick={(event) => this.extendedUserTypeChange(event, 'buyer')}>
+                                value="agent" checked={this.state.extendedUserType === 'user'} onChange={this.extendedUserTypeChange} />
+                                <label  className="label-check" onClick={(event) => this.extendedUserTypeChange(event, 'user')}>
                                     <span className="checkbox primary primary"><span></span></span>
                                     I want to Buy
                                 </label>
@@ -284,11 +383,58 @@ class Register extends Component {
                             </div>
                             <button className="button mid secondary" onClick={this.handleFormSubmit}>Register <span className="primary">Now!</span></button>
                         </form>
+                        
                     </div>
+                    <Snackbar
+                        anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                        }}
+                        open={this.state.error === 'some errors were encountered'}
+                        autoHideDuration={6000}
+                    >
+                        <SnackbarContent
+                            className={`${classes['warning']}`}
+                            aria-describedby="client-snackbar"
+                            message={
+                                <span id="client-snackbar" className={classes.message}>
+                                    <ErrorIcon className={`${classes.icon, classes.iconVariant}`} />
+                                    some errors were encountered
+                                </span>
+                            }
+                            action={[
+                                <IconButton key="close" aria-label="close"  onClick={this.closeSnackBar}  color="inherit">
+                                    <CloseIcon className={classes.icon}/>
+                                </IconButton>
+                            ]}
+                            />
+                    </Snackbar>
                 </div>
-            </ToastProvider>
         );
     }
 }
 
-export default withToastManager(Register)
+const mapStateToProps = state => {
+    const {reg: { loading, error}} = state;
+    return {
+        loading,
+        error
+    }
+}
+const styles = theme => ({
+    warning: {
+        backgroundColor: amber[700],
+      },
+      icon: {
+        fontSize: 20,
+      },
+      iconVariant: {
+        opacity: 0.9,
+        marginRight: theme.spacing(1),
+      },
+      message: {
+        display: 'flex',
+        alignItems: 'center',
+      },
+})
+export default connect(mapStateToProps, actions)(withStyles(styles)((withToastManager(Register))))
