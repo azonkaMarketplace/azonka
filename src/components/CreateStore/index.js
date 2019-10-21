@@ -3,9 +3,9 @@ import UserLayout from "../HOC/UserLayout";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 
-class Cart extends Component {
+class CreateStore extends Component {
     componentDidMount(){
-        this.props.switchActiveLink('cart')
+        this.props.switchActiveLink('create-store')
     }
     render() {
         return (
@@ -16,4 +16,4 @@ class Cart extends Component {
     }
 }
 
-export default connect(null, actions)(Cart);
+export default connect(null, actions)(CreateStore);

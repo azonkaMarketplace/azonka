@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import alertLogo from "../../images/dashboard/alert-logo.png";
 import notifCloseIcon from "../../images/dashboard/notif-close-icon.png";
 import Zoom from 'react-reveal/Zoom';
 import SubscribeBanner from "../Banners/SubscribeBanner";

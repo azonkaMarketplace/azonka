@@ -13,7 +13,7 @@ class Card extends Component {
                         {this.renderFeatured()}
 						<div className="product-preview-actions">
 							<figure className="product-preview-image">
-								<img src={this.props.image} alt="product-image"/>
+								<img src={this.props.image} alt="product"/>
 							</figure>
 							<div className="preview-actions">
 								<div className="preview-action">
@@ -28,14 +28,13 @@ class Card extends Component {
 									</a>
 								</div>
 								<div className="preview-action">
-									<a href="#">
+									<a href="/">
 										<div className="circle tiny secondary">
                                             <span className="font-contianer"><i className="far fa-heart font-icon"></i></span>
 										</div>
 									</a>
-									<a href="#">
+									<a href="/">
 										<p>Favourites +</p>
-                                        {/* <span><i class="far fa-heart" style={{color:'#fff'}}></i></span> */}
 									</a>
 								</div>
 							</div>

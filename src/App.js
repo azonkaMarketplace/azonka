@@ -13,6 +13,7 @@ import VerifyEmail from "./components/Auth/VerifyEmail";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import Referral from "./components/Referrals";
+import SecurityQuestion from "./components/Auth/SecurityQuestion";
 
 
 import AuthRoute from "./components/Auth/AuthRoute";
@@ -29,6 +30,7 @@ import ManageItems from "./components/ManageItems";
 import Commission from "./components/Commission";
 import WithDrawal from "./components/WithDrawal";
 import UploadItem from "./components/UploadItem";
+import CreateStore from "./components/CreateStore";
 
 import Reducer from './reducers';
 const createStoreWithMiddleware = applyMiddleware(ReduxThunk)(createStore)
@@ -48,10 +50,12 @@ class App extends Component {
                     <Route exact path="/users/register" component={Register} />
                     <Route exact path="/users/verify" component={VerifyEmail} />
                     <Route exact path="/users/login" component={Login} />
+                    <AuthRoute exact path="/users/securityquestions" component={SecurityQuestion} />
                     <AuthRoute exact path="/users/profile" component={Profile} />
                     <AuthRoute exact path="/users/profile/account" component={AccountSetting} />
                     <AuthRoute exact path="/users/purchases" component={Purchases} />
                     <AuthRoute exact path="/users/cart" component={Cart} />
+                    <AuthRoute exact path="/users/create-store" component={CreateStore} />
                     <AuthRoute exact path="/users/buycredit" component={BuyCredit} />
                     <AuthRoute exact path="/users/sales" component={Sales} />
                     <AuthRoute exact path="/users/commissions" component={Commission} />

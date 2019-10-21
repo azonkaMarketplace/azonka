@@ -3055,7 +3055,7 @@ header .account-actions .button:last-child {
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
     position: absolute;
-    top: 16px;
+    top: 2px;
     right: 18px;
     cursor: pointer;
     color: #fff;
@@ -5933,45 +5933,45 @@ header .account-actions .button:last-child {
     overflow: hidden
 }
 
-.share-links.hoverable li a {
+.share-links.hoverable li span {
     transition: all .15s ease-in
 }
 
-.share-links.hoverable li a.fb,
-.share-links.hoverable li a.twt,
-.share-links.hoverable li a.db,
-.share-links.hoverable li a.rss,
-.share-links.hoverable li a.gplus,
-.share-links.hoverable li a.de,
-.share-links.hoverable li a.be {
+.share-links.hoverable li span.fb,
+.share-links.hoverable li span.twt,
+.share-links.hoverable li span.db,
+.share-links.hoverable li span.rss,
+.share-links.hoverable li span.gplus,
+.share-links.hoverable li span.de,
+.share-links.hoverable li span.be {
     background-color: #d1d1d1
 }
 
-.share-links.hoverable li a:hover.fb {
+.share-links.hoverable li span:hover.fb {
     background-color: #355599
 }
 
-.share-links.hoverable li a:hover.twt {
+.share-links.hoverable li span:hover.twt {
     background-color: #0fccf4
 }
 
-.share-links.hoverable li a:hover.db {
+.share-links.hoverable li span:hover.db {
     background-color: #f63f6e
 }
 
-.share-links.hoverable li a:hover.rss {
+.share-links.hoverable li span:hover.rss {
     background-color: #ffa312
 }
 
-.share-links.hoverable li a:hover.gplus {
+.share-links.hoverable li span:hover.gplus {
     background-color: #e0133a
 }
 
-.share-links.hoverable li a:hover.be {
+.share-links.hoverable li span:hover.be {
     background-color: #0d79ab
 }
 
-.share-links.hoverable li a:hover.de {
+.share-links.hoverable li span:hover.de {
     background-color: #05cc47
 }
 
@@ -5980,84 +5980,84 @@ header .account-actions .button:last-child {
     margin-right: 12px
 }
 
-.share-links li a {
+.share-links li span {
     display: block;
     width: 30px;
     height: 30px;
     border-radius: 50%
 }
 
-.share-links li a.fb,
-.share-links li a.twt,
-.share-links li a.db,
-.share-links li a.rss,
-.share-links li a.gplus,
-.share-links li a.de,
-.share-links li a.be {
+.share-links li span.fb,
+.share-links li span.twt,
+.share-links li span.db,
+.share-links li span.rss,
+.share-links li span.gplus,
+.share-links li span.de,
+.share-links li span.be {
     background-repeat: no-repeat;
     background-position: center
 }
 
-.share-links li a:hover.fb {
+.share-links li span:hover.fb {
     background-color: #4868ae
 }
 
-.share-links li a:hover.twt {
+.share-links li span:hover.twt {
     background-color: #2fd5f9
 }
 
-.share-links li a:hover.db {
+.share-links li span:hover.db {
     background-color: #fe5e87
 }
 
-.share-links li a:hover.rss {
+.share-links li span:hover.rss {
     background-color: #ffb72d
 }
 
-.share-links li a:hover.gplus {
+.share-links li span:hover.gplus {
     background-color: #f42a50
 }
 
-.share-links li a:hover.be {
+.share-links li span:hover.be {
     background-color: #1b8ec3
 }
 
-.share-links li a:hover.de {
+.share-links li span:hover.de {
     background-color: #15e159
 }
 
-.share-links li a.fb {
+.share-links li span.fb {
     background-image: url("../images/social/fb.png");
     background-color: #355599
 }
 
-.share-links li a.twt {
+.share-links li span.twt {
     background-image: url("../images/social/twt.png");
     background-color: #0fccf4
 }
 
-.share-links li a.db {
+.share-links li span.db {
     background-image: url("../images/social/db.png");
     background-color: #f63f6e
 }
 
-.share-links li a.rss {
+.share-links li span.rss {
     background-image: url("../images/social/rss.png");
     background-position: 50% 45%;
     background-color: #ffa312
 }
 
-.share-links li a.gplus {
+.share-links li span.gplus {
     background-image: url("../images/social/gplus.png");
     background-color: #e0133a
 }
 
-.share-links li a.be {
+.share-links li span.be {
     background-image: url("../images/social/be.png");
     background-color: #0d79ab
 }
 
-.share-links li a.de {
+.share-links li span.de {
     background-image: url("../images/social/de.png");
     background-color: #05cc47
 }
@@ -7764,7 +7764,7 @@ header .account-actions .button:last-child {
     float: left
 }
 
-.social-links .social-link a {
+.social-links .social-link span {
     display: block;
     position: relative
 }
@@ -7773,7 +7773,7 @@ header .account-actions .button:last-child {
     margin-right: 30px
 }
 
-.social-links .social-link.fb a {
+.social-links .social-link.fb span {
     width: 7px;
     height: 14px;
     background: url("../images/fb.png") no-repeat center
@@ -7783,7 +7783,7 @@ header .account-actions .button:last-child {
     margin-right: 26px
 }
 
-.social-links .social-link.twt a {
+.social-links .social-link.twt span {
     width: 18px;
     height: 13px;
     background: url("../images/twt.png") no-repeat center;
@@ -7794,14 +7794,14 @@ header .account-actions .button:last-child {
     margin-right: 32px
 }
 
-.social-links .social-link.db a {
+.social-links .social-link.db span {
     width: 16px;
     height: 17px;
     background: url("../images/db.png") no-repeat center;
     top: -1px
 }
 
-.social-links .social-link.rss a {
+.social-links .social-link.rss span {
     width: 12px;
     height: 13px;
     background: url("../images/rss.png") no-repeat center;

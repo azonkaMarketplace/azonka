@@ -88,8 +88,9 @@ class Login extends Component {
                 validationMessage
             })
         }
-
-        //call database API
+        if(isValid){
+            //call the api
+        }
     }
     handleInputChange = (event) => {
         const {target: { name, value}} = event;

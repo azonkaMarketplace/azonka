@@ -81,9 +81,9 @@ class UserLayout extends Component {
                                     </a>
                                     <p className="text-header" style={{paddingTop:'20px'}}>Odin_Design</p>
                                     <ul className="share-links">
-                                        <li><a href="#" className="fb"></a></li>
-                                        <li><a href="#" className="twt"></a></li>
-                                        <li><a href="#" className="db"></a></li>
+                                        <li><span className="fb"></span></li>
+                                        <li><span className="twt"></span></li>
+                                        <li><span className="db"></span></li>
                                     </ul>
                                 </div>
                                 <ul className="dropdown hover-effect">
@@ -127,6 +127,11 @@ class UserLayout extends Component {
                                         onClick={() => this.sideMenuListItemClick('withdrawal')}
                                     >
                                         <a href="author-badges.html">Withdrawal</a>
+                                    </li>
+                                    <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'create-store'? 'active': ''}`}
+                                        onClick={() => this.sideMenuListItemClick('create-store')}
+                                    >
+                                        <a href="author-badges.html">Create Store</a>
                                     </li>
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'uploadItem'? 'active': ''}`}
                                         onClick={() => this.sideMenuListItemClick('uploadItem')}

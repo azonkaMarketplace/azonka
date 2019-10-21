@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withToastManager } from 'react-toast-notifications';
 import queryString from "query-string";
-import oneTimePassword from "../../images/oneTimePassword.PNG";
 
 class VerifyEmail extends Component {
     state = {
@@ -37,6 +36,8 @@ class VerifyEmail extends Component {
         }
         //call the api
         localStorage.removeItem('userRegDetails')
+        //if result is successful, move the user to set up security questions
+        this.props.history.push('/users/securityquestions')
     }
     handleOnChange = e => {
         const {target: { name, value, size}} = e;
