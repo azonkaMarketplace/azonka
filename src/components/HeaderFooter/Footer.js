@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logoSmall from "../../images/logo_small.png";
 
 class Footer extends Component {
     render() {
@@ -29,16 +28,16 @@ class Footer extends Component {
                             </ul>
                             <ul className="social-links">
                                 <li className="social-link fb">
-                                    <a href="/"></a>
+                                    <span></span>
                                 </li>
                                 <li className="social-link twt">
-                                    <a href="/"></a>
+                                    <span ></span>
                                 </li>
                                 <li className="social-link db">
-                                    <a href="/"></a>
+                                    <span ></span>
                                 </li>
                                 <li className="social-link rss">
-                                    <a href="/"></a>
+                                    <span href="/"></span>
                                 </li>
                             </ul>
                         </div>

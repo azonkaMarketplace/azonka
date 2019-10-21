@@ -47,7 +47,7 @@ class ListCard extends Component {
                     </ul>
                 </div>
                 <div className="list-item-actions">
-                    <a href="#" data-toggle="list-tooltip" className="list-tooltip" title="Add to Favourites">
+                    <a href="/" data-toggle="list-tooltip" className="list-tooltip" title="Add to Favourites">
                         <div className="circle tiny">
                             <span>
                             <i class="far fa-heart" style={{color:'#fff'}}></i>
