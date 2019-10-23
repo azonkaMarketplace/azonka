@@ -8,7 +8,7 @@ class Footer extends Component {
                     <div id="footer-top">
                         <div className="company-info">
                             <figure className="logo small">
-                                <div className="company-name-footer">Azonta Market Place</div>
+                                <div className="company-name-footer">Azonta Market</div>
                                 {/* <img src={logoSmall} alt="logo-small" /> */}
                             </figure>
                             <p>Lorem ipsum dolor sit amet, consectetur isicing elit, sed do eiusmod tempor incididunt ut labo dolore magna ua.</p>

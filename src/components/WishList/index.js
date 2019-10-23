@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import UserLayout from "../HOC/UserLayout";
-
-class index extends Component {
+class WishList extends Component {
     render() {
         return (
             <UserLayout>
@@ -11,4 +10,4 @@ class index extends Component {
     }
 }
 
-export default index;
+export default WishList;

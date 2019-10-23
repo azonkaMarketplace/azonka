@@ -2819,7 +2819,8 @@ header .account-actions .button:last-child {
     width: 320px;
     position: absolute;
     top: 14px;
-    right: 0
+    right: 0;
+    padding-left: 15px;
 }
 
 .main-menu {
@@ -6940,8 +6941,8 @@ header .account-actions .button:last-child {
 }
 
 .cart {
-    width: 870px;
-    background-color: #fff;
+    width: 100%;
+    /* background-color: #fff; */
     border: 1px solid #ebebeb;
     margin: 0 auto
 }
@@ -6949,7 +6950,8 @@ header .account-actions .button:last-child {
 .cart .cart-header {
     height: 52px;
     border-bottom: 1px solid #ebebeb;
-    overflow: hidden
+    overflow: hidden;
+    background:#fff;
 }
 
 .cart .cart-header p {
@@ -6967,29 +6969,31 @@ header .account-actions .button:last-child {
 
 .cart .cart-header-product,
 .cart .cart-item-product {
-    width: 416px;
+    width: 38%;
     padding-left: 23px
 }
 
 .cart .cart-header-category,
 .cart .cart-item-category {
-    width: 142px
+    width: 25%;
 }
 
 .cart .cart-header-price,
 .cart .cart-item-price {
-    width: 174px
+    width: 25%;
 }
 
 .cart .cart-header-actions,
 .cart .cart-item-actions {
-    width: 136px
+    width: 10%;
 }
 
 .cart .cart-item {
     padding: 24px 0;
     border-bottom: 1px solid #ebebeb;
-    overflow: hidden
+    overflow: hidden;
+    background: #fff;
+    margin-bottom: 10px;
 }
 
 .cart .cart-item>* {
@@ -7298,7 +7302,8 @@ header .account-actions .button:last-child {
 
 @media screen and (max-width: 935px) {
     .cart {
-        width: 554px
+        /* width: 554px */
+        width: 100%;
     }
     .cart .cart-header-category,
     .cart .cart-header-price,
@@ -11219,8 +11224,8 @@ pre {
 }
 
 .product-preview-image.small{
-    height: 100px;
-    width: 100px;
+    height: auto;
+    width: 80px;
     margin: 0 auto;
 }
 
@@ -11248,6 +11253,29 @@ pre {
     }
     .sidebar.left.author-profile .dropdown.hover-effect{
         display: none;
+    }
+    header{
+        min-height: 65px !important;
+    }
+    header .logo-mobile{
+        top: -13px !important;
+        left: 45% !important;
+        margin-left: -25px !important;
+        height: 40px !important;
+    }
+    .mobile-menu-handler.left.primary{
+        height: 65px !important;
+    }
+    header .mobile-menu-handler img[alt="pull-icon"]{
+        top: 20px !important;
+        left: 50%;
+        margin-left: -13px !important;
+    }
+    .mobile-account-options-handler.right.secondary{
+        height: 65px !important;
+    }
+    div.user-avatar-placeholder{
+        line-height: 70px !important;
     }
 }
 
@@ -11281,4 +11309,48 @@ header .account-information .account-wishlist-quickview>span:first-child, header
 .fA-Icon{
     font-size: 20px;
     margin-top: 8px;
+}
+
+.question-number{
+    padding-right: 5px
+}
+
+.question-tag, .question-number{
+    font-weight: bold;
+     font-family: Roboto, sans-serif;
+    font-size:0.966em
+}
+
+.show{
+    display: block;
+}
+
+.hide{
+    display: none;
+}
+
+.user-name.hover-menu, .user-name{
+    width: 150px;
+    word-wrap: break-word;
+}
+
+@media screen and (max-width: 935px){
+    .cart-header-product, .cart .cart-item-product{
+        width: 85% !important;
+    }
+    .cart .cart-header-actions{
+        width: 10%;
+    }
+
+}
+
+@media screen and (max-width: 630px){
+    .normalize-style-cart-item{
+        padding-top: 30px;
+    }
+}
+
+.normalize-style-cart-item{
+    display: block;
+    padding-left: 30px;
 }

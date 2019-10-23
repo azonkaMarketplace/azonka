@@ -47,7 +47,7 @@ class Card extends Component {
 							<a href="shop-gridview-v1.html">
 								<p className="category primary">Hero Images</p>
 							</a>
-							<p className="price"><span>$</span>12</p>
+							<p className="price"><span>&#8358;</span>12</p>
 						</div>
 						<hr className="line-separator" />
 					</div>

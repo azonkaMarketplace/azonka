@@ -31,6 +31,8 @@ import Commission from "./components/Commission";
 import WithDrawal from "./components/WithDrawal";
 import UploadItem from "./components/UploadItem";
 import CreateStore from "./components/CreateStore";
+import Bank from "./components/Bank";
+import WishList from "./components/WishList";
 
 import Reducer from './reducers';
 const createStoreWithMiddleware = applyMiddleware(ReduxThunk)(createStore)
@@ -63,6 +65,8 @@ class App extends Component {
                     <AuthRoute exact path="/users/items/upload" component={UploadItem} />
                     <AuthRoute exact path="/users/items/manage" component={ManageItems} />
                     <AuthRoute exact path="/users/:id/referals" component={Referral} />
+                    <AuthRoute exact path="/users/:id/banks" component={Bank} />
+                    <AuthRoute exact path="/users/:id/wishlist" component={WishList} />
                 </Switch>
                 <Footer />
             </Router>

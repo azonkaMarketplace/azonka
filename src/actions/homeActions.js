@@ -1,5 +1,6 @@
 import { FETCH_USER, SWITCH_ACTIVE_LINK,TOGGLE_VIEW_TYPE,INITIAL_REGISTRATION,
-SUCCESSFUL_REGISTRATION, UNSUCCESSFUL_REGISTRATION, CLEAR_ERROR } from "./types";
+SUCCESSFUL_REGISTRATION, UNSUCCESSFUL_REGISTRATION, CLEAR_ERROR, 
+SUCCESS_RESENDING_PASSCODE, SUCCESSFUL_VERIFICATION, ERROR_RESENDING_PASSCODE } from "./types";
 import axios from "axios";
 
 export const fetchUser = () => {
@@ -46,8 +47,9 @@ export const initiateRegistration = () => {
 export const registerUser = (userData) => {
     console.log('data', userData)
     return async (dispatch) => {
+        let response;
         try{
-            const response = await axios.post('/api/v1/registration/signup',{
+            response = await axios.post('/api/v1/registration/signup',{
                 ...userData
             })
             console.log(response.data);
@@ -56,7 +58,13 @@ export const registerUser = (userData) => {
                  return window.location.href = window.origin + '/users/verify'
             }
         } catch(error){
-            console.log('un able to o', error.message)
+            console.log('un able to o', error.response.data)
+            if(error.response.data.message === 'A user with that emailAddress already exists!'){
+                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email already exists'})
+            }
+            if(error.response.data.message === 'A user with that phoneNumber already exists!'){
+                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Phone number exists'})
+            }
             dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'some errors were encountered'})
         }
         
@@ -66,4 +74,73 @@ export const registerUser = (userData) => {
 
 export const clearError = () => {
     return { type: CLEAR_ERROR, payload: ''}
+}
+
+export const verifyEmail = (userData) => {
+    console.log('user-data', userData)
+    return async (dispatch) => {
+        try{
+            const response = await axios.post('/api/v1/registration/verify-email', {
+                ...userData
+            })
+            
+            if(response.status === 200 ){
+                console.log('response', response.data)
+                //localStorage.removeItem('userRegDetails')
+                dispatch({type: SUCCESSFUL_VERIFICATION, payload: response.data})
+                localStorage.setItem('azonta-user', JSON.stringify(response.data.user))
+                axios.defaults.headers.common['x-access-token'] = response.data.token
+
+                if(JSON.parse(localStorage.getItem('userRegDetails').extendedUserType !== 'user')){
+                    localStorage.removeItem('userRegDetails')
+                    return window.location.href = window.origin + '/users/securityquestions'
+                }
+                return window.location.href = window.origin + '/users/profile'
+           }
+        }catch(error) {
+            if(error.response.status === 498){
+                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email and passcode mismatch'})
+            }
+            dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'some errors were encountered'})
+        }
+    }
+}
+ 
+export const resendEmail = emailAddress => {
+    return async(dispatch) => {
+        try{
+            const response = await axios.post('/api/v1/registration/resend-verification-code', {
+                emailAddress
+            })
+            if(response.status === 200){
+                console.log('response', response.data)
+                dispatch({type: SUCCESS_RESENDING_PASSCODE, payload: ''})
+            }
+        }catch(error){
+            console.log('eror', error.message)
+            dispatch({type: ERROR_RESENDING_PASSCODE, payload: error.message})
+        }
+    }
+}
+
+export const login = user => {
+    return async (dispatch) => {
+        try{
+            const response = await axios.post('/api/v1/authentication/login', {
+                ...user
+            })
+            if(response.status === 200){
+                axios.defaults.headers.common['x-access-token'] = response.data.token
+                console.log('response', response.data)
+                localStorage.setItem('azonta-user', JSON.stringify(response.data.user))
+                window.location.href = window.origin + '/users/profile'
+            }
+        }catch(error){
+            console.log('error', error.response)
+            if(error.response.status === 404 || error.response.status === 400){
+                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: error.response.data.message})
+            }
+            dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'some errors were encountered, please try again'})
+        }
+    }
 }

@@ -8,6 +8,8 @@ class SecurityQuestion extends Component {
         questions: [],
         inValidElments: [],
         validationMessage: {},
+        container: 'form',
+        pincode: ''
     }
     componentDidMount(){
         // call the api to fetch security questions
@@ -22,7 +24,11 @@ class SecurityQuestion extends Component {
             this.state.inValidElments.splice(index, 1)
         }
         newInvalidElements = [...this.state.inValidElments]
-
+        if(name === 'pincode'){
+            return this.setState({
+                pincode: value
+            })
+        }
         if(this.state.questions.length <= 0){
             this.setState({
                 questions : [{question_id: name, answer: value}],
@@ -49,7 +55,9 @@ class SecurityQuestion extends Component {
     renderQuestion = () => (
         questions.map(({question_id, question}, index) => (
            <div key={question_id}>
-                <div><span>{ index + 1}</span>{question}</div>
+                <div><span className="question-number">
+                    { index + 1}.</span><span 
+                        className="question-tag">{question}</span></div>
                 <CustomInput
                     onIputChange={this.handleInputChange}
                     name={question_id}
@@ -98,29 +106,69 @@ class SecurityQuestion extends Component {
             
             
             //naviagate the user to profile page
-            setTimeout(() => {
-                add('Please check your mail for your pincode. Please keep it secret!', { appearance: 'success' })
-                this.props.history.push('/users/profile')
-            }, 2000)
+            this.setState({
+                container: 'pincode'
+            })
         }else{
             //form is not valid display error
             
             add('One or more fields not filled, please cheack and try again', { appearance: 'error' })
         }
     } 
+    showForm = () => {
+        this.setState({
+            container: 'form'
+        })
+    }
+    onSubmit = event => {
+        event.preventDefault();
+        const {toastManager: { add}} = this.props;
+        if(this.state.pincode.trim() !== '' && this.state.pincode.length !== 6){
+           return  add('Please provide 6 digits pincode', { appearance: 'error' })
+        }
+        //call the api
+    }
     render() {
         return (
-            <div className="form-popup custom-input">
-                <div className="form-popup-headline secondary">
-                    <h2>Security Qestions</h2>
-                    <p>Please kindly provide answers</p>
+            <div>
+                <div className={`form-popup custom-input ${this.state.container === 'form' ? 'show': 'hide'}`}>
+                    <div className="form-popup-headline secondary">
+                        <h2>Security Qestions</h2>
+                        <p>Please kindly provide answers</p>
+                    </div>
+                    <div className="form-popup-content">
+                        <form id="login-form2">
+                            {this.renderQuestion()}
+                            <button className="button mid secondary" onClick={this.handleFormSubmit}>Continue</button>
+                        </form>
+                    </div>
                 </div>
-                <div className="form-popup-content">
-                    <form id="login-form2">
-                        {this.renderQuestion()}
-                        <button className="button mid secondary" onClick={this.handleFormSubmit}>Submit</button>
-                    </form>
-                </div>
+                <div className={`form-popup ${this.state.container === 'pincode' ? 'show' : 'hide'}`}>
+                    <div className="form-popup-headline secondary">
+                        <h2><span onClick={this.showForm} style=
+                           {{fontSize: 30, marginRight: 10, color: '#fff'}}>
+                               <i className="fas fa-arrow-left"></i></span> Setup Pincode</h2>
+                        <p>Please setup  your pincode, this should be kept confidential</p>
+                    </div>
+                        <hr className="line-separator" />
+                        <div className="form-popup-content">
+                            <form id="register-form" noValidate>
+                                <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
+                                    <input type="text" value={this.state.pincode}
+                                        size={6} name="pincode" onChange={this.handleInputChange} className="one-time-pwd-input" placeholder="------" />
+                                </div>
+
+                                <div className="otp-container">
+                                    <span style={{ fontSize: 40 }}>
+                                        <i className="fas fa-user-lock"></i>
+                                    </span>
+                                </div>
+                                <div className="right-content">
+                                    <button className="button mid secondary" onClick={this.onSubmit}>Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
             </div>
         );
     }

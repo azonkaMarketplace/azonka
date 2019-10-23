@@ -26,15 +26,16 @@ class UserLayout extends Component {
     }
     renderAvatar = () => {
         const {currentUser, classes} = this.props
-        return currentUser ? currentUser.imageUrl ? (
-            <img src={currentUser.imageUrl} alt="avatar" />            
-        ): <Avatar className={classes.orangeAvatar}>{currentUser.emailAddress.substr(0,2).toUpperCase()}</Avatar>
+        return currentUser ? currentUser.profileImage ? (
+            <img src={currentUser.profileImage} alt="avatar" />            
+        ): <Avatar className={classes.orangeAvatar}>{`${currentUser.firstName.substr(0,1).toUpperCase()}${currentUser.lastName.substr(0,1).toUpperCase()}`}</Avatar>
         : null
     }
     sideMenuListItemClick = clickedItem => {
         this.props.switchActiveLink(clickedItem)
     }
     render() {
+        const {currentUser} = this.props
         return (
             <div>
                 <div>
@@ -49,20 +50,31 @@ class UserLayout extends Component {
                             
                             <div className="author-profile-info">
                                 <div className="author-profile-info-item">
-                                    <p className="text-header">Full Name</p>
-                                    <p>Charles Onuorah</p>
+                                    <p className="text-header">{currentUser && currentUser.type === 'seller'
+                                    ? 'Company Name' : 'Full Name'
+                                }</p>
+                                    <p>{
+                                        currentUser ? currentUser.type === 'seller' ?
+                                        currentUser.companyName : `${currentUser.firstName} ${currentUser.lastName}`
+                                        : null
+                                    }</p>
                                 </div>
-                                <div className="author-profile-info-item">
-                                    <p className="text-header">Total Sales:</p>
-                                    <p>820</p>
-                                </div>
+                                {
+                                    currentUser && currentUser.type === 'seller' ?
+                                    (
+                                        <div className="author-profile-info-item">
+                                            <p className="text-header">Total Sales:</p>
+                                            <p>{currentUser && currentUser.sales ? currentUser.sales : 0}</p>
+                                        </div>
+                                    ) : null
+                                }
                                 <div className="author-profile-info-item">
                                     <p className="text-header">Email Adress</p>
-                                    <p>charles.onuorah@yahoo.com</p>
+                                    <p>{currentUser && currentUser.emailAddress ? currentUser.emailAddress : null}</p>
                                 </div>
                                 <div className="author-profile-info-item">
                                     <p className="text-header">Contact Number</p>
-                                    <p>08163113450</p>
+                                    <p>{currentUser && currentUser.phoneNumber ? currentUser.phoneNumber : null}</p>
                                 </div>
                             </div>
                             
@@ -79,7 +91,9 @@ class UserLayout extends Component {
                                             {this.renderAvatar()}
                                         </figure>
                                     </a>
-                                    <p className="text-header" style={{paddingTop:'20px'}}>Odin_Design</p>
+                                    <p className="text-header" style={{paddingTop:'20px'}}>{
+                                      currentUser ?  `${currentUser.firstName} ${currentUser.lastName}` : null
+                                    }</p>
                                     <ul className="share-links">
                                         <li><span className="fb"></span></li>
                                         <li><span className="twt"></span></li>
@@ -101,57 +115,126 @@ class UserLayout extends Component {
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'cart'? 'active': ''}`}
                                     onClick={() => this.sideMenuListItemClick('cart')}
                                     >
-                                        <a href="author-profile-messages.html">Cart</a>
+                                        <Link to="/users/cart">Cart</Link>
                                     </li>
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'wishlist'? 'active': ''}`}
                                         onClick={() => this.sideMenuListItemClick('wishlist')}
                                     >
-                                        <a href="author-profile-reviews.html">Wishlist</a>
+                                        <Link to={`/users/${currentUser ? currentUser.id: ''}/wishlist`}>Wishlist</Link>
                                     </li>
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'purchases'? 'active': ''}`}
                                         onClick={() => this.sideMenuListItemClick('purchases')}
                                     >
-                                        <a href="author-profile-followers.html">Your Purchases</a>
+                                        <Link to="/users/purchases">Your Purchases</Link>
                                     </li>
-                                    <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'sales-statement'? 'active': ''}`}
-                                        onClick={() => this.sideMenuListItemClick('sales-statement')}
-                                    >
-                                        <a href="author-profile-following.html">Sales Statement</a>
-                                    </li>
-                                    <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'buy-credit'? 'active': ''}`}
-                                        onClick={() => this.sideMenuListItemClick('buy-credit')}
-                                    >
-                                        <a href="author-badges.html">Buy Credits</a>
-                                    </li>
-                                    <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'withdrawal'? 'active': ''}`}
-                                        onClick={() => this.sideMenuListItemClick('withdrawal')}
-                                    >
-                                        <a href="author-badges.html">Withdrawal</a>
-                                    </li>
-                                    <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'create-store'? 'active': ''}`}
-                                        onClick={() => this.sideMenuListItemClick('create-store')}
-                                    >
-                                        <a href="author-badges.html">Create Store</a>
-                                    </li>
-                                    <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'uploadItem'? 'active': ''}`}
-                                        onClick={() => this.sideMenuListItemClick('uploadItem')}
-                                    >
-                                        <a href="author-badges.html">Upload Item</a>
-                                    </li>
-                                    <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'manageItems'? 'active': ''}`}
-                                        onClick={() => this.sideMenuListItemClick('manageItems')}
-                                    >
-                                        <a href="author-badges.html">Manage Items</a>
-                                    </li>
-                                    <li 
-                                    className=
-                                    {`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'customer-review'? 'active': ''}`}
-                                        onClick={() => this.sideMenuListItemClick('customer-review')}
-                                    >
-                                        <a href="author-badges.html">Customer Review</a>
-                                    </li>
+                                    {
+                                        currentUser && currentUser.type === 'seller' ?
+                                        (
+                                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'sales-statement'? 'active': ''}`}
+                                                onClick={() => this.sideMenuListItemClick('sales-statement')}
+                                            >
+                                                <Link to="/users/sales">Sales statement</Link>
+                                            </li>
+                                        ) : null
+                                    }
+                                    {
+                                        currentUser && currentUser.type === 'user' ?
+                                        (
+                                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'buy-credit'? 'active': ''}`}
+                                                onClick={() => this.sideMenuListItemClick('buy-credit')}
+                                            >
+                                                <Link to="/users/buycredit">Buy Credit</Link>
+                                            </li>
+                                        ) : null
+                                    }
+                                    {
+                                        currentUser && (currentUser.type === 'agent' || currentUser.type === 'seller')
+                                          ?
+                                        (
+                                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'withdrawal'? 'active': ''}`}
+                                                onClick={() => this.sideMenuListItemClick('withdrawal')}
+                                            >
+                                                <Link to="/users/withdrawal">Withdrawal</Link>
+                                            </li>
+                                        ): null
+                                    }
+                                    {
+                                        currentUser && (currentUser.type === 'agent' || currentUser.type === 'seller')
+                                          ?
+                                        (
+                                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'bank'? 'active': ''}`}
+                                                onClick={() => this.sideMenuListItemClick('bank')}
+                                            >
+                                                <Link to="/users/banks">Banks</Link>
+                                            </li>
+                                        ): null
+                                    }
+                                    {
+                                        currentUser && currentUser.type === 'seller' ?
+                                        (
+                                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'create-store'? 'active': ''}`}
+                                                onClick={() => this.sideMenuListItemClick('create-store')}
+                                            >
+                                                <Link to="/users/create-store">Create Store</Link>
+                                            </li>
+                                        ) : null
+                                    }
+                                    {
+                                        currentUser && currentUser.type === 'agent' ?
+                                        (
+                                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'create-shop'? 'active': ''}`}
+                                                onClick={() => this.sideMenuListItemClick('create-shop')}
+                                            >
+                                                <Link to="/users/create/shop">Create Shop</Link>
+                                            </li>
+                                        ) : null
+                                    }
+                                    {
+                                        currentUser && currentUser.type === 'seller' ?
+                                        (
+                                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'uploadItem'? 'active': ''}`}
+                                                onClick={() => this.sideMenuListItemClick('uploadItem')}
+                                            >
+                                                <Link to="/users/items/upload">Upload Item</Link>
+                                            </li>
+                                        ) : null
+                                    }
+                                    {
+                                        currentUser && currentUser.type === 'seller' ?
+                                        (
+                                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'manageItems'? 'active': ''}`}
+                                                onClick={() => this.sideMenuListItemClick('manageItems')}
+                                            >
+                                                <Link to="/users/items/manage">Manage Items</Link>
+                                            </li>
+                                        ) : null
+                                    }
+                                    {
+                                        currentUser && currentUser.type === 'seller' ?
+                                        (
+                                            <li 
+                                            className=
+                                            {`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'customer-review'? 'active': ''}`}
+                                                onClick={() => this.sideMenuListItemClick('customer-review')}
+                                            >
+                                                <Link to="/users/customer/review">Customer Review</Link>
+                                            </li>
+                                        ) : null
+                                    }
+                                    
+                                    
                                 </ul>
                                 {/*END*/}
+                                {this.props.homeActiveLink === 'cart' ? (
+                                    <div class="sidebar-item">
+                                        <h4>Redeem Code</h4>
+                                        <hr className="line-separator" />
+                                        <form id="coupon-code-form">
+                                            <input type="text" name="coupon_code" placeholder="Enter your coupon code..."/>
+                                            <button className="button mid secondary">Apply Coupon Code</button>
+                                        </form>
+                                    </div>
+                                ) : null}
                             </div>
                             <div className="content right">
                                 <div>
@@ -171,13 +254,13 @@ class UserLayout extends Component {
 
 const styles = theme => ({
     avatar: {
-        margin: 10,
+        // margin: 10,
         paddingBottom: 20,
         width: 80,
         height: 80
       },
       orangeAvatar: {
-        margin: 10,
+        // margin: 10,
         color: '#fff',
         width: 80,
         height: 80,

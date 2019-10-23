@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-import logo from "../../images/logo.png";
+
 import pullIcon from "../../images/pull-icon.png";
 import logoHeader from "../../images/logo_header.png";
 import avatar_01 from "../../images/avatars/avatar_01.jpg";
@@ -86,7 +86,7 @@ class Header extends Component {
                             <img src={pullIcon} alt="pull-icon"/>
                         </div>
 
-                        <Link to="/index.html">
+                        <Link to="/">
                             {/* put logo for mobile */}
                             <figure className="logo-mobile">
                                 <img src={logoHeader} alt="logo-mobile" />
@@ -118,13 +118,15 @@ class Header extends Component {
                                             </div>
                                         </Link>
                                         <p className="user-name hover-menu" ref="hoverElement"
-                                        >Johnny Fisher</p>
+                                        >{user ? `${user.firstName} ${user.lastName}` : null}</p>
                                         <svg className="svg-arrow  hover-menu" dangerouslySetInnerHTML={{ __html: useTag1 }}
                                             
                                         >
 
                                         </svg>
-                                        <p className="user-money hover-menu">$745.00</p>
+                                        <p className="user-money hover-menu"><span>&#8358;</span>{
+                                           user && user.wallet ? `${user.wallet}` : `0.00`
+                                        }</p>
 
                                         <ul
                                             className={`dropdown small hover-effect  small-menu ${this.state.showDrpDownSmall? 'open': 'closed'} `}
@@ -142,32 +144,81 @@ class Header extends Component {
                                                 >Account Settings</Link>
                                             </li>
                                             <li className="dropdown-item normalize-sidebar">
-                                                <Link to="/dashboard-purchases.html">Your Cart</Link>
+                                                <Link to="/users/cart">Your Cart</Link>
+                                            </li>
+                                            {
+                                                user && user.type === 'agent' ? 
+                                                (
+                                                    <li className="dropdown-item normalize-sidebar">
+                                                        <Link to={`/users/${user && user.id ? user.id : ''}/referals`}>Referals</Link>
+                                                    </li>
+                                                ) : null
+                                            }
+                                            
+                                            <li className="dropdown-item normalize-sidebar">
+                                                <Link to={`/users/${user && user.id ? user.id : ''}/wishlist`}>WishList</Link>
                                             </li>
                                             <li className="dropdown-item normalize-sidebar">
-                                                <Link to="/users/:id/referals">Referals</Link>
+                                                <Link to="/users/purchases">Your Purchases</Link>
                                             </li>
-                                            <li className="dropdown-item normalize-sidebar">
-                                                <Link to="/dashboard-purchases.html">WishList</Link>
-                                            </li>
-                                            <li className="dropdown-item normalize-sidebar">
-                                                <Link to="/dashboard-purchases.html">Your Purchases</Link>
-                                            </li>
-                                            <li className="dropdown-item normalize-sidebar">
-                                                <Link to="/dashboard-statement.html">Sales Statement</Link>
-                                            </li>
-                                            <li className="dropdown-item normalize-sidebar">
-                                                <Link to="/dashboard-buycredits.html">Buy Credits</Link>
-                                            </li>
-                                            <li className="dropdown-item normalize-sidebar">
-                                                <Link to="/dashboard-withdrawals.html">Withdrawals</Link>
-                                            </li>
-                                            <li className="dropdown-item normalize-sidebar">
-                                                <Link to="/dashboard-uploaditem.html">Upload Item</Link>
-                                            </li>
-                                            <li className="dropdown-item normalize-sidebar">
-                                                <Link to="/dashboard-manageitems.html">Manage Items</Link>
-                                            </li>
+                                            {
+                                                user && user.type === 'seller' ?
+                                                (
+                                                    <li className="dropdown-item normalize-sidebar">
+                                                        <Link to="/users/sales">Sales Statement</Link>
+                                                    </li>
+                                                ) : null
+                                            }
+                                            
+                                            {
+                                                user && user.type === 'user' ?
+                                                (
+                                                    <li className="dropdown-item normalize-sidebar">
+                                                        <Link to="/users/buycredit">Buy Credits</Link>
+                                                    </li>
+                                                ): null
+                                            }
+                                            {
+                                                user &&  user.type==='agent' ?
+                                                (
+                                                    <li className="dropdown-item normalize-sidebar">
+                                                        <Link to="/users/create-shop">Create Shop</Link>
+                                                    </li>
+                                                ): null
+                                            }
+                                            {
+                                                user &&  user.type==='agent' ?
+                                                (
+                                                    <li className="dropdown-item normalize-sidebar">
+                                                        <Link to="/users/create-store">Create store</Link>
+                                                    </li>
+                                                ): null
+                                            }
+                                            {
+                                                user && (user.type === 'agent' || user.type==='seller') ?
+                                                (
+                                                    <li className="dropdown-item normalize-sidebar">
+                                                        <Link to="/users/withdrawal">Withdrawals</Link>
+                                                    </li>
+                                                ): null
+                                            }
+                                            {
+                                                user && user.type==='seller' ?
+                                                (
+                                                    <li className="dropdown-item normalize-sidebar">
+                                                        <Link to="/users/items/upload">Upload Item</Link>
+                                                    </li>
+                                                ): null
+                                            }
+                                            {
+                                                user && user.type==='seller' ?
+                                                (
+                                                    <li className="dropdown-item normalize-sidebar">
+                                                        <Link to="/users/items/manage">Manage Items</Link>
+                                                    </li>
+                                                ): null
+                                            }
+                                            
                                         </ul>
 
                                     </div>
@@ -183,7 +234,7 @@ class Header extends Component {
                                                 <span className="fA-Icon"><i className="far fa-heart"></i></span>
                                                 <span className="pin soft-edged secondary">
                                             {
-                                                    likes > 0 ? likes : null
+                                                   likes && likes.length > 0 ? likes.length : null
                                                 }
                                             </span>
                                             </div>
@@ -196,7 +247,7 @@ class Header extends Component {
                                             <span className="fA-Icon"><i className="fas fa-shopping-cart"></i></span>
                                             <span className="pin soft-edged secondary">
                                             {
-                                                    cart > 0 ? cart : null
+                                                    cart && cart.length > 0 ? cart.length : null
                                                 }
                                             </span>
                                             <ul className="dropdown cart closed">
@@ -243,14 +294,14 @@ class Header extends Component {
                                             </ul>
                                         </div>
                                     </div>
-                                ) : cart >= 0 || likes >= 0 ?  (
+                                ) : (cart && cart.length >= 0) ||  (likes && likes.length >= 0) ?  (
                                     <div className="account-information">
                                         <Link to="/favourites.html">
                                             <div className="account-wishlist-quickview">
                                                 {/* <span className="icon-heart"></span> */}
                                                 <span className="fA-Icon"><i className="far fa-heart"></i></span>
                                                 <span className="pin soft-edged secondary">{
-                                                    likes > 0 ? cart : null
+                                                   likes && likes.length > 0 ? likes.length : null
                                                 }</span>
                                             </div>
                                         </Link>
@@ -258,7 +309,7 @@ class Header extends Component {
                                             <span className="fA-Icon"><i className="fas fa-shopping-cart"></i></span>
                                             <span className="pin soft-edged secondary">
                                                 {
-                                                    cart > 0 ? cart : null
+                                                    cart && cart.length > 0 ? cart.length : null
                                                 }
                                             </span>
                                             <ul className="dropdown cart closed">
@@ -500,12 +551,14 @@ class Header extends Component {
                                 <div className="outer-ring">
                                     <div className="inner-ring"></div>
                                     <figure className="user-avatar">
-                                        <img src={avatar_01} alt="avatar" />
+                                        <img src={avatar_01} alt="avatar" />{/**Johnny Fisher */}
                                     </figure>
                                 </div>
                             </Link>
-                            <p className="user-name">Johnny Fisher</p>
-				            <p className="user-money">$745.00</p>
+                            <p className="user-name">{user ? `${user.firstName} ${user.lastName}` : null}</p>
+				            <p className="user-money"><span>&#8358;</span>{
+                               user && user.wallet ? `${user.wallet}` : `0.00`
+                            }</p>
                         </div>
                     </div>
 
@@ -513,47 +566,84 @@ class Header extends Component {
                     
                     <ul className="dropdown dark hover-effect">
                         <li className="dropdown-item">
-                            <Link to="/cart.html">Your Cart</Link>
+                            <Link to="/users/cart">Your Cart</Link>
                         </li>
                         <li className="dropdown-item">
-                            <Link to="/favourites.html">WishList</Link>
+                            <Link to={`/users/${user ? user.id: ''}/wishlist`}>Wishlist</Link>
                         </li>
                     </ul>
 
                     <p className="side-menu-title">Dashboard</p>
                     <ul className="dropdown dark hover-effect">
                         <li className="dropdown-item">
-                            <Link to="/author-profile.html">Profile Page</Link>
+                            <Link to="/users/profile">Profile Page</Link>
                         </li>
                         <li className="dropdown-item">
                             <Link to="/users/profile/account">Account Settings</Link>
                         </li>
+                        {
+                            user && user.type === 'agent' ? 
+                            (
+                                <li className="dropdown-item">
+                                    <Link to={`/users/${user ? user.id: ''}/referals`}>Referals</Link>
+                                </li>
+                            ) : null
+                        }
+                        
                         <li className="dropdown-item">
-                            <Link to="/users/:id/referals">Referals</Link>
+                        <Link to="/users/purchases">Your Purchases</Link>
                         </li>
-                        <li className="dropdown-item">
-                            <Link to="/dashboard-purchases.html">Your Purchases</Link>
-                        </li>
-                        <li className="dropdown-item">
-                            <Link to="/dashboard-statement.html">Sales Statement</Link>
-                        </li>
-                        <li className="dropdown-item">
-                            <Link to="/dashboard-buycredits.html">Buy Credits</Link>
-                        </li>
-                        <li className="dropdown-item">
-                            <Link to="/dashboard-withdrawals.html">Withdrawals</Link>
-                        </li>
-                        <li className={`dropdown-item`}
-                            onClick={() => this.sideMenuListItemClick('create-store')}
-                        >
-                            <a href="author-badges.html">Create Store</a>
-                        </li>
-                        <li className="dropdown-item">
-                            <Link to="/dashboard-uploaditem.html">Upload Item</Link>
-                        </li>
-                        <li className="dropdown-item">
-                            <Link to="/dashboard-manageitems.html">Manage Items</Link>
-                        </li>
+                        {
+                            user && user.type === 'seller' ?
+                            (<li className="dropdown-item">
+                                <Link to="/users/sales">Sales statement</Link>
+                            </li>) : null
+                        }
+                        
+                        {
+                            user && user.type === 'user' ?
+                            (<li className="dropdown-item">
+                                <Link to="/users/buycredit">Buy Credit</Link>
+                            </li>) : null
+                        }
+                        {
+                            user && user.type === 'agent' ?
+                            (<li className="dropdown-item">
+                                <Link to="/users/create/shop">Create Shop</Link>
+                            </li>) : null
+                        }
+                        {
+                            user && (user.type === 'agent' || user.type === 'seller') ?
+                            (<li className="dropdown-item">
+                                <Link to="/users/withdrawal">Withdrawal</Link>
+                            </li>) : null
+                        }
+                        {
+                            user && (user.type === 'agent' || user.type === 'seller') ?
+                            (<li className={`dropdown-item`}
+                                onClick={() => this.sideMenuListItemClick('create-store')}
+                            >
+                                <Link to="/users/create-store">Create Store</Link>
+                            </li>) : null
+                        }
+                        {
+                            user && (user.type === 'agent' || user.type === 'seller') ?
+                            (<li className="dropdown-item">
+                                <Link to="/users/items/upload">Upload Item</Link>
+                            </li>) : null
+                        }
+                        {
+                            user && (user.type === 'agent' || user.type === 'seller') ?
+                            (<li className="dropdown-item">
+                                <Link to="/users/items/manage">Manage Items</Link>
+                            </li>) : null
+                        }
+                        {
+                            user && (user.type === 'agent' || user.type === 'seller') ?
+                            (<li className="dropdown-item">
+                                <Link to="/users/customer/review">Customer Review</Link>
+                            </li>) : null
+                        }
 		            </ul>
                     <Link to="/" className="button medium secondary">Logout</Link>
 		            {/* <Link to="/" className="button medium primary">Become a Seller</Link> */}
@@ -566,7 +656,7 @@ class Header extends Component {
                         <nav>
                             <ul className="main-menu">
                                 <li className="menu-item">
-                                    <a href="index.html">Home</a>
+                                    <a href="/">Home</a>
                                 </li>
                                 <li className="menu-item">
                                     <a href="how-to-shop.html">How to shop</a>
