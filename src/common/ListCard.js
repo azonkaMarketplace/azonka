@@ -57,7 +57,7 @@ class ListCard extends Component {
                     </a>
                 </div>
                 <div className="list-price-info">
-                    <p className="list-price medium"><span>$</span>12</p>
+                    <p className="list-price medium"><span>&#8358;</span>12</p>
                 </div>
             </div>
         );

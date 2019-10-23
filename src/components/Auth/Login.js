@@ -5,6 +5,9 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import withStyles from "@material-ui/core/styles/withStyles";
+import { connect } from "react-redux";
+import * as actions from "../../actions";
+import ErrorAlert from "../../common/ErrorAlert";
 
 class Login extends Component {
     state = {
@@ -57,19 +60,8 @@ class Login extends Component {
         }
 
         //call the api
-
-        const { emailAddress, password} = this.state;
-        localStorage.setItem('azonta-user', JSON.stringify({
-            emailAddress, password,
-            cart: 2,
-            likes: 4,
-            type:'agent',
-            id: 234234
-        }))
-
-        return setTimeout(() => {
-            return this.props.history.push(`/users/profile`)
-        }, 2000)
+        const {emailAddress, password} = this.state
+        this.props.login({emailAddress, password})
     }
     resendEmailPassword = e => {
         e.preventDefault()
@@ -128,6 +120,9 @@ class Login extends Component {
             showModal: false,
             newInvalidElements
         })
+    }
+    closeSnackBar = () => {
+        this.props.initiateRegistration()
     }
     render() {
         const { classes } = this.props;
@@ -214,6 +209,7 @@ class Login extends Component {
                     </div>
                     </Fade>
                 </Modal>
+                <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
             </div>
         );
     }
@@ -241,4 +237,13 @@ const styles = theme => ( {
       }
     }
 )
-export default withStyles(styles)(withToastManager(Login))
+
+const mapStateToProps = state => {
+    const {reg:{ loading, error, errorMessage}} = state;
+    return {
+        loading,
+        error, 
+        errorMessage
+    }
+}
+export default connect(mapStateToProps, actions)(withStyles(styles)(withToastManager(Login)))

@@ -92,6 +92,7 @@ export const verifyEmail = (userData) => {
                 axios.defaults.headers.common['x-access-token'] = response.data.token
 
                 if(JSON.parse(localStorage.getItem('userRegDetails').extendedUserType !== 'user')){
+                    localStorage.removeItem('userRegDetails')
                     return window.location.href = window.origin + '/users/securityquestions'
                 }
                 return window.location.href = window.origin + '/users/profile'
@@ -118,6 +119,28 @@ export const resendEmail = emailAddress => {
         }catch(error){
             console.log('eror', error.message)
             dispatch({type: ERROR_RESENDING_PASSCODE, payload: error.message})
+        }
+    }
+}
+
+export const login = user => {
+    return async (dispatch) => {
+        try{
+            const response = await axios.post('/api/v1/authentication/login', {
+                ...user
+            })
+            if(response.status === 200){
+                axios.defaults.headers.common['x-access-token'] = response.data.token
+                console.log('response', response.data)
+                localStorage.setItem('azonta-user', JSON.stringify(response.data.user))
+                window.location.href = window.origin + '/users/profile'
+            }
+        }catch(error){
+            console.log('error', error.response)
+            if(error.response.status === 404 || error.response.status === 400){
+                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: error.response.data.message})
+            }
+            dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'some errors were encountered, please try again'})
         }
     }
 }
