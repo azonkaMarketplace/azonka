@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-import logo from "../../images/logo.png";
+
 import pullIcon from "../../images/pull-icon.png";
 import logoHeader from "../../images/logo_header.png";
 import avatar_01 from "../../images/avatars/avatar_01.jpg";

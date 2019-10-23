@@ -384,7 +384,7 @@ class Register extends Component {
                         vertical: 'top',
                         horizontal: 'right',
                         }}
-                        open={this.state.error === 'some errors were encountered'}
+                        open={this.state.error}
                         autoHideDuration={6000}
                     >
                         <SnackbarContent
@@ -393,7 +393,7 @@ class Register extends Component {
                             message={
                                 <span id="client-snackbar" className={classes.message}>
                                     <ErrorIcon className={`${classes.icon} ${classes.iconVariant}`} />
-                                    some errors were encountered
+                                    {this.props.errorMessage}
                                 </span>
                             }
                             action={[
@@ -409,10 +409,11 @@ class Register extends Component {
 }
 
 const mapStateToProps = state => {
-    const {reg: { loading, error}} = state;
+    const {reg: { loading, error, errorMessage}} = state;
     return {
         loading,
-        error
+        error,
+        errorMessage
     }
 }
 const styles = theme => ({

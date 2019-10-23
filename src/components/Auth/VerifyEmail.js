@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { withToastManager } from 'react-toast-notifications';
 import queryString from "query-string";
+import { connect } from "react-redux";
+import * as actions from "../../actions";
+import ErrorAlert from "../../common/ErrorAlert";
 
 class VerifyEmail extends Component {
     state = {
@@ -25,7 +28,8 @@ class VerifyEmail extends Component {
     resendEmailPasscode = (e) => {
         const {add} = this.props.toastManager;
         //call database
-
+        console.log('e', this.state.userDetails.emailAddress)
+        this.props.resendEmail(this.state.userDetails.emailAddress)
         add('Successful, Please check your mail to continue', { appearance: 'success' })
     }
     verifyEmail = e => {
@@ -35,9 +39,13 @@ class VerifyEmail extends Component {
             return add('Please provide passcode', { appearance: 'error' })
         }
         //call the api
-        localStorage.removeItem('userRegDetails')
+        this.props.verifyEmail({
+            emailAddress: this.state.userDetails.emailAddress,
+            emailProofToken: this.state.passcode,
+            password: this.state.userDetails.password
+        })
         //if result is successful, move the user to set up security questions
-        this.props.history.push('/users/securityquestions')
+        
     }
     handleOnChange = e => {
         const {target: { name, value, size}} = e;
@@ -47,6 +55,9 @@ class VerifyEmail extends Component {
             })
         }
         
+    }
+    closeSnackBar = () => {
+        this.props.initiateRegistration()
     }
     render() {
         return (
@@ -62,7 +73,7 @@ class VerifyEmail extends Component {
                         
                         <div className="otp-container">
                             <span style={{fontSize: 40}}>
-                                <i class="fas fa-user-lock"></i>
+                                <i className="fas fa-user-lock"></i>
                             </span>
                         </div>
                         <div className="resend-otp-container center-content">
@@ -73,9 +84,19 @@ class VerifyEmail extends Component {
                         </div>
                     </form>
                 </div>
+                <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
             </div>
         );
     }
 }
 
-export default withToastManager(VerifyEmail);
+const mapStateToProps = state => {
+    const {reg: { loading, error, errorMessage}} = state;
+    return {
+        loading,
+        error,
+        errorMessage
+    }
+}
+
+export default connect(mapStateToProps, actions)(withToastManager(VerifyEmail))

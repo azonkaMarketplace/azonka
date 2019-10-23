@@ -11249,6 +11249,29 @@ pre {
     .sidebar.left.author-profile .dropdown.hover-effect{
         display: none;
     }
+    header{
+        min-height: 65px !important;
+    }
+    header .logo-mobile{
+        top: -13px !important;
+        left: 45% !important;
+        margin-left: -25px !important;
+        height: 40px !important;
+    }
+    .mobile-menu-handler.left.primary{
+        height: 65px !important;
+    }
+    header .mobile-menu-handler img[alt="pull-icon"]{
+        top: 20px !important;
+        left: 50%;
+        margin-left: -13px !important;
+    }
+    .mobile-account-options-handler.right.secondary{
+        height: 65px !important;
+    }
+    div.user-avatar-placeholder{
+        line-height: 70px !important;
+    }
 }
 
 div.user-avatar-placeholder{
@@ -11281,4 +11304,22 @@ header .account-information .account-wishlist-quickview>span:first-child, header
 .fA-Icon{
     font-size: 20px;
     margin-top: 8px;
+}
+
+.question-number{
+    padding-right: 5px
+}
+
+.question-tag, .question-number{
+    font-weight: bold;
+     font-family: Roboto, sans-serif;
+    font-size:0.966em
+}
+
+.show{
+    display: block;
+}
+
+.hide{
+    display: none;
 }
