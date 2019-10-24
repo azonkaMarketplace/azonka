@@ -1,18 +1,19 @@
 import React from 'react';
 import { Redirect, Route } from "react-router-dom";
+import Login from "./Login";
 
-const AuthRoute = ({component: Component, ...rest}) => {
+const AuthRoute = ({component: Component, noAuthRequired, redirectIfAuth, ...rest}) => {
     const user = localStorage.getItem('azonta-user')
     if(user){
-        // const decodedToken = jwtDecode(token)
-        // if(decodedToken.exp * 1000 < Date.now()){
-        //     return <Redirect to="/login" />
-        // }
+        if(redirectIfAuth){
+            return <Redirect {...rest} to="/users/profile"/>
+        }
         return <Route {...rest} component={Component} />
     }
-    return (
-        <Redirect to="/users/login" />
-    );
+    console.log('am here o');
+    const userRegDetails = localStorage.getItem('userRegDetails')
+    return noAuthRequired || userRegDetails ? <Route {...rest} component={Component} /> : 
+    <Redirect to="/users/login" {...rest} />
 };
 
 export default AuthRoute;

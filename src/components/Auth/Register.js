@@ -18,14 +18,14 @@ class Register extends Component {
         extendedUserType: 'user',
         emailAddress:'',
         phoneNumber:'',
-        referalCode:'',
+        referredBy:'',
         repeatPassword: '',
         firstName:'',
         lastName: '',
         gender:'',
         password:'',
         companyName:'',
-        companyAddress:'',
+        headOfficeAddress:'',
         contactLine: '',
         inValidElments: [],
         validationMessage: {},
@@ -57,7 +57,7 @@ class Register extends Component {
     }
 
     validateFormData = (formdata) => {
-        const { emailAddress, phoneNumber, password, repeatPassword, companyAddress,
+        const { emailAddress, phoneNumber, password, repeatPassword, headOfficeAddress,
         contactLine, companyName, extendedUserType,gender, firstName, lastName} = formdata;
         let isValid = true;
         const inValidElments = []
@@ -101,10 +101,10 @@ class Register extends Component {
         
         if(extendedUserType.trim() !== ''){
             if(extendedUserType.trim() === 'seller'){
-                if(!(companyAddress.trim() !== '')){
+                if(!(headOfficeAddress.trim() !== '')){
                     isValid = false
-                    inValidElments.push('companyAddress')
-                    validationMessage['companyAddress'] = 'Please provide company address'
+                    inValidElments.push('headOfficeAddress')
+                    validationMessage['headOfficeAddress'] = 'Please provide company address'
                 }
                 if(!(companyName.trim() !== '')){
                     isValid = false
@@ -159,18 +159,22 @@ class Register extends Component {
                 validationMessage
             })
         }
-        const { emailAddress, phoneNumber, referalCode, 
+        const { emailAddress, phoneNumber, referredBy, 
         password, repeatPassword, extendedUserType, 
-        companyAddress, companyName, firstName, lastName, gender, contactLine} = this.state;
+        headOfficeAddress, companyName, firstName, lastName, gender, contactLine} = this.state;
         localStorage.setItem('userRegDetails', JSON.stringify({
-            emailAddress, phoneNumber, referalCode, contactLine,
-            companyAddress, companyName, extendedUserType, password, repeatPassword,
+            emailAddress, phoneNumber, referredBy, contactLine,
+            headOfficeAddress, companyName, extendedUserType, password, repeatPassword,
             firstName, lastName, gender
         }))
         this.props.initiateRegistration()
-        this.props.registerUser({
-            emailAddress, phoneNumber, referalCode, password,
-            repeatPassword, type:extendedUserType, companyAddress, companyName,
+
+        if(this.state.extendedUserType !== 'user'){
+           return this.props.history.push('/users/securityquestions')
+        }
+        return this.props.registerUser({
+            emailAddress, phoneNumber, referredBy, password,
+            repeatPassword, type:extendedUserType, headOfficeAddress, companyName,
             firstName, lastName, gender, contactLine, profileImage:''
         })
         // return setTimeout(() => {
@@ -261,13 +265,13 @@ class Register extends Component {
                                     </div>
                                 ): null 
                             }
-                            <label htmlFor="referalCode" className="rl-label">Referral Code</label>
-                            <input type="text" id="referalCode" className={`${this.state.inValidElments.includes('referalCode') ? 'invalid' : '' }`} value={this.state.referalCode} name="referalCode" onChange={this.handleInputChange}  placeholder="Enter your referral code..." />
+                            <label htmlFor="referredBy" className="rl-label">Referral Code</label>
+                            <input type="text" id="referredBy" className={`${this.state.inValidElments.includes('referredBy') ? 'invalid' : '' }`} value={this.state.referredBy} name="referredBy" onChange={this.handleInputChange}  placeholder="Enter your referral code..." />
                             {
-                                this.state.inValidElments.includes('referalCode') ?
+                                this.state.inValidElments.includes('referredBy') ?
                                 (
                                     <div className="error-message required">
-                                        {this.state.validationMessage['referalCode']}
+                                        {this.state.validationMessage['referredBy']}
                                     </div>
                                 ): null 
                             }
@@ -334,13 +338,13 @@ class Register extends Component {
                                                     }
                                                 </div>
                                                 <div className="col-sm-12 col-md-6" >
-                                                    <label htmlFor="companyAddress" className="rl-label required">Head Office Address</label>
-                                                    <input className={`${this.state.inValidElments.includes('companyAddress') ? 'invalid' : '' }`} type="text" name="companyAddress" value={this.state.companyAddress} onChange={this.handleInputChange}   placeholder="Contact Address..." />
+                                                    <label htmlFor="headOfficeAddress" className="rl-label required">Head Office Address</label>
+                                                    <input className={`${this.state.inValidElments.includes('headOfficeAddress') ? 'invalid' : '' }`} type="text" name="headOfficeAddress" value={this.state.headOfficeAddress} onChange={this.handleInputChange}   placeholder="Contact Address..." />
                                                     {
-                                                        this.state.inValidElments.includes('companyAddress') ?
+                                                        this.state.inValidElments.includes('headOfficeAddress') ?
                                                         (
                                                             <div className="error-message required">
-                                                                {this.state.validationMessage['companyAddress']}
+                                                                {this.state.validationMessage['headOfficeAddress']}
                                                             </div>
                                                         ): null 
                                                     }

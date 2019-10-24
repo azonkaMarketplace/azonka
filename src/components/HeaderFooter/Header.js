@@ -61,13 +61,17 @@ class Header extends Component {
     sideMenuListItemClick = clikedLink => {
         this.props.switchActiveLink(clikedLink)
     }
+    logout = () => {
+        this.props.logout()
+    }
     render() {
         const useTag1 = '<use xlink:href="#svg-arrow"></use>'
         const useTag3 = '<use xlink:href="#svg-plus"></use>'
         const useTag4 = '<use xlink:href="#svg-plus"></use>'
         const useTag5 = '<use xlink:href="#svg-plus"></use>'
         const useTag9 = '<use xlink:href="#svg-arrow"></use>'
-        const user = this.props.currentUser
+        let user = this.props.currentUser
+        user = Array.isArray(user) ? user[0] : user;
         const cart = this.props.cart
         const likes = this.props.likes
         return (
@@ -365,7 +369,7 @@ class Header extends Component {
                                 {
                                     user ? 
                                     (
-                                        <Link to="/logout" style={{color:'#fff'}} className="button secondary">Logout</Link>
+                                        <div  onClick={this.logout} style={{color:'#fff'}} className="button secondary">Logout</div>
                                     )
                                     : 
                                     (
@@ -645,7 +649,7 @@ class Header extends Component {
                             </li>) : null
                         }
 		            </ul>
-                    <Link to="/" className="button medium secondary">Logout</Link>
+                    <div onClick={this.logout} className="button medium secondary">Logout</div>
 		            {/* <Link to="/" className="button medium primary">Become a Seller</Link> */}
                 </div>
 

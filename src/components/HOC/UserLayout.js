@@ -9,11 +9,12 @@ import * as actions from "../../actions";
 class UserLayout extends Component {
 
     componentDidMount(){
-
+        console.log('clalled')
         this.props.fetchUser()
     }
     renderReferral = () => {
-        const {currentUser} = this.props;
+        let {currentUser} = this.props;
+         currentUser = Array.isArray(currentUser) ? currentUser[0] : currentUser;
         if(currentUser && currentUser.type === 'agent')
             return (
                 <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'referals'? 'active': ''}`}
@@ -25,7 +26,9 @@ class UserLayout extends Component {
         return null
     }
     renderAvatar = () => {
-        const {currentUser, classes} = this.props
+        let {currentUser, classes} = this.props
+        console.log('cu', currentUser)
+         currentUser = Array.isArray(currentUser) ? currentUser[0] : currentUser;
         return currentUser ? currentUser.profileImage ? (
             <img src={currentUser.profileImage} alt="avatar" />            
         ): <Avatar className={classes.orangeAvatar}>{`${currentUser.firstName.substr(0,1).toUpperCase()}${currentUser.lastName.substr(0,1).toUpperCase()}`}</Avatar>
@@ -35,7 +38,9 @@ class UserLayout extends Component {
         this.props.switchActiveLink(clickedItem)
     }
     render() {
-        const {currentUser} = this.props
+        let {currentUser} = this.props
+         currentUser = Array.isArray(currentUser) ? currentUser[0] : currentUser;
+        console.log('current user', currentUser)
         return (
             <div>
                 <div>

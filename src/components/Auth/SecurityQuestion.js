@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import questions from "../../assets/securityQuestion.json";
+import { connect } from "react-redux";
+import * as actions from "../../actions";
 import { withToastManager } from 'react-toast-notifications';
 import CustomInput from "../../common/CustomInput";
 
@@ -13,6 +14,7 @@ class SecurityQuestion extends Component {
     }
     componentDidMount(){
         // call the api to fetch security questions
+        this.props.getSecurityQuestions()
     }
     handleInputChange = (event) => {
         const {target: { name, value}} = event;
@@ -52,31 +54,39 @@ class SecurityQuestion extends Component {
         }
         
     }
-    renderQuestion = () => (
-        questions.map(({question_id, question}, index) => (
-           <div key={question_id}>
-                <div><span className="question-number">
-                    { index + 1}.</span><span 
-                        className="question-tag">{question}</span></div>
-                <CustomInput
-                    onIputChange={this.handleInputChange}
-                    name={question_id}
-                    placeholder={question}
-                    error={this.state.inValidElments.includes(`${question_id}`)}
-                    errorMessage={'Required, please provide'}
-                />
-           </div>
-        ))
-    )
-    validateFormData = (answered_question, questions_resource) => {
+    displayQuestions = () => {
+        const keys = Object.keys(this.props.questions)
+        return keys.map((element, index) => (
+            <div key={index}>
+                 <div><span className="question-number">
+                     { index + 1}.</span><span 
+                         className="question-tag">{this.props.questions[element]}</span></div>
+                 <CustomInput
+                     onIputChange={this.handleInputChange}
+                     name={element}
+                     placeholder={this.props.questions[element]}
+                     error={this.state.inValidElments.includes(`${element}`)}
+                     errorMessage={'Required, please provide'}
+                 />
+            </div>))
+    }
+    renderQuestion = () => {
+       return Object.keys(this.props.questions).length > 0 ?
+        
+            this.displayQuestions()
+         : null
+    }
+    
+    validateFormData = (answered_question) => {
         const unansweredQuestions = []
         let isValid = true;
-        if(answered_question.length !== questions_resource.length){
+        const keys = Object.keys(this.props.questions)
+        if(answered_question.length !== keys.length){
             isValid = false;
-            questions_resource.forEach(({question_id}) => {
-                const index = answered_question.findIndex(({question_id: id}) => parseInt(id) === question_id)
+            keys.forEach((element) => {
+                const index = answered_question.findIndex(({question_id: id}) => id === element)
                 if(index === -1){
-                    unansweredQuestions.push(`${question_id}`)
+                    unansweredQuestions.push(`${element}`)
                 }
             })
             
@@ -97,7 +107,7 @@ class SecurityQuestion extends Component {
     handleFormSubmit = (event) => {
         event.preventDefault();
         const {toastManager: { add}} = this.props;
-        const isValid = this.validateFormData(this.state.questions, questions)
+        const isValid = this.validateFormData(this.state.questions)
         if(isValid){
             console.log('form is valid')
             console.log('security questions', this.state.questions)
@@ -126,7 +136,17 @@ class SecurityQuestion extends Component {
         if(this.state.pincode.trim() !== '' && this.state.pincode.length !== 6){
            return  add('Please provide 6 digits pincode', { appearance: 'error' })
         }
+        console.log('this state', this.state)
         //call the api
+        const userData = JSON.parse(localStorage.getItem('userRegDetails'))
+        console.log('yser', userData)
+        this.props.initiateRegistration()
+        const securityAnswerOne = this.state.questions.find(question => question.question_id === '1').answer
+        const securityAnswerTwo = this.state.questions.find(question => question.question_id === '2').answer
+        const securityAnswerThree = this.state.questions.find(question => question.question_id === '3').answer
+        return this.props
+                .registerUser({...userData,type: userData.extendedUserType,
+                     securityAnswerOne, securityAnswerThree, securityAnswerTwo, pin: this.state.pincode})
     }
     render() {
         return (
@@ -155,7 +175,7 @@ class SecurityQuestion extends Component {
                             <form id="register-form" noValidate>
                                 <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
                                     <input type="text" value={this.state.pincode}
-                                        size={6} name="pincode" onChange={this.handleInputChange} className="one-time-pwd-input" placeholder="------" />
+                                        size={6} name="pincode" onChange={this.handleInputChange} className="one-time-pwd-input" placeholder="Enter Pin" />
                                 </div>
 
                                 <div className="otp-container">
@@ -174,4 +194,11 @@ class SecurityQuestion extends Component {
     }
 }
 
-export default withToastManager(SecurityQuestion);
+const mapStateToProps = state => {
+    const {reg: {questions, errorMessage, error}} = state;
+    return {
+        questions,error, errorMessage
+    }
+}
+
+export default connect(mapStateToProps, actions)(withToastManager(SecurityQuestion))

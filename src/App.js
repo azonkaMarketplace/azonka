@@ -49,10 +49,10 @@ class App extends Component {
                 <Header />
                 <Switch>
                     <Route exact path="/" component={Home} />
-                    <Route exact path="/users/register" component={Register} />
-                    <Route exact path="/users/verify" component={VerifyEmail} />
-                    <Route exact path="/users/login" component={Login} />
-                    <AuthRoute exact path="/users/securityquestions" component={SecurityQuestion} />
+                    <AuthRoute redirectIfAuth noAuthRequired exact path="/users/register" component={Register} />
+                    <AuthRoute redirectIfAuth  exact path="/users/verify" component={VerifyEmail} />
+                    <AuthRoute redirectIfAuth noAuthRequired exact path="/users/login" component={Login} />
+                    <AuthRoute redirectIfAuth exact path="/users/securityquestions" component={SecurityQuestion} />
                     <AuthRoute exact path="/users/profile" component={Profile} />
                     <AuthRoute exact path="/users/profile/account" component={AccountSetting} />
                     <AuthRoute exact path="/users/purchases" component={Purchases} />
