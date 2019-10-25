@@ -1,7 +1,7 @@
 import React, {  Component } from 'react';
 import {  withToastManager } from 'react-toast-notifications';
 import Validator from 'validator';
-import Zoom from "react-reveal/Zoom";
+import Fade from "react-reveal/Fade";
 import { connect } from 'react-redux';
 import ErrorIcon from '@material-ui/icons/Error';
 import CloseIcon from '@material-ui/icons/Close';
@@ -322,7 +322,7 @@ class Register extends Component {
                             </div>
                             {
                                 this.state.extendedUserType === 'seller' ? (
-                                    <Zoom bottom>
+                                    <Fade right>
                                         <div className="container-fluid" style={{paddingLeft: 0, paddingRight: 0}}>
                                             <div className="row">
                                                 <div className="col-sm-12 col-md-6 shopLocationContainer">
@@ -365,7 +365,7 @@ class Register extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                    </Zoom>
+                                    </Fade>
                                 ) : null
                             }
                             <div className="terms-condition-container">

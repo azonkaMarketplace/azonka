@@ -5,11 +5,11 @@ import { connect } from "react-redux";
 
 import pullIcon from "../../images/pull-icon.png";
 import logoHeader from "../../images/logo_header.png";
-import avatar_01 from "../../images/avatars/avatar_01.jpg";
 import searchIcon from "../../images/search-icon.png";
 import * as actions from "../../actions";
 import DropdownItem from "../../common/DropdownItem";
 import DropdownTotal from '../../common/DropdownTotal';
+import Avatar from '../../common/Avatar';
 
 
 class Header extends Component {
@@ -19,13 +19,11 @@ class Header extends Component {
         this.props.fetchUser()
     }
     showCartDropDown = () => {
-        console.log('called')
         this.setState({
             showCartDropDown: true
         })
     }
     hideCartDropdown = () => {
-        console.log('called 3')
         this.setState({
             showCartDropDown: false
         })
@@ -71,7 +69,10 @@ class Header extends Component {
         })
     }
     sideMenuListItemClick = clikedLink => {
-        this.props.switchActiveLink(clikedLink)
+        this.setState({
+            showLeftMenu: false,
+            showRightMenu: false
+        })
     }
     logout = () => {
         this.props.logout()
@@ -97,7 +98,7 @@ class Header extends Component {
                     <div className="account-cart-quickview">
                         <Link to="/users/cart">
                             <span className="fA-Icon"><i className="fas fa-shopping-cart"></i></span>
-                            <span className="pin soft-edged secondary">
+                            <span className="pin soft-edged secondary" style={{color:'#717f82'}}>
                                 {
                                     cart && cart.length > 0 ? cart.length : null
                                 }
@@ -140,17 +141,28 @@ class Header extends Component {
                         <div className="user-board">
                             {
                                 user ? (
-                                    <div className="user-quickview" onMouseEnter={this.toggleShowSmallDropdownOpen} onMouseLeave={this.toggleShowSmallDropdownClosed}>
+                                    <div className="user-quickview" style={{display:'flex'}} onMouseEnter={this.toggleShowSmallDropdownOpen} onMouseLeave={this.toggleShowSmallDropdownClosed}>
                                         <Link to="/users/profile">
-                                            <div className="outer-ring hover-menu"
-                                            // onMouseEnter={this.toggleShowSmallDropdown} onMouseLeave={this.toggleShowSmallDropdown}  ${this.state.showDrpDownSmall? 'open': 'closed'}
-                                            >
-                                                <div className="inner-ring"></div>
-                                                <figure className="user-avatar">
-                                                    <img src={avatar_01} alt="avatar" />
-                                                </figure>
-                                            </div>
+                                            {
+                                                user.profileImage.trim() !== '' ? 
+                                                    (
+                                                        <div className="outer-ring hover-menu"
+                                                        // onMouseEnter={this.toggleShowSmallDropdown} onMouseLeave={this.toggleShowSmallDropdown}  ${this.state.showDrpDownSmall? 'open': 'closed'}
+                                                        >
+                                                                        <div className="inner-ring"></div>
+                                                                        <figure className="user-avatar">
+                                                                            <img src={user.profileImage} alt="avatar" />
+                                                                        </figure>
+                                                            
+                                                            
+                                                        </div>
+                                                    )
+                                                : <Avatar styles={{width:'40px', height:'40px', fontSize:'1em'}}
+                                                name={`${user.firstName.substr(0,1).toUpperCase()}${user.lastName.substr(0,1).toUpperCase()}`} />
+                                            }
+                                            
                                         </Link>
+                                        <div>
                                         <p className="user-name hover-menu" ref="hoverElement"
                                         >{user ? `${user.firstName} ${user.lastName}` : null}</p>
                                         <svg className="svg-arrow  hover-menu" dangerouslySetInnerHTML={{ __html: useTag1 }}
@@ -161,7 +173,7 @@ class Header extends Component {
                                         <p className="user-money hover-menu"><span>&#8358;</span>{
                                            user && user.wallet ? `${user.wallet}` : `0.00`
                                         }</p>
-
+                                        </div>
                                         <ul
                                             className={`dropdown small hover-effect  small-menu ${this.state.showDrpDownSmall? 'open': 'closed'} `}
 
@@ -265,7 +277,7 @@ class Header extends Component {
                                             <div className="account-wishlist-quickview" style={{marginTop: '-4px'}}>
                                                 {/* <span className="icon-heart">
                                                 </span> */}
-                                                <Link to="/users/wishlist" style={{color:'#000'}}>
+                                                <Link to="/users/wishlist" style={{color:'#717f82'}}>
                                                     <span className="fA-Icon"><i className="far fa-heart"></i></span>
                                                     <span className="pin soft-edged secondary">
                                                         {
@@ -282,7 +294,7 @@ class Header extends Component {
                                                     <svg className="svg-arrow" dangerouslySetInnerHTML={{ __html: userTag2 }}>
                                                     </svg>
                                                 </span> */}
-                                                <Link to="/users/cart" style={{color:'#000'}}>
+                                                <Link to="/users/cart" style={{color:'#717f82'}}>
                                                     <span className="fA-Icon"><i className="fas fa-shopping-cart"></i></span>
                                                     <span className="pin soft-edged secondary">
                                                     {
@@ -290,7 +302,6 @@ class Header extends Component {
                                                         }
                                                     </span>
                                                 </Link>
-                                                {console.log('bn', this.state.showCartDropDown)}
                                                 <ul className={`dropdown cart ${this.state.showCartDropdown ? 'open' : 'closed'}`}>
                                                     <DropdownItem />
                                                     <DropdownItem />
@@ -306,7 +317,7 @@ class Header extends Component {
                                         <div to="/users/wishlist">
                                             <div className="account-wishlist-quickview" style={{marginTop: '-4px'}}>
                                                 {/* <span className="icon-heart"></span> */}
-                                                <Link to="/users/whistlist" style={{color:'#000'}}>
+                                                <Link to="/users/whistlist" style={{color:'#717f82'}}>
                                                     <span className="fA-Icon"><i className="far fa-heart"></i></span>
                                                     <span className="pin soft-edged secondary">{
                                                     likes && likes.length > 0 ? likes.length : null
@@ -314,12 +325,11 @@ class Header extends Component {
                                                 </Link>
                                             </div>
                                         </div>
-                                        {console.log('bn', this.state.showCartDropDown)}
                                         <div to="/users/cart" onMouseLeave={this.hideCartDropdown}
                                              onMouseEnter={this.showCartDropDown}>
 
                                             <div className="account-cart-quickview"  style={{marginTop: '-4px'}}>
-                                                <Link to="/users/cart" style={{color:'#000'}}>
+                                                <Link to="/users/cart" style={{color:'#717f82'}}>
                                                     <span className="fA-Icon"><i className="fas fa-shopping-cart"></i></span>
                                                     <span className="pin soft-edged secondary">
                                                         {
@@ -369,19 +379,19 @@ class Header extends Component {
                     <p className="side-menu-title">Main Links</p>
                     <ul className="dropdown dark hover-effect interactive">
                         <li className="dropdown-item">
-                            <Link to="/">Home</Link>
+                            <Link onClick={this.sideMenuListItemClick} to="/">Home</Link>
                         </li>
                         <li className="dropdown-item">
-                            <Link to="/how-to-shop.html">How to Shop</Link>
+                            <Link onClick={this.sideMenuListItemClick}  to="/how-to-shop.html">How to Shop</Link>
                         </li>
                         <li className="dropdown-item">
-                            <Link to="/products.html">Products</Link>
+                            <Link onClick={this.sideMenuListItemClick}  to="/products.html">Products</Link>
                         </li>
                         <li className="dropdown-item">
-                            <Link to="/services.html">Services</Link>
+                            <Link onClick={this.sideMenuListItemClick}  to="/services.html">Services</Link>
                         </li>
                         <li className="dropdown-item">
-                            <Link to="/shop-gridview-v1.html">Online Goods</Link>
+                            <Link onClick={this.sideMenuListItemClick}  to="/shop-gridview-v1.html">Online Goods</Link>
                         </li>
                         <li className="dropdown-item interactive" onClick={this.toggleFeatureDrpdown}>
                             <Link to="/">
@@ -395,12 +405,9 @@ class Header extends Component {
                                     <p>Azontal Market Place</p>
                                 </li>
                                 <li className="inner-dropdown-item">
-                                    <Link to="/">Homepage V1</Link>
+                                    <Link onClick={this.sideMenuListItemClick} to="/s">Homepage</Link>
                                 </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/home-v2.html">Homepage V2</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
+                                {/* <li className="inner-dropdown-item">
                                     <Link to="/itemview-versions.html">Item View Versions</Link>
                                 </li>
                                 <li className="inner-dropdown-item">
@@ -510,7 +517,7 @@ class Header extends Component {
                                 </li>
                                 <li className="inner-dropdown-item">
                                     <Link to="/author-badges.html">Public Author Badges</Link>
-                                </li>
+                                </li> */}
                             </ul>
                         </li>
                     </ul>
@@ -531,19 +538,30 @@ class Header extends Component {
                 <div id="account-options-menu" className={`side-menu right ${this.state.showRightMenu ? 'open' : 'closed' } `}>
                     <span className="svg-plus" onClick={this.toggleRightMenu}>+</span>
                     <div className="side-menu-header">
-                        <div className="user-quickview">
-                            <Link to="/users/profile">
-                                <div className="outer-ring">
+                        <div className="user-quickview" style={{display:'flex', 
+                            paddingLeft: `${user && user.profileImage.trim() !== '' ? '62px' : 0 }`}}>
+                            <Link onClick={this.sideMenuListItemClick} to="/users/profile">
+                                {
+                                    user && user.profileImage.trim() !== '' ? (
+                                        <div className="outer-ring">
                                     <div className="inner-ring"></div>
                                     <figure className="user-avatar">
-                                        <img src={avatar_01} alt="avatar" />{/**Johnny Fisher */}
+                                        <img src={user.profileImage} alt="avatar" />{/**Johnny Fisher */}
                                     </figure>
                                 </div>
+                                    ): user ? <Avatar styles={{width:'40px', height:'40px', fontSize:'1em'}}
+                                    name={`${user.firstName.substr(0,1).toUpperCase()}${user.lastName.substr(0,1).toUpperCase()}`} />
+                                    : null
+                                }
+                                
                             </Link>
-                            <p className="user-name">{user ? `${user.firstName} ${user.lastName}` : null}</p>
-				            <p className="user-money"><span>&#8358;</span>{
-                               user && user.wallet ? `${user.wallet}` : `0.00`
-                            }</p>
+                            <div>
+                                <p className="user-name">{user ? `${user.firstName} ${user.lastName}` : null}</p>
+                                <p className="user-money"><span>&#8358;</span>{
+                                user && user.wallet ? `${user.wallet}` : `0.00`
+                                }</p>
+                            </div>
+                            
                         </div>
                     </div>
 
@@ -551,56 +569,56 @@ class Header extends Component {
                     
                     <ul className="dropdown dark hover-effect">
                         <li className="dropdown-item">
-                            <Link to="/users/cart">Your Cart</Link>
+                            <Link onClick={this.sideMenuListItemClick} to="/users/cart">Your Cart</Link>
                         </li>
                         <li className="dropdown-item">
-                            <Link to={`/users/${user ? user.id: ''}/wishlist`}>Wishlist</Link>
+                            <Link onClick={this.sideMenuListItemClick} to={`/users/wishlist`}>Wishlist</Link>
                         </li>
                     </ul>
 
                     <p className="side-menu-title">Dashboard</p>
                     <ul className="dropdown dark hover-effect">
                         <li className="dropdown-item">
-                            <Link to="/users/profile">Profile Page</Link>
+                            <Link onClick={this.sideMenuListItemClick} to="/users/profile">Recommended For You</Link>
                         </li>
                         <li className="dropdown-item">
-                            <Link to="/users/profile/account">Account Settings</Link>
+                            <Link onClick={this.sideMenuListItemClick} to="/users/profile/account">Account Settings</Link>
                         </li>
                         {
                             user && user.type === 'agent' ? 
                             (
                                 <li className="dropdown-item">
-                                    <Link to={`/users/${user ? user.id: ''}/referals`}>Referals</Link>
+                                    <Link onClick={this.sideMenuListItemClick} to={`/users/${user ? user.id: ''}/referals`}>Referals</Link>
                                 </li>
                             ) : null
                         }
                         
                         <li className="dropdown-item">
-                        <Link to="/users/purchases">Your Purchases</Link>
+                        <Link onClick={this.sideMenuListItemClick} to="/users/purchases">Your Purchases</Link>
                         </li>
                         {
                             user && user.type === 'seller' ?
                             (<li className="dropdown-item">
-                                <Link to="/users/sales">Sales statement</Link>
+                                <Link onClick={this.sideMenuListItemClick} to="/users/sales">Sales statement</Link>
                             </li>) : null
                         }
                         
                         {
                             user && user.type === 'user' ?
                             (<li className="dropdown-item">
-                                <Link to="/users/buycredit">Buy Credit</Link>
+                                <Link onClick={this.sideMenuListItemClick} to="/users/buycredit">Buy Credit</Link>
                             </li>) : null
                         }
                         {
                             user && user.type === 'agent' ?
                             (<li className="dropdown-item">
-                                <Link to="/users/create/shop">Create Shop</Link>
+                                <Link onClick={this.sideMenuListItemClick} to="/users/create/shop">Create Shop</Link>
                             </li>) : null
                         }
                         {
                             user && (user.type === 'agent' || user.type === 'seller') ?
                             (<li className="dropdown-item">
-                                <Link to="/users/withdrawal">Withdrawal</Link>
+                                <Link onClick={this.sideMenuListItemClick} to="/users/withdrawal">Withdrawal</Link>
                             </li>) : null
                         }
                         {
@@ -608,25 +626,25 @@ class Header extends Component {
                             (<li className={`dropdown-item`}
                                 onClick={() => this.sideMenuListItemClick('create-store')}
                             >
-                                <Link to="/users/create-store">Create Store</Link>
+                                <Link onClick={this.sideMenuListItemClick} to="/users/create-store">Create Store</Link>
                             </li>) : null
                         }
                         {
                             user && (user.type === 'agent' || user.type === 'seller') ?
                             (<li className="dropdown-item">
-                                <Link to="/users/items/upload">Upload Item</Link>
+                                <Link onClick={this.sideMenuListItemClick} to="/users/items/upload">Upload Item</Link>
                             </li>) : null
                         }
                         {
                             user && (user.type === 'agent' || user.type === 'seller') ?
                             (<li className="dropdown-item">
-                                <Link to="/users/items/manage">Manage Items</Link>
+                                <Link onClick={this.sideMenuListItemClick} to="/users/items/manage">Manage Items</Link>
                             </li>) : null
                         }
                         {
                             user && (user.type === 'agent' || user.type === 'seller') ?
                             (<li className="dropdown-item">
-                                <Link to="/users/customer/review">Customer Review</Link>
+                                <Link onClick={this.sideMenuListItemClick} to="/users/customer/review">Customer Review</Link>
                             </li>) : null
                         }
 		            </ul>
@@ -663,10 +681,10 @@ class Header extends Component {
                                     </a>
                                     <div className="content-dropdown">
                                         <div className="feature-list-block">
-                                            <h6 className="feature-list-title">Emerald Dragon</h6>
+                                            <h6 className="feature-list-title">Azonka Market Place</h6>
                                             <hr className="line-separator"></hr>
                                             <ul className="feature-list">
-                                                <li className="feature-list-item">
+                                                {/* <li className="feature-list-item">
                                                     <a href="index.html">Homepage V1</a>
                                                 </li>
                                                 <li className="feature-list-item">
@@ -692,10 +710,10 @@ class Header extends Component {
                                                 </li>
                                                 <li className="feature-list-item">
                                                     <a href="author-profile.html">Profile Page</a>
-                                                </li>
+                                                </li> */}
                                             </ul>
                                             <ul className="feature-list">
-                                                <li className="feature-list-item">
+                                                {/* <li className="feature-list-item">
                                                     <a href="blog-v1.html">Blog Page V1</a>
                                                 </li>
                                                 <li className="feature-list-item">
@@ -718,7 +736,7 @@ class Header extends Component {
                                                 </li>
                                                 <li className="feature-list-item">
                                                     <a href="menu-dropdowns.html">Menu and Dropdowns</a>
-                                                </li>
+                                                </li> */}
                                             </ul>
 
                                         </div>
@@ -726,7 +744,7 @@ class Header extends Component {
                                             <h6 className="feature-list-title">Product Pages</h6>
                                             <hr className="line-separator"></hr>
                                             <ul className="feature-list">
-                                                <li className="feature-list-item">
+                                                {/* <li className="feature-list-item">
                                                     <a href="item-v1.html">Item Page V1</a>
                                                 </li>
                                                 <li className="feature-list-item">
@@ -752,14 +770,14 @@ class Header extends Component {
                                                 </li>
                                                 <li className="feature-list-item">
                                                     <a href="alerts-notifications.html">Alerts &amp; Notifications</a>
-                                                </li>
+                                                </li> */}
                                             </ul>
                                         </div>
                                         <div className="feature-list-block">
                                             <h6 className="feature-list-title">Dashboard</h6>
                                             <hr className="line-separator"></hr>
                                             <ul className="feature-list">
-                                                <li className="feature-list-item">
+                                                {/* <li className="feature-list-item">
                                                     <a href="dashboard-settings.html">Account Settings</a>
                                                 </li>
                                                 <li className="feature-list-item">
@@ -776,14 +794,14 @@ class Header extends Component {
                                                 </li>
                                                 <li className="feature-list-item">
                                                     <a href="dashboard-uploaditem.html">Upload Page</a>
-                                                </li>
+                                                </li> */}
                                             </ul>
                                         </div>
                                         <div className="feature-list-block">
-                                            <h6 className="feature-list-title">Gamification</h6>
+                                            <h6 className="feature-list-title">Featured</h6>
                                             <hr className="line-separator"></hr>
                                             <ul className="feature-list">
-                                                <li className="feature-list-item">
+                                                {/* <li className="feature-list-item">
                                                     <a href="community-badges.html">Author Badges Page</a>
                                                 </li>
                                                 <li className="feature-list-item">
@@ -797,7 +815,7 @@ class Header extends Component {
                                                 </li>
                                                 <li className="feature-list-item">
                                                     <a href="author-badges.html">Public Author Badges</a>
-                                                </li>
+                                                </li> */}
                                             </ul>
                                         </div>
                                     </div>

@@ -17,6 +17,7 @@ import SecurityQuestion from "./components/Auth/SecurityQuestion";
 
 
 import AuthRoute from "./components/Auth/AuthRoute";
+import NotFoundRoute from "./components/Auth/NotFoundRoute";
 import { ToastProvider} from 'react-toast-notifications'
 //Banners
 
@@ -33,6 +34,7 @@ import UploadItem from "./components/UploadItem";
 import CreateStore from "./components/CreateStore";
 import Bank from "./components/Bank";
 import WishList from "./components/WishList";
+
 
 import Reducer from './reducers';
 const createStoreWithMiddleware = applyMiddleware(ReduxThunk)(createStore)
@@ -67,6 +69,7 @@ class App extends Component {
                     <AuthRoute exact path="/users/:id/referals" component={Referral} />
                     <AuthRoute exact path="/users/:id/banks" component={Bank} />
                     <AuthRoute noAuthRequired  path="/users/wishlist" component={WishList} />
+                    <NotFoundRoute path="*" component={Home} />
                 </Switch>
                 <Footer />
             </Router>

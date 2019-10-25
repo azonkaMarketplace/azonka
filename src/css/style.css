@@ -11253,16 +11253,26 @@ pre {
     .user-money, .user-name{
         color: #fff;
     }
-    .account-info-mobile{
+    /* .account-info-mobile{
         display: flex !important;
         padding: 10px 0;
         justify-content: flex-end;
+    } */
+    .section-headline-wrap, .author-profile-meta-wrap, .sidebar.left.author-profile{
+        display: none !important;
+    }
+    .section{
+       padding: 10px 0 90px !important;
     }
     .account-info-mobile a {
         color: #000;
         display:block;
         margin-right: 15px;
         padding: 10px 0;
+    }
+    input[type="text"], input[type="file"], select,
+     input[type="email"], input[type="password"], input[type="number"]{
+        width: 85% !important;
     }
     .logo-mobile{
         display: none !important;
@@ -11294,7 +11304,10 @@ pre {
         line-height: 70px !important;
     }
     .form-popup .form-popup-headline{
-        padding: 4px 4px 1px !important;
+        padding: 8px 8px 2px !important;
+    }
+    .form-popup .form-popup-headline h2{
+        font-size: 1em;
     }
 }
 
@@ -11389,4 +11402,48 @@ header .account-information .account-wishlist-quickview>span:first-child, header
 .account-info-mobile{
     background: #fff;
     display: none;
+    border-bottom: 1px solid #f3f3f3;
+}
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+  
+  .btn {
+    border: 1px solid #ff5722;
+    color: #fff;
+    background-color: #ff5722;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+  }
+  
+  .upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+  }
+
+.account-cart-quickview{
+    width: 40px;
+}
+
+.not-found-page{
+    background: #fff;
+    min-height: 60vh;
+}
+
+.form-popup input[type="text"], .form-popup input[type="email"], .form-popup input[type="password"],
+select {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+}
+
+label {
+    margin-top: 10px !important;
 }

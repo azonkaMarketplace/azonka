@@ -15,6 +15,30 @@ class index extends Component {
     }
     componentDidMount(){
         this.props.switchActiveLink('account-setting')
+        this.setDefaults()
+    }
+    static getDerivedStateFromProps(nextProps, state){
+        const {user} = nextProps;
+        if(user){
+            const { firstName, lastName, emailAddress, phoneNumber} = user
+            return {
+                profileInformation: {
+                    firstName: firstName,
+                    lastName: lastName,
+                    emailAddress: emailAddress,
+                    phoneNumber: phoneNumber
+                }
+            }
+        }
+    }
+    setDefaults = () => {
+        if(this.props.user){
+            this.setState({
+                profileInformation: {
+                    firstName: this.props.user.firstName
+                }
+            })
+        }
     }
     handleInputChange = ({event, field}) => {
         const { target: {name, value}} = event;
@@ -56,20 +80,31 @@ class index extends Component {
                         <h4>Profile Information</h4>
                         <hr className="line-separator" />
                         <div className="profile-image">
-                            <div className="profile-image-data">
+                            <div className="profile-image-data" style={{float:'none'}}>
                                 <figure className="user-avatar medium">
                                     <img src={profileImage} alt="profile-default" />
                                 </figure>
                                 <p className="text-header">Profile Photo</p>
                                 <p className="upload-details">Minimum size 70x70px</p>
                             </div>
-                            <a href="/" className="button mid-short dark-light">Upload Image...</a>
+                            <div class="upload-btn-wrapper" style={{margin: '10px 0'}}>
+                                <button class="btn">Upload photo</button>
+                                <input type="file" name="myfile" />
+                            </div>
                         </div>
 
                         <form id="profile-info-form">
                             <div className="input-container">
-                                <label htmlFor="acc_name" className="rl-label required">Account Name</label>
-                                <input type="text" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} id="acc_name" name="acc_name" value={this.state.profileInformation.acc_name} placeholder="Enter your account name here..." />
+                                <label htmlFor="firstName" className="rl-label required">First Name</label>
+                                <input type="text" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} id="acc_name" name="firstName" value={this.state.profileInformation.firstName} placeholder="first name." />
+                            </div>
+                            <div className="input-container">
+                                <label htmlFor="lastName" className="rl-label required">Last Name</label>
+                                <input type="text" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} id="acc_name" name="lastName" value={this.state.profileInformation.lastName} placeholder="last name" />
+                            </div>
+                            <div className="input-container">
+                                <label htmlFor="password" className="rl-label">Current Password</label>
+                                <input type="password" id="website_url" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} name="password" value={this.state.profileInformation.password} placeholder="password" />
                             </div>
                             <div className="input-container half">
                                 <label htmlFor="new_pwd" className="rl-label">New Password</label>
@@ -80,14 +115,14 @@ class index extends Component {
                                 <input type="password" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} id="new_pwd2" name="new_pwd2" value={this.state.profileInformation.new_pwd2} placeholder="Repeat your password here..." />
                             </div>
                             <div className="input-container">
-                                <label htmlFor="new_email" className="rl-label">Email</label>
-                                <input type="email" id="new_email" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} name="new_email" value={this.state.profileInformation.new_email} placeholder="Enter your email address here..." />
+                                <label htmlFor="emailAddress" className="rl-label">Email</label>
+                                <input type="email" id="new_email" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} name="emailAddress" value={this.state.profileInformation.emailAddress} placeholder="Enter your email address here..." />
                             </div>
-                            <div className="input-container half">
-                                <label htmlFor="website_url" className="rl-label">Website</label>
-                                <input type="text" id="website_url" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} name="website_url" value={this.state.profileInformation.website_url} placeholder="Enter your website link here..." />
+                            <div className="input-container">
+                                <label htmlFor="phoneNumber" className="rl-label">Phone number</label>
+                                <input type="text" id="new_email" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} name="phoneNumber" value={this.state.profileInformation.phoneNumber} placeholder="Phone Number" />
                             </div>
-                            <div className="input-container half">
+                            <div className="input-container">
                                 <label htmlFor="country" className="rl-label required">Country</label>
                                 <label htmlFor="country" className="select-block">
                                     <select name="country" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} value={this.state.profileInformation.country} id="country1">
@@ -157,10 +192,6 @@ class index extends Component {
                             <input onChange={(event) => this.handleInputChange({event, field:'billingInformation'})} form="profile-info-form" value={this.state.billingInformation.address} type="text" id="address" name="address" placeholder="Enter your address here..."/>
                         </div>
                         <div className="input-container">
-                            <label htmlFor="notes2" className="rl-label">Aditional Notes</label>
-                            <textarea onChange={(event) => this.handleInputChange({event, field:'billingInformation'})} value={this.state.billingInformation.note} form="profile-info-form" id="notes2" name="note" placeholder="Enter aditional notes here..."></textarea>
-                        </div>
-                        <div className="input-container">
                             <input type="checkbox" onChange={this.handleInputChange} form="profile-info-form" id="copy_shipping" checked={this.state.copyToShip} name="copy_shipping"  />
                             <label htmlFor="copy_shipping" onClick={this.copyToShipInformation} className="label-check">
                                 <span className="checkbox primary"><span></span></span>
@@ -221,7 +252,11 @@ class index extends Component {
 }
 
 const mapStateToProps = state => {
-    return {}
+    console.log('state', state)
+    const { home: {currentUser}} = state
+    return {
+        user: currentUser
+    }
 }
 
 export default connect(mapStateToProps, actions)(index);

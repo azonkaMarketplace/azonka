@@ -93,6 +93,7 @@ export const login = user => {
                 axios.defaults.headers.common['x-access-token'] = response.data.token
                 console.log('response', response.data)
                 localStorage.setItem('azonta-user', JSON.stringify(response.data.user))
+                localStorage.setItem('x-access-token',response.data.token) 
                 window.location.href = window.origin + '/users/profile'
             }
         }catch(error){
