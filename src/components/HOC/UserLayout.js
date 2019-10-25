@@ -9,7 +9,6 @@ import * as actions from "../../actions";
 class UserLayout extends Component {
 
     componentDidMount(){
-        console.log('clalled')
         this.props.fetchUser()
     }
     renderReferral = () => {
@@ -27,7 +26,6 @@ class UserLayout extends Component {
     }
     renderAvatar = () => {
         let {currentUser, classes} = this.props
-        console.log('cu', currentUser)
          currentUser = Array.isArray(currentUser) ? currentUser[0] : currentUser;
         return currentUser ? currentUser.profileImage ? (
             <img src={currentUser.profileImage} alt="avatar" />            
@@ -40,7 +38,6 @@ class UserLayout extends Component {
     render() {
         let {currentUser} = this.props
          currentUser = Array.isArray(currentUser) ? currentUser[0] : currentUser;
-        console.log('current user', currentUser)
         return (
             <div>
                 <div>
@@ -125,7 +122,7 @@ class UserLayout extends Component {
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'wishlist'? 'active': ''}`}
                                         onClick={() => this.sideMenuListItemClick('wishlist')}
                                     >
-                                        <Link to={`/users/${currentUser ? currentUser.id: ''}/wishlist`}>Wishlist</Link>
+                                        <Link to={`/users/wishlist`}>Wishlist</Link>
                                     </li>
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'purchases'? 'active': ''}`}
                                         onClick={() => this.sideMenuListItemClick('purchases')}

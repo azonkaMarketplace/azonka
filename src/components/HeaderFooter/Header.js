@@ -6,19 +6,31 @@ import { connect } from "react-redux";
 import pullIcon from "../../images/pull-icon.png";
 import logoHeader from "../../images/logo_header.png";
 import avatar_01 from "../../images/avatars/avatar_01.jpg";
-import pixel_s from "../../images/items/pixel_s.jpg";
-import monsters_s from "../../images/items/monsters_s.jpg";
-import flat_s from "../../images/items/flat_s.jpg"
 import searchIcon from "../../images/search-icon.png";
 import * as actions from "../../actions";
+import DropdownItem from "../../common/DropdownItem";
+import DropdownTotal from '../../common/DropdownTotal';
 
 
 class Header extends Component {
-    state = {featureDrpdown: false,showDrpDownSmall:false, showLeftMenu: false, showRightMenu: false}
+    state = {featureDrpdown: false,showDrpDownSmall:false,showCartDropDown: false,
+         showLeftMenu: false, showRightMenu: false}
     componentDidMount(){
         this.props.fetchUser()
     }
-    
+    showCartDropDown = () => {
+        console.log('called')
+        this.setState({
+            showCartDropDown: true
+        })
+    }
+    hideCartDropdown = () => {
+        console.log('called 3')
+        this.setState({
+            showCartDropDown: false
+        })
+        
+    }
     toggleFeatureDrpdown = (event) => {
         event.preventDefault();
         this.setState({
@@ -66,9 +78,6 @@ class Header extends Component {
     }
     render() {
         const useTag1 = '<use xlink:href="#svg-arrow"></use>'
-        const useTag3 = '<use xlink:href="#svg-plus"></use>'
-        const useTag4 = '<use xlink:href="#svg-plus"></use>'
-        const useTag5 = '<use xlink:href="#svg-plus"></use>'
         const useTag9 = '<use xlink:href="#svg-arrow"></use>'
         let user = this.props.currentUser
         user = Array.isArray(user) ? user[0] : user;
@@ -76,7 +85,28 @@ class Header extends Component {
         const likes = this.props.likes
         return (
             <div>
+                <section className="account-info-mobile">
+                    <div className="account-wishlist-quickview">
+                        <Link to={`/users/wishlist`}>
+                            <span className="fA-Icon"><i className="far fa-heart"></i></span>
+                            <span className="pin soft-edged secondary">{
+                                likes && likes.length > 0 ? likes.length : null
+                            }</span>
+                        </Link>
+                    </div>
+                    <div className="account-cart-quickview">
+                        <Link to="/users/cart">
+                            <span className="fA-Icon"><i className="fas fa-shopping-cart"></i></span>
+                            <span className="pin soft-edged secondary">
+                                {
+                                    cart && cart.length > 0 ? cart.length : null
+                                }
+                            </span>
+                        </Link>
+                    </div>
+                </section>
                 <div className="header-wrap">
+                    
                     <header >
                         {/* LOGO  */}
                         <Link to="/">
@@ -230,138 +260,82 @@ class Header extends Component {
                             }
                             {
                                 user ? (
-                                    <div className="account-information">
-                                        <Link to="/favourites.html">
-                                            <div className="account-wishlist-quickview">
+                                    <div className="account-information" style={{display:'flex'}}>
+                                        <div to="/users/wishlist" >
+                                            <div className="account-wishlist-quickview" style={{marginTop: '-4px'}}>
                                                 {/* <span className="icon-heart">
                                                 </span> */}
-                                                <span className="fA-Icon"><i className="far fa-heart"></i></span>
-                                                <span className="pin soft-edged secondary">
-                                            {
-                                                   likes && likes.length > 0 ? likes.length : null
-                                                }
-                                            </span>
+                                                <Link to="/users/wishlist" style={{color:'#000'}}>
+                                                    <span className="fA-Icon"><i className="far fa-heart"></i></span>
+                                                    <span className="pin soft-edged secondary">
+                                                        {
+                                                            likes && likes.length > 0 ? likes.length : null
+                                                        }
+                                                    </span>
+                                                </Link>
                                             </div>
-                                        </Link>
-                                        <div className="account-cart-quickview">
-                                            {/* <span className="icon-present">
-                                                <svg className="svg-arrow" dangerouslySetInnerHTML={{ __html: userTag2 }}>
-                                                </svg>
-                                            </span> */}
-                                            <span className="fA-Icon"><i className="fas fa-shopping-cart"></i></span>
-                                            <span className="pin soft-edged secondary">
-                                            {
-                                                    cart && cart.length > 0 ? cart.length : null
-                                                }
-                                            </span>
-                                            <ul className="dropdown cart closed">
-                                                <li className="dropdown-item">
-                                                    <Link to="/item-v1.html" className="link-to"></Link>
-                                                    <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag3 }}>
+                                        </div>
+                                        <div to="/users/cart" onMouseEnter={this.showCartDropDown}
+                                             onMouseLeave={this.hideCartDropdown}>
+                                            <div className="account-cart-quickview"  style={{marginTop: '-4px'}}>
+                                                {/* <span className="icon-present">
+                                                    <svg className="svg-arrow" dangerouslySetInnerHTML={{ __html: userTag2 }}>
                                                     </svg>
-                                                    <div className="dropdown-triangle"></div>
-                                                    <figure className="product-preview-image tiny">
-                                                        <img src={pixel_s} alt="pixels" />
-                                                    </figure>
-                                                    <p className="text-header tiny">Pixel Diamond Gaming Shop</p>
-                                                    <p className="category tiny primary">Shopify</p>
-                                                    <p className="price tiny"><span>$</span>86</p>
-                                                </li>
-                                                <li className="dropdown-item">
-                                                    <Link to="/item-v1.html" className="link-to"></Link>
-                                                    <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag4 }} >
-                                                    </svg>
-                                                    <figure className="product-preview-image tiny">
-                                                        <img src={monsters_s} alt="monsters" />
-                                                    </figure>
-                                                    <p className="text-header tiny">Little Monsters - 40 Pack Button Badge Maker</p>
-                                                    <p className="category tiny primary">Graphics</p>
-                                                    <p className="price tiny"><span>$</span>10</p>
-                                                </li>
-                                                <li className="dropdown-item">
-                                                    <Link to="/item-v1.html" className="link-to"></Link>
-                                                    <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag5 }}>
-                                                    </svg>
-                                                    <figure className="product-preview-image tiny">
-                                                        <img src={flat_s} alt="flat" />
-                                                    </figure>
-                                                    <p className="text-header tiny">Flatland - Hero Image Composer</p>
-                                                    <p className="category tiny primary">Shopify</p>
-                                                    <p className="price tiny"><span>$</span>12</p>
-                                                </li>
-                                                <li className="dropdown-item">
-                                                    <p className="text-header tiny">Total</p>
-                                                    <p className="price"><span>$</span>108.00</p>
-                                                    <Link to="/cart.html" className="button primary half">Go to Cart</Link>
-                                                    <Link to="/checkout.html" className="button secondary half">Go to Checkout</Link>
-                                                </li>
-                                            </ul>
+                                                </span> */}
+                                                <Link to="/users/cart" style={{color:'#000'}}>
+                                                    <span className="fA-Icon"><i className="fas fa-shopping-cart"></i></span>
+                                                    <span className="pin soft-edged secondary">
+                                                    {
+                                                            cart && cart.length > 0 ? cart.length : null
+                                                        }
+                                                    </span>
+                                                </Link>
+                                                {console.log('bn', this.state.showCartDropDown)}
+                                                <ul className={`dropdown cart ${this.state.showCartDropdown ? 'open' : 'closed'}`}>
+                                                    <DropdownItem />
+                                                    <DropdownItem />
+                                                    <DropdownItem />
+                                                    <DropdownItem />
+                                                    <DropdownTotal />
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
-                                ) : (cart && cart.length >= 0) ||  (likes && likes.length >= 0) ?  (
-                                    <div className="account-information">
-                                        <Link to="/favourites.html">
-                                            <div className="account-wishlist-quickview">
+                                ) : 
+                                    <div className="account-information" style={{display:'flex'}}>
+                                        <div to="/users/wishlist">
+                                            <div className="account-wishlist-quickview" style={{marginTop: '-4px'}}>
                                                 {/* <span className="icon-heart"></span> */}
-                                                <span className="fA-Icon"><i className="far fa-heart"></i></span>
-                                                <span className="pin soft-edged secondary">{
-                                                   likes && likes.length > 0 ? likes.length : null
-                                                }</span>
+                                                <Link to="/users/whistlist" style={{color:'#000'}}>
+                                                    <span className="fA-Icon"><i className="far fa-heart"></i></span>
+                                                    <span className="pin soft-edged secondary">{
+                                                    likes && likes.length > 0 ? likes.length : null
+                                                    }</span>
+                                                </Link>
                                             </div>
-                                        </Link>
-                                        <div className="account-cart-quickview">
-                                            <span className="fA-Icon"><i className="fas fa-shopping-cart"></i></span>
-                                            <span className="pin soft-edged secondary">
-                                                {
-                                                    cart && cart.length > 0 ? cart.length : null
-                                                }
-                                            </span>
-                                            <ul className="dropdown cart closed">
-                                                <li className="dropdown-item">
-                                                    <Link to="/item-v1.html" className="link-to"></Link>
-                                                    <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag3 }}>
-                                                    </svg>
-                                                    <div className="dropdown-triangle"></div>
-                                                    <figure className="product-preview-image tiny">
-                                                        <img src={pixel_s} alt="pixels" />
-                                                    </figure>
-                                                    <p className="text-header tiny">Pixel Diamond Gaming Shop</p>
-                                                    <p className="category tiny primary">Shopify</p>
-                                                    <p className="price tiny"><span>$</span>86</p>
-                                                </li>
-                                                <li className="dropdown-item">
-                                                    <Link to="/item-v1.html" className="link-to"></Link>
-                                                    <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag4 }} >
-                                                    </svg>
-                                                    <figure className="product-preview-image tiny">
-                                                        <img src={monsters_s} alt="monsters" />
-                                                    </figure>
-                                                    <p className="text-header tiny">Little Monsters - 40 Pack Button Badge Maker</p>
-                                                    <p className="category tiny primary">Graphics</p>
-                                                    <p className="price tiny"><span>$</span>10</p>
-                                                </li>
-                                                <li className="dropdown-item">
-                                                    <Link to="/item-v1.html" className="link-to"></Link>
-                                                    <svg className="svg-plus" dangerouslySetInnerHTML={{ __html: useTag5 }}>
-                                                    </svg>
-                                                    <figure className="product-preview-image tiny">
-                                                        <img src={flat_s} alt="flat" />
-                                                    </figure>
-                                                    <p className="text-header tiny">Flatland - Hero Image Composer</p>
-                                                    <p className="category tiny primary">Shopify</p>
-                                                    <p className="price tiny"><span>$</span>12</p>
-                                                </li>
-                                                <li className="dropdown-item">
-                                                    <p className="text-header tiny">Total</p>
-                                                    <p className="price"><span>$</span>108.00</p>
-                                                    <Link to="/cart.html" className="button primary half">Go to Cart</Link>
-                                                    <Link to="/checkout.html" className="button secondary half">Go to Checkout</Link>
-                                                </li>
-                                            </ul>
                                         </div>
-                                        
+                                        {console.log('bn', this.state.showCartDropDown)}
+                                        <div to="/users/cart" onMouseLeave={this.hideCartDropdown}
+                                             onMouseEnter={this.showCartDropDown}>
+
+                                            <div className="account-cart-quickview"  style={{marginTop: '-4px'}}>
+                                                <Link to="/users/cart" style={{color:'#000'}}>
+                                                    <span className="fA-Icon"><i className="fas fa-shopping-cart"></i></span>
+                                                    <span className="pin soft-edged secondary">
+                                                        {
+                                                            cart && cart.length > 0 ? cart.length : null
+                                                        }
+                                                    </span>
+                                                </Link>
+                                                <ul className={ `dropdown cart ${this.state.showCartDropDown ? 'open' : 'closed'}`}>
+                                                    <DropdownItem />
+                                                    <DropdownItem />
+                                                    <DropdownTotal />
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
-                                ) : null
+                                
                             }
                             
                             <div className="account-actions">
@@ -545,6 +519,13 @@ class Header extends Component {
                             <Link to="/users/login" style={{color:"#fff"}}>Login</Link>
                         </button>
                     </div> */}
+                    {
+                        user ? (
+                            <div onClick={this.logout} style={{color:'#fff'}} className="button secondary">Logout</div>
+                        ) : (
+                            <Link to="/users/login" style={{color:'#fff'}} className="button secondary">Login</Link>
+                        )
+                    }
                 </div>
 
                 <div id="account-options-menu" className={`side-menu right ${this.state.showRightMenu ? 'open' : 'closed' } `}>

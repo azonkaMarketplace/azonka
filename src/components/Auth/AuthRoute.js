@@ -1,6 +1,5 @@
 import React from 'react';
 import { Redirect, Route } from "react-router-dom";
-import Login from "./Login";
 
 const AuthRoute = ({component: Component, noAuthRequired, redirectIfAuth, ...rest}) => {
     const user = localStorage.getItem('azonta-user')

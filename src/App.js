@@ -55,8 +55,8 @@ class App extends Component {
                     <AuthRoute redirectIfAuth exact path="/users/securityquestions" component={SecurityQuestion} />
                     <AuthRoute exact path="/users/profile" component={Profile} />
                     <AuthRoute exact path="/users/profile/account" component={AccountSetting} />
-                    <AuthRoute exact path="/users/purchases" component={Purchases} />
-                    <AuthRoute exact path="/users/cart" component={Cart} />
+                    <AuthRoute noAuthRequired exact path="/users/purchases" component={Purchases} />
+                    <AuthRoute noAuthRequired exact path="/users/cart" component={Cart} />
                     <AuthRoute exact path="/users/create-store" component={CreateStore} />
                     <AuthRoute exact path="/users/buycredit" component={BuyCredit} />
                     <AuthRoute exact path="/users/sales" component={Sales} />
@@ -66,7 +66,7 @@ class App extends Component {
                     <AuthRoute exact path="/users/items/manage" component={ManageItems} />
                     <AuthRoute exact path="/users/:id/referals" component={Referral} />
                     <AuthRoute exact path="/users/:id/banks" component={Bank} />
-                    <AuthRoute exact path="/users/:id/wishlist" component={WishList} />
+                    <AuthRoute noAuthRequired  path="/users/wishlist" component={WishList} />
                 </Switch>
                 <Footer />
             </Router>

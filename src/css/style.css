@@ -11233,6 +11233,7 @@ pre {
 .header-wrap{
     background-color: #fff !important;
     border-bottom: 2px solid #f3f3f3;
+    position: relative;
 }
 
 .pin.secondary, .button.secondary{
@@ -11251,6 +11252,20 @@ pre {
 @media screen and (max-width: 1100px){
     .user-money, .user-name{
         color: #fff;
+    }
+    .account-info-mobile{
+        display: flex !important;
+        padding: 10px 0;
+        justify-content: flex-end;
+    }
+    .account-info-mobile a {
+        color: #000;
+        display:block;
+        margin-right: 15px;
+        padding: 10px 0;
+    }
+    .logo-mobile{
+        display: none !important;
     }
     .sidebar.left.author-profile .dropdown.hover-effect{
         display: none;
@@ -11277,6 +11292,9 @@ pre {
     }
     div.user-avatar-placeholder{
         line-height: 70px !important;
+    }
+    .form-popup .form-popup-headline{
+        padding: 4px 4px 1px !important;
     }
 }
 
@@ -11358,4 +11376,17 @@ header .account-information .account-wishlist-quickview>span:first-child, header
 
 .button {
     cursor:  pointer !important;
+}
+
+.account-options{
+    position: relative;
+    /* right: 0; */
+    width: 100%;
+    padding-top: 20px;
+    text-align: left;
+}
+
+.account-info-mobile{
+    background: #fff;
+    display: none;
 }

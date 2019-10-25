@@ -1,13 +1,29 @@
 import React, { Component } from 'react';
 import UserLayout from "../HOC/UserLayout";
+import { connect } from "react-redux";
+import * as actions from "../../actions";
+
 class WishList extends Component {
-    render() {
+    componentDidMount(){
+        this.props.switchActiveLink('wishlist')
+    }
+    renderAuthDashboard =  () => {
+        return (<UserLayout>
+
+        </UserLayout>)
+    }
+    noAuthDashboard = () => {
         return (
-            <UserLayout>
-                
-            </UserLayout>
-        );
+            <div style={{minHeight: '40vh'}}>
+                No items found
+            </div>
+        )
+    }
+    render() {
+        return localStorage.getItem('azonta-user') ? this.renderAuthDashboard() : this.noAuthDashboard()
     }
 }
-
-export default WishList;
+const mapStateToProps = state => {
+    return {...state}
+}
+export default connect(mapStateToProps, actions)(WishList);
