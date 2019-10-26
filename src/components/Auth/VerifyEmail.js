@@ -23,13 +23,13 @@ class VerifyEmail extends Component {
                 userDetails: userRegDetails
             })
         }
-
+        
     }
     resendEmailPasscode = (e) => {
         const {add} = this.props.toastManager;
-        //call database
-        console.log('e', this.state.userDetails.emailAddress)
-        this.props.resendEmail(this.state.userDetails.emailAddress)
+        //call database emailAddress
+        console.log('e', JSON.parse(localStorage.getItem('userRegDetails')).emailAddress)
+        this.props.resendEmail(JSON.parse(localStorage.getItem('userRegDetails')).emailAddress)
         add('Successful, Please check your mail to continue', { appearance: 'success' })
     }
     verifyEmail = e => {
@@ -40,9 +40,9 @@ class VerifyEmail extends Component {
         }
         //call the api
         this.props.verifyEmail({
-            emailAddress: this.state.userDetails.emailAddress,
+            emailAddress: JSON.parse(localStorage.getItem('userRegDetails')).emailAddress,
             emailProofToken: this.state.passcode,
-            password: this.state.userDetails.password
+            password: JSON.parse(localStorage.getItem('userRegDetails')).password
         })
         //if result is successful, move the user to set up security questions
         
@@ -68,7 +68,7 @@ class VerifyEmail extends Component {
                     <form id="register-form" noValidate>
                         <div style={{textAlign:'center', display:'flex', justifyContent:'center'}}>
                             <input type="text" value={this.state.passcode}
-                                size={6} name="passcode" onChange={this.handleOnChange} className="one-time-pwd-input" placeholder="------"/>
+                                size={6} name="passcode" onChange={this.handleOnChange} className="one-time-pwd-input" placeholder="Enter Passcode"/>
                         </div>
                         
                         <div className="otp-container">

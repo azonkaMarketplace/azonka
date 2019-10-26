@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { deepOrange, deepPurple } from '@material-ui/core/colors';
-import Avatar from '@material-ui/core/Avatar';
+
 import withStyles from "@material-ui/core/styles/withStyles";
+import Avatar from "../../common/Avatar";
 import * as actions from "../../actions";
 
 class UserLayout extends Component {
 
     componentDidMount(){
-
         this.props.fetchUser()
     }
     renderReferral = () => {
-        const {currentUser} = this.props;
+        let {currentUser} = this.props;
+         currentUser = Array.isArray(currentUser) ? currentUser[0] : currentUser;
         if(currentUser && currentUser.type === 'agent')
             return (
                 <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'referals'? 'active': ''}`}
@@ -25,22 +25,24 @@ class UserLayout extends Component {
         return null
     }
     renderAvatar = () => {
-        const {currentUser, classes} = this.props
+        let {currentUser} = this.props
+         currentUser = Array.isArray(currentUser) ? currentUser[0] : currentUser;
         return currentUser ? currentUser.profileImage ? (
             <img src={currentUser.profileImage} alt="avatar" />            
-        ): <Avatar className={classes.orangeAvatar}>{`${currentUser.firstName.substr(0,1).toUpperCase()}${currentUser.lastName.substr(0,1).toUpperCase()}`}</Avatar>
+        ): <Avatar name={`${currentUser.firstName.substr(0,1).toUpperCase()}${currentUser.lastName.substr(0,1).toUpperCase()}`}  />
         : null
     }
     sideMenuListItemClick = clickedItem => {
         this.props.switchActiveLink(clickedItem)
     }
     render() {
-        const {currentUser} = this.props
+        let {currentUser} = this.props
+         currentUser = Array.isArray(currentUser) ? currentUser[0] : currentUser;
         return (
             <div>
                 <div>
                     <div className="section-headline-wrap">
-                        <h2 className="hide-on-sm">Dashboard</h2>
+                        {/* <h2 className="hide-on-sm">Dashboard</h2> */}
                         <div className="section-headline">
                             <h2>Dashboard</h2>
                         </div>
@@ -104,7 +106,7 @@ class UserLayout extends Component {
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'profile'? 'active': ''}`}
                                         onClick={() => this.sideMenuListItemClick('profile')}
                                     >
-                                        <Link to="/users/profile">Profile Page</Link>
+                                        <Link to="/users/profile">Recommended For You</Link>
                                     </li>
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'account-setting'? 'active': ''}`}
                                         onClick={ () => this.sideMenuListItemClick('account-setting')}
@@ -113,14 +115,14 @@ class UserLayout extends Component {
                                     </li>
                                     {this.renderReferral()}
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'cart'? 'active': ''}`}
-                                    onClick={() => this.sideMenuListItemClick('cart')}
+                                        onClick={() => this.sideMenuListItemClick('cart')}
                                     >
                                         <Link to="/users/cart">Cart</Link>
                                     </li>
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'wishlist'? 'active': ''}`}
                                         onClick={() => this.sideMenuListItemClick('wishlist')}
                                     >
-                                        <Link to={`/users/${currentUser ? currentUser.id: ''}/wishlist`}>Wishlist</Link>
+                                        <Link to={`/users/wishlist`}>Wishlist</Link>
                                     </li>
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'purchases'? 'active': ''}`}
                                         onClick={() => this.sideMenuListItemClick('purchases')}
@@ -226,7 +228,7 @@ class UserLayout extends Component {
                                 </ul>
                                 {/*END*/}
                                 {this.props.homeActiveLink === 'cart' ? (
-                                    <div class="sidebar-item">
+                                    <div className="sidebar-item">
                                         <h4>Redeem Code</h4>
                                         <hr className="line-separator" />
                                         <form id="coupon-code-form">
@@ -265,12 +267,10 @@ const styles = theme => ({
         width: 80,
         height: 80,
         fontSize: '2em',
-        backgroundColor: deepOrange[500],
       },
       purpleAvatar: {
         margin: 10,
         color: '#fff',
-        backgroundColor: deepPurple[500],
       },
 })
 

@@ -18,7 +18,7 @@ class CartItem extends Component {
 									</figure>
 								</a>
 								<a href="item-v1.html" className="normalize-style-cart-item"><p className="text-header small">Westeros Custom Clothing</p></a>
-								<p className="description" className="normalize-style-cart-item">Lorem ipsum dolor sit urarde adipisicing elit dem...</p>
+								<p  className="description normalize-style-cart-item">Lorem ipsum dolor sit urarde adipisicing elit dem...</p>
 							</div>
 						</div>
 						<div className="cart-item-category">

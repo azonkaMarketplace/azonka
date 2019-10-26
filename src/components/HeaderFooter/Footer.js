@@ -52,14 +52,14 @@ class Footer extends Component {
                                     <div className="bullet"></div>
                                     <a href="/">Buying and Selling</a>
                                 </li>
-                                <li className="link-item">
+                                {/* <li className="link-item">
                                     <div className="bullet"></div>
                                     <a href="forum.html">Emerald Forum</a>
-                                </li>
-                                <li className="link-item">
+                                </li> */}
+                                {/* <li className="link-item">
                                     <div className="bullet"></div>
                                     <a href="blog-v1.html">Emerald Blog</a>
-                                </li>
+                                </li> */}
                                 <li className="link-item">
                                     <div className="bullet"></div>
                                     <a href="/">Free Goods</a>
