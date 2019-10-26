@@ -1,6 +1,6 @@
 import { SUCCESSFUL_REGISTRATION,INITIAL_REGISTRATION, 
     UNSUCCESSFUL_REGISTRATION, CLEAR_ERROR, SUCCESSFUL_VERIFICATION,
-ERROR_RESENDING_PASSCODE, SUCCESS_RESENDING_PASSCODE, GET_SEC_QUESTIONS, LOGOUT_USER } from "../actions/types";
+ERROR_RESENDING_PASSCODE, SUCCESS_RESENDING_PASSCODE, GET_SEC_QUESTIONS, LOGOUT_USER, CLOSE_SNACKBAR } from "../actions/types";
 const INITIAL_STATE = {loading: false,verified:null, error: null,errorMessage: null,
      user: null, questions:{}}
 
@@ -24,6 +24,8 @@ export default (state=INITIAL_STATE, actions) => {
             return {...state, questions: actions.payload, error: null, errorMessage: null}
         case LOGOUT_USER: 
             return {...state, user: null}
+        case CLOSE_SNACKBAR:
+            return {...state, error: null, errorMessage:null}
         default: 
             return {...state}
     }

@@ -1,4 +1,5 @@
-import { FETCH_USER, SWITCH_ACTIVE_LINK,TOGGLE_VIEW_TYPE,INITIAL_REGISTRATION, } from "./types";
+import { FETCH_USER, SWITCH_ACTIVE_LINK,TOGGLE_VIEW_TYPE,INITIAL_REGISTRATION,CLOSE_SNACKBAR
+ } from "./types";
 
 
 export const fetchUser = () => {
@@ -40,5 +41,9 @@ export const toggleViewType = viewType => {
 
 export const initiateRegistration = () => {
     return {type: INITIAL_REGISTRATION, payload: ''}
+}
+
+export const closeSnackBar = () => {
+    return { type: CLOSE_SNACKBAR, payload: ''}
 }
 
