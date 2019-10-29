@@ -77,6 +77,9 @@ class Header extends Component {
     logout = () => {
         this.props.logout()
     }
+    updateUserLevel = accountType => {
+        console.log('acc', accountType)
+    }
     render() {
         const useTag1 = '<use xlink:href="#svg-arrow"></use>'
         const useTag9 = '<use xlink:href="#svg-arrow"></use>'
@@ -170,9 +173,9 @@ class Header extends Component {
                                         >
 
                                         </svg>
-                                        <p className="user-money hover-menu"><span>&#8358;</span>{
+                                        {/* <p className="user-money hover-menu"><span>&#8358;</span>{
                                            user && user.wallet ? `${user.wallet}` : `0.00`
-                                        }</p>
+                                        }</p> */}
                                         </div>
                                         <ul
                                             className={`dropdown small hover-effect  small-menu ${this.state.showDrpDownSmall? 'open': 'closed'} `}
@@ -358,7 +361,7 @@ class Header extends Component {
                                     : 
                                     (
                                     <div>
-                                         <Link to="/users/register" style={{color:'#fff'}} onClick={this.setAccountTypeToSeller} className="button primary">Become a Seller</Link>
+                                         <Link to="/users/register" style={{color:'#fff'}} onClick={this.setAccountTypeToSeller} className="button primary">SignUp</Link>
                                          <Link to="/users/login" style={{color:'#fff'}} className="button secondary">Login</Link>
                                     </div>)
                                 }
@@ -381,9 +384,9 @@ class Header extends Component {
                         <li className="dropdown-item">
                             <Link onClick={this.sideMenuListItemClick} to="/">Home</Link>
                         </li>
-                        <li className="dropdown-item">
+                        {/* <li className="dropdown-item">
                             <Link onClick={this.sideMenuListItemClick}  to="/how-to-shop.html">How to Shop</Link>
-                        </li>
+                        </li> */}
                         <li className="dropdown-item">
                             <Link onClick={this.sideMenuListItemClick}  to="/products.html">Products</Link>
                         </li>
@@ -393,133 +396,29 @@ class Header extends Component {
                         <li className="dropdown-item">
                             <Link onClick={this.sideMenuListItemClick}  to="/shop-gridview-v1.html">Online Goods</Link>
                         </li>
-                        <li className="dropdown-item interactive" onClick={this.toggleFeatureDrpdown}>
-                            <Link to="/">
-                                Features
-					            <svg className="svg-arrow" dangerouslySetInnerHTML={{ __html: useTag9 }}>
-                                </svg>
-                            </Link>
-
-                            <ul className="inner-dropdown" style={{display: `${this.state.featureDrpdown ? 'block': 'none'}`}}>
-                                <li className="inner-dropdown-item">
-                                    <p>Azontal Market Place</p>
+                        {
+                            user && user.type === 'user' ? (
+                                <li className="dropdown-item interactive" onClick={this.toggleFeatureDrpdown}>
+                                    <Link to="/">
+                                        Features
+                                        <svg className="svg-arrow" dangerouslySetInnerHTML={{ __html: useTag9 }}>
+                                        </svg>
+                                    </Link>
+                                
+                                    <ul className="inner-dropdown" style={{display: `${this.state.featureDrpdown ? 'block': 'none'}`}}>
+                                        <li className="inner-dropdown-item" style={{marginBottom: '16px',marginTop:15,
+                                         color:'#fff'}}>
+                                            <Link to="/users/seller/signup" style={{color:'#fff'}}>Become a seller</Link>
+                                        </li>
+                                        <li className="inner-dropdown-item" style={{marginBottom: '16px', color:'#fff'}}>
+                                            <Link to="/users/agent/signup" style={{color:'#fff'}}>Become an agent</Link>
+                                            
+                                        </li>
+                                    </ul>
                                 </li>
-                                <li className="inner-dropdown-item">
-                                    <Link onClick={this.sideMenuListItemClick} to="/s">Homepage</Link>
-                                </li>
-                                {/* <li className="inner-dropdown-item">
-                                    <Link to="/itemview-versions.html">Item View Versions</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/shop-gridview-v1.html">Shop Grid View V1</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/shop-gridview-v2.html">Shop Grid View V2</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/shop-listview-v1.html">Shop List View V1</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/shop-listview-v2.html">Shop List View V2</Link>
-                                    <span className="pin soft-edged primary">hot</span>
-
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/author-profile.html">Profile Page</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/blog-v1.html">Blog Page V1</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/blog-v2.html">Blog Page V2</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/open-post.html">Open Post</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/forum.html">Forum Board</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/subforum.html">Subforum</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/open-topic.html">Open Topic</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/login-register.html">Login and Register</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/menu-dropdowns.html">Menu and Dropdowns</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <p>Product Pages</p>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/item-v1.html">Item Page V1</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/item-v2.html">Item Page V2</Link>
-                                    <span className="pin soft-edged secondary">new</span>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/product-page.html">Product Page</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/auction-page.html">Auction Page</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/service-page.html">Service Page</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/favourites.html">Favourite Products Grid View</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/favourites-listview.html">Favourite Products List View</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/alerts-notifications.html">Alerts &amp; Notifications</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <p>Dashboard</p>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/dashboard-settings.html">Account Settings</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/dashboard-statistics.html">Statistics Page</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/dashboard-statement.html">Sales Statement</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/dashboard-inbox.html">Inbox Page</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/dashboard-openmessage.html">Open Message</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/dashboard-uploaditem.html">Upload Page</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <p>Gamification</p>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/community-badges.html">Author Badges Page</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/badges.html">All Badges (Big and Small)</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/flag-badges.html">Flag Badges (Big and Small)</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/badges-boxes.html">Badge Boxes Versions</Link>
-                                </li>
-                                <li className="inner-dropdown-item">
-                                    <Link to="/author-badges.html">Public Author Badges</Link>
-                                </li> */}
-                            </ul>
-                        </li>
+                            ): null
+                        }
+                        
                     </ul>
                     {/* <div>
                         <button className="button secondary login-button" onClick={this.toggleLeftMenu}>
@@ -557,9 +456,9 @@ class Header extends Component {
                             </Link>
                             <div>
                                 <p className="user-name">{user ? `${user.firstName} ${user.lastName}` : null}</p>
-                                <p className="user-money"><span>&#8358;</span>{
+                                {/* <p className="user-money"><span>&#8358;</span>{
                                 user && user.wallet ? `${user.wallet}` : `0.00`
-                                }</p>
+                                }</p> */}
                             </div>
                             
                         </div>
@@ -800,7 +699,24 @@ class Header extends Component {
                                         <div className="feature-list-block">
                                             <h6 className="feature-list-title">Featured</h6>
                                             <hr className="line-separator"></hr>
-                                            <ul className="feature-list">
+                                            <ul className="feature-list"> 
+                                                {
+                                                    user && user.type === 'user' ?
+                                                    (
+                                                        <li onClick={()=>this.updateUserLevel('seller')} className="button primary" style={{marginBottom:'16px'}} >
+                                                            <Link to="/users/seller/signup" style={{color:'#fff'}}>Become a seller</Link>
+                                                            
+                                                        </li>
+                                                    ): null
+                                                }    
+                                                {
+                                                    user && user.type === 'user' ?
+                                                    (
+                                                        <li onClick={()=>this.updateUserLevel('agen')}  className="button secondary" >
+                                                            <Link to="/users/agent/signup" style={{color:'#fff'}}>Become an agent</Link>
+                                                        </li>
+                                                    ): null
+                                                }
                                                 {/* <li className="feature-list-item">
                                                     <a href="community-badges.html">Author Badges Page</a>
                                                 </li>

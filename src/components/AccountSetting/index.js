@@ -206,7 +206,7 @@ class index extends Component {
                                 <label htmlFor="about" className="rl-label">About</label>
                                 <input type="text" id="about" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} value={this.state.profileInformation.about} name="about" placeholder="This will appear bellow your avatar... (max 140 char)" />
                             </div>
-                            <div className="input-container">
+                            {/* <div className="input-container">
                                 <label className="rl-label">Preferences</label>
                                 <input type="checkbox" id="show_balance" onChange={this.handleInputChange} checked={this.state.showBalanceInStatusBar} value={this.state.profileInformation.show_balance} name="show_balance" />
                                 <label htmlFor="show_balance" onClick={this.toggleShowAccountBalance} className="label-check">
@@ -218,7 +218,7 @@ class index extends Component {
                                     <span className="checkbox primary"><span></span></span>
                                     Send me email notifications
                                 </label>
-                            </div>
+                            </div> */}
                         </form>
                     </div>
                     <div className="form-box-item">

@@ -1,28 +1,36 @@
 import React, { Component } from 'react';
 import { withToastManager } from 'react-toast-notifications';
 import Validator from "validator";
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
 import withStyles from "@material-ui/core/styles/withStyles";
 import { connect } from "react-redux";
+import queryString from "query-string";
 import * as actions from "../../actions";
 import ErrorAlert from "../../common/ErrorAlert";
 import SuccessAlert from "../../common/SuccessAlert";
 import { Link } from 'react-router-dom';
 
-class Login extends Component {
+class ResetPassword extends Component {
     state = {
         emailAddress: '',
-        password: '',
+        newPassword: '',
         inValidElments: [],
         validationMessage:{},
         rememberPassword: true,
         showModal: false,
-        resetPwdEmail: ''
+        resetPwdEmail: '',
+        passwordResetToken: ''
+    }
+    componentDidMount(){
+        const query = queryString.parse(this.props.location.search)
+        if(!query['token']){
+            return this.props.history.push('/users/login')
+        }
+        this.setState({
+            passwordResetToken: query['token']
+        })
     }
     validateFormData = (formdata) => {
-        const { emailAddress, password,} = formdata;
+        const { emailAddress, newPassword, passwordResetToken} = formdata;
         let isValid = true;
         const inValidElments = []
         const validationMessage = {}
@@ -32,10 +40,15 @@ class Login extends Component {
             
             validationMessage['emailAddress'] = 'Email required or not in right format'
         }
-        if(!(password.trim() !== '')){
+        if(!(newPassword.trim() !== '')){
             isValid = false;
-            inValidElments.push('password')
-            validationMessage['password'] = 'Password required'
+            inValidElments.push('newPassword')
+            validationMessage['newPassword'] = 'Password required'
+        }
+        if(!(passwordResetToken.trim() !== '')){
+            isValid = false;
+            inValidElments.push('passwordResetToken')
+            validationMessage['passwordResetToken'] = 'Please provide token'
         }
         return {
             isValid,
@@ -61,30 +74,8 @@ class Login extends Component {
         }
 
         //call the api
-        const {emailAddress, password} = this.state
-        this.props.login({emailAddress, password})
-    }
-    resendEmailPassword = e => {
-        e.preventDefault()
-        const {resetPwdEmail} = this.state;
-        const {add} = this.props.toastManager;
-        let isValid = true;
-        const inValidElments = []
-        const validationMessage = {}
-        if(!(resetPwdEmail.trim() !== '' && Validator.isEmail(resetPwdEmail))){
-            isValid = false
-            inValidElments.push('resetPwdEmail')
-            add('Incorrect email address, please check and try again', { appearance: 'error' })
-            validationMessage['resetPwdEmail'] = 'Email required or not in right format'
-            return this.setState({
-                inValidElments,
-                validationMessage
-            })
-        }
-        if(isValid){
-            //call the api
-            this.props.forgotPassword(resetPwdEmail)
-        }
+        const {emailAddress, newPassword, passwordResetToken} = this.state
+        this.props.resetPasswordWithToken({emailAddress, newPassword, passwordResetToken})
     }
     handleInputChange = (event) => {
         const {target: { name, value}} = event;
@@ -127,12 +118,10 @@ class Login extends Component {
         this.props.closeSnackBar()
     }
     render() {
-        const { classes } = this.props;
         return (
             <div className="form-popup custom-input">
                 <div className="form-popup-headline secondary">
-                    <h2>Login to your Account</h2>
-                    <p>Enter now to your account and start buying and selling!</p>
+                    <h2>Reset Your Password</h2>
                 </div>
                 <div className="form-popup-content">
                     <form id="login-form2">
@@ -149,70 +138,25 @@ class Login extends Component {
                                     </div>
                                 ): null 
                         }
-                        <label htmlFor="password" className="rl-label">Password</label>
-                        <input type="password" id="password5" 
-                            className={`${this.state.inValidElments.includes('password') ? 'invalid' : '' }`} 
-                            value={this.state.password} onChange={this.handleInputChange} 
-                            name="password" placeholder="Enter your password here..." />
+                        <label htmlFor="newPassword" className="rl-label">New Password</label>
+                        <input type="password" id="newPassword5" 
+                            className={`${this.state.inValidElments.includes('newPassword') ? 'invalid' : '' }`} 
+                            value={this.state.newPassword} onChange={this.handleInputChange} 
+                            name="newPassword" placeholder="Enter your password here..." />
                         {
-                                this.state.inValidElments.includes('password') ?
+                                this.state.inValidElments.includes('newPassword') ?
                                 (
                                     <div className="error-message required">
-                                        {this.state.validationMessage['password']}
+                                        {this.state.validationMessage['newPassword']}
                                     </div>
                                 ): null 
                         }
-                        <input type="checkbox" id="remember2" onChange={this.toggleCheckbox} name="remember2" checked={this.state.rememberPassword} />
-                        <label htmlFor="remember2" className="label-check" onClick={this.toggleRememberPassword}>
-                            <span className="checkbox primary primary"><span></span></span>
-                            Remember username and password
-						</label>
-                        <p>Forgot your password? <span style={{cursor:'pointer'}} onClick={this.toggleModal} className="primary">Click here!</span></p>
-                        <button className="button mid secondary" onClick={this.handleFormSubmit}>Login <span className="primary">Now!</span></button>
-                        <p style={{textAlign:'center', margin:'15px 0px'}}>Don't Have Account?
-                                <Link to="/users/register" style={{color:'#00d7b3', cursor:'pointer'}}> Signup</Link></p>
+                        <button className="button mid secondary" onClick={this.handleFormSubmit}>Reset Password <span className="primary">Now!</span></button>
+                        <p style={{textAlign:'center', margin:'15px 0px'}}>Have an Account?
+                                <Link to="/users/login" style={{color:'#00d7b3', cursor:'pointer'}}> Login</Link></p>
                     </form>
                     <hr className="line-separator double" />
                 </div>
-                <Modal
-                    aria-labelledby="spring-modal-title"
-                    aria-describedby="spring-modal-description"
-                    className={classes.modal}
-                    open={this.state.showModal}
-                    onClose={() => this.handleClose()}
-                    closeAfterTransition
-                    BackdropComponent={Backdrop}
-                    BackdropProps={{
-                    timeout: 500,
-                    }}
-                >
-                    <Fade in={this.state.showModal}>
-                    <div className={` ${classes.paper}`}>
-                        <div className="form-popup-content">
-                            <h4 className="popup-title"><div>Restore your Password</div>
-                                <div style={{cursor: 'pointer'}} className="close-modal" onClick={this.closeModal}>&times;</div>
-                            </h4>
-                            <hr className="line-separator short" />
-                            
-                            <form id="restore-pwd-form">
-                                <label htmlFor="resetPwdEmail" className="rl-label">Email Address</label>
-                                <input type="email" className={`${this.state.inValidElments.includes('resetPwdEmail') ? 'invalid' : '' }`}
-                                 id="resetPwdEmail" value={this.state.resetPwdEmail} onChange={this.handleInputChange} 
-                                 name="resetPwdEmail" placeholder="Enter your email address..." />
-                                {
-                                    this.state.inValidElments.includes('resetPwdEmail') ?
-                                    (
-                                        <div className="error-message required">
-                                            {this.state.validationMessage['resetPwdEmail']}
-                                        </div>
-                                    ): null 
-                                }
-                                <button onClick={this.resendEmailPassword} style={{marginTop:'5%'}} className="button mid dark no-space">Restore your <span className="primary">Password</span></button>
-                            </form>
-                        </div>
-                    </div>
-                    </Fade>
-                </Modal>
                 <SuccessAlert 
                     open={this.props.showSuccessBar} closeSnackBar={this.closeSnackBar}
                     message={this.props.successMessage} 
@@ -256,4 +200,4 @@ const mapStateToProps = state => {
         successMessage
     }
 }
-export default connect(mapStateToProps, actions)(withStyles(styles)(withToastManager(Login)))
+export default connect(mapStateToProps, actions)(withStyles(styles)(withToastManager(ResetPassword)))
