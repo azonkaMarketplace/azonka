@@ -45,6 +45,6 @@
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2"
-  },
-  "proxy": "http://167.99.154.149:1337"
+  }
+  
 }

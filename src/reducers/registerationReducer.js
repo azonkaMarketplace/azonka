@@ -1,7 +1,7 @@
 import { SUCCESSFUL_REGISTRATION,INITIAL_REGISTRATION, 
     UNSUCCESSFUL_REGISTRATION, CLEAR_ERROR, SUCCESSFUL_VERIFICATION,
 ERROR_RESENDING_PASSCODE, SUCCESS_RESENDING_PASSCODE, GET_SEC_QUESTIONS,
- LOGOUT_USER, CLOSE_SNACKBAR, EMAIL_FORGOT_PASSWORD_SENT } from "../actions/types";
+ LOGOUT_USER, CLOSE_SNACKBAR, EMAIL_FORGOT_PASSWORD_SENT, GET_SAVED_ACCOUNTS } from "../actions/types";
 const INITIAL_STATE = {loading: false,verified:null, error: null,errorMessage: null,
      user: null, questions:{}, successMessage: null, showSuccessBar: null}
 
@@ -29,6 +29,8 @@ export default (state=INITIAL_STATE, actions) => {
             return {...state, error: null, errorMessage:null, showSuccessBar: null}
         case EMAIL_FORGOT_PASSWORD_SENT: 
             return {...state, showSuccessBar: true, successMessage:actions.payload}
+        case GET_SAVED_ACCOUNTS:
+            return {...state, showSuccessBar: true, successMessage:'Account added successfully'}
         default: 
             return {...state}
     }

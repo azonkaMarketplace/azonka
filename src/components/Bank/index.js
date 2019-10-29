@@ -19,6 +19,8 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import ErrorAlert from "../../common/ErrorAlert";
+import SuccessAlert from "../../common/SuccessAlert";
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -43,13 +45,85 @@ const tableIcons = {
 class Bank extends Component {
     state = {
         inValidElments: [],
-        validationMessage: []
+        validationMessage: [],
+        banks: []
+    }
+    validateFormData = (formdata) => {
+        const { accountNumber, accountName, longcode,} = formdata;
+        let isValid = true;
+        const inValidElments = []
+        const validationMessage = {}
+        if(!(longcode && longcode.trim() !== '')){
+            isValid = false
+            inValidElments.push('longcode')
+            
+            validationMessage['longcode'] = 'Please select Bank'
+        }
+        if(!(accountName && accountName.trim() !== '')){
+            isValid = false;
+            inValidElments.push('accountName')
+            validationMessage['accountName'] = 'Account Name required'
+        }
+        if(!(accountNumber && accountNumber.trim() !== '')){
+            isValid = false;
+            inValidElments.push('accountNumber')
+            validationMessage['accountNumber'] = 'Account Number required'
+        }
+        return {
+            isValid,
+            validationMessage,
+            inValidElments,
+            formdata
+        }
     }
     handleInputChange = e => {
-
+        const {target:{ name, value}} = e
+        const index = this.state.inValidElments.indexOf(name)
+        let newInvalidElements = []
+        if(index !== -1){
+            this.state.inValidElments.splice(index, 1)
+        }
+        newInvalidElements = [...this.state.inValidElments]
+        this.setState({
+            [name]: value,
+            newInvalidElements
+        })
+    }
+    renderLookUp = () => {
+        const lookupdata = {}
+        this.state.banks.forEach((element) => {
+            lookupdata[element.longcode] = element.name
+        })
+        return lookupdata
     }
     componentDidMount(){
         this.props.switchActiveLink('bank')
+        this.props.getBanks()
+        this.props.getSavedBanks();
+    }
+    static getDerivedStateFromProps(nextProps, state){
+        if(nextProps.banks.length > 0){
+            return {...state, banks: nextProps.banks}
+        }
+    }
+    handleFormSubmit = e => {
+        e.preventDefault()
+        const {isValid, inValidElments, validationMessage} = this.validateFormData(this.state)
+        if(!isValid){
+            return this.setState({inValidElments, validationMessage})
+        }
+        const selectedBank = this.state.banks.filter(element => element.longcode === this.state.longcode)
+        const {accountNumber, accountName} = this.state
+        if(selectedBank.length > 0){
+            const bankDetails = selectedBank[0]
+           return this.props.saveBank({
+                ...bankDetails, name:accountName, accountNumber
+            })
+        }
+        console.log('some errror were encounteered')
+    }
+    closeSnackBar = () => {
+        this.props.closeSnackBar()
     }
     render() {
         return (
@@ -105,18 +179,22 @@ class Bank extends Component {
                                 <div className="row">
                                     <div className="col-md-4 col-sm-12">
                                         <label htmlFor="bankName" className="rl-label">Bank Name</label>
-                                            <select name="bankName" 
-                                                className={`${this.state.inValidElments.includes('bankName') ? 'invalid' : '' }`}
-                                                value={this.state.bankName} onChange={this.handleInputChange}>
+                                            <select name="longcode" 
+                                                className={`${this.state.inValidElments.includes('longcode') ? 'invalid' : '' }`}
+                                                value={this.state.longcode} onChange={this.handleInputChange}>
                                                 <option value="">Select Bank</option>
-                                                <option value="0">first Bank</option>
-                                                <option value="1">Access Bank</option>
+                                                {
+                                                    this.props.banks.map(({name, longcode}, i) => (
+                                                        <option key={i} value={longcode}>{name}</option>
+                                                    ))
+                                                }
+                                                
                                             </select>
                                         {
-                                                this.state.inValidElments.includes('bankName') ?
+                                                this.state.inValidElments.includes('longcode') ?
                                                 (
                                                     <div className="error-message required">
-                                                        {this.state.validationMessage['bankName']}
+                                                        {this.state.validationMessage['longcode']}
                                                     </div>
                                                 ): null 
                                         }
@@ -128,10 +206,10 @@ class Bank extends Component {
                                             value={this.state.accountName} onChange={this.handleInputChange} 
                                             name="accountName" placeholder="Account Name" />
                                         {
-                                                this.state.inValidElments.includes('bankName') ?
+                                                this.state.inValidElments.includes('accountName') ?
                                                 (
                                                     <div className="error-message required">
-                                                        {this.state.validationMessage['bankName']}
+                                                        {this.state.validationMessage['accountName']}
                                                     </div>
                                                 ): null 
                                         }
@@ -155,7 +233,7 @@ class Bank extends Component {
                                 <div className="row" style={{padding: '20px 0 10px'}}>
                                     <div className="col-md-8 col-sm-12"></div>
                                     <div className="col-md-4 col-sm-12">
-                                        <button className="button primary" style={{margin:'0 auto'}}>Save</button>
+                                        <button onClick={this.handleFormSubmit} className="button primary" style={{margin:'0 auto'}}>Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -169,18 +247,18 @@ class Bank extends Component {
                             columns={[
                                 {
                                     title: "Bank",
-                                    field: "bankName",
-                                    lookup: { 0: "First Bank", 1: "Access Bank" }
+                                    field: "longcode",
+                                    lookup: this.renderLookUp()
                                     },
-                                { title: "Account Name", field: "accountName" },
+                                { title: "Account Name", field: "name" },
                                 { title: "Account Number", field: "accountNumber" },
-                                { title: "Date Added", field: "dateAdded", type:"date" },
+                                { title: "Date Added", field: "createdAt", type:"date" },
                                 
                             ]}
-                            data={[
-                                { bankName: 0, accountName: "Baran", accountNumber: '020919101', dateAdded: '2019-09-07' },
-                                { bankName: 1, accountName: "Baran", accountNumber: '020919101', dateAdded: '2019-09-07' },
-                            ]}
+                            // data={[
+                            //     { bankName: '044150149', accountName: "Baran", accountNumber: '020919101', dateAdded: '2019-09-07' }
+                            // ]}
+                            data={this.props.savedBanks}
                             title=""
 
                             editable={{
@@ -226,10 +304,30 @@ class Bank extends Component {
                             }}
                         />
                     </div>
+                    <SuccessAlert 
+                    open={this.props.showSuccessBar} closeSnackBar={this.closeSnackBar}
+                    message={this.props.successMessage} 
+                />
+                <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
                 </div>
             </UserLayout>
         );
     }
 }
 
-export default connect(null, actions)(Bank);
+const mapStateToProps = state => {
+    const {bank:{ loading, error, errorMessage, successMessage, 
+        showSuccessBar, banks, savedBanks}} = state;
+
+    return {
+        banks,
+        loading,
+        error,
+        errorMessage,
+        successMessage,
+        showSuccessBar,
+        savedBanks
+    }
+}
+
+export default connect(mapStateToProps, actions)(Bank);
