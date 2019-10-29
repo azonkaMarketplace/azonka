@@ -71,7 +71,7 @@ export const verifyEmail = (userData) => {
             if(error.response.status === 498){
                 return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email and passcode mismatch'})
             }
-            dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: error.response.data.message})
+            dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors where encountered'})
             //return window.location.href = window.origin + '/users/login'
         }
     }
@@ -105,7 +105,7 @@ export const login = user => {
                 axios.defaults.headers.common['x-access-token'] = response.data.token
                 console.log('response', response.data)
                 localStorage.setItem('azonta-user', JSON.stringify({
-                    ...response.data.user, type: 'user'
+                    ...response.data.user
                 }))
                 localStorage.setItem('x-access-token',response.data.token) 
                 window.location.href = window.origin + '/users/profile'
@@ -117,7 +117,7 @@ export const login = user => {
                 return window.location.href = window.origin + '/users/verify'
             }
             if(error.response.status === 404 || error.response.status === 400){
-                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: error.response.data.message})
+                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email or password does not exists'})
             }
             dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encountered, please try again'})
         }
@@ -174,6 +174,28 @@ export const resetPasswordWithToken = userData => {
             if(error.response.data.message === 'Reset token expired or invalid'){
                 return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Not Allowed, Invalid token'})
             }
+        }
+    }
+}
+
+export const updateUserType = (userData, type) => {
+    return async (dispatch) => {
+        try {
+            const response = await axios.put('/api/v1/user/change-account-type', {
+                                ...userData,type}, {
+                                headers: {
+                                    'x-access-token': localStorage.getItem('x-access-token')
+                                }
+                            })
+            if(response.data.success){
+                dispatch({type: EMAIL_FORGOT_PASSWORD_SENT, payload: 'Account upgraded to seller'})
+                setTimeout(() => {
+                    window.location.href = window.origin + '/users/profile'
+                },2000)
+            }
+        }catch(error){
+            console.log(error.response)
+            dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encountered'})
         }
     }
 }

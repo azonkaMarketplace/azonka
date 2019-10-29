@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import * as actions from "../../actions";
 import { withToastManager } from 'react-toast-notifications';
 import CustomInput from "../../common/CustomInput";
+import ErrorAlert from "../../common/ErrorAlert";
+import SuccessAlert from "../../common/SuccessAlert";
 
 class AgentSignUp extends Component {
     state = {
@@ -14,6 +16,9 @@ class AgentSignUp extends Component {
     componentDidMount(){
         this.props.getSecurityQuestions()
         this.fileInput = React.createRef();
+    }
+    closeSnackBar = () => {
+        this.props.closeSnackBar()
     }
     handleInputChange = (event) => {
         const {target: { name, value}} = event;
@@ -86,7 +91,7 @@ class AgentSignUp extends Component {
      uploadId = e => {
          e.preventDefault()
          console.log('evebt', e.target.value)
-         const { name, size, type} = this.fileInput.current.files[0]
+        //  const { name, size, type} = this.fileInput.current.files[0]
          console.log(this.fileInput.current.files[0].name)
          console.log(this.fileInput.current.files[0].size)
 
@@ -135,7 +140,16 @@ class AgentSignUp extends Component {
             console.log('security questions', this.state)
             //call the api
             
-            
+            const pincode = this.state.pincode;
+            const agentIdentification = ''
+            const securityAnswerOne = this.state.questions.find(question => question.question_id === '1').answer
+            const securityAnswerTwo = this.state.questions.find(question => question.question_id === '2').answer
+            const securityAnswerThree = this.state.questions.find(question => question.question_id === '3').answer
+            this.props.updateUserType({
+                securityAnswerOne, securityAnswerTwo, securityAnswerThree,
+                pincode, agentIdentification
+                
+            }, 'agent')
             
             //naviagate the user to profile page
             //call the api
@@ -203,15 +217,26 @@ class AgentSignUp extends Component {
                         <button className="button mid secondary" onClick={this.handleFormSubmit}>Submit</button>
                     </div>
                 </form>
+                <SuccessAlert 
+                    open={this.props.showSuccessBar} closeSnackBar={this.closeSnackBar}
+                    message={this.props.successMessage} 
+                />
+                <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
             </div>
         );
     }
 }
 
 const mapStateToProps = state => {
-    const {reg: {questions, errorMessage, error}} = state;
+    const {reg:{ loading, error, errorMessage, successMessage,
+        questions, showSuccessBar}} = state;
     return {
-        questions,error, errorMessage
+        loading,
+        error, 
+        errorMessage,
+        showSuccessBar,
+        successMessage,
+        questions
     }
 }
 

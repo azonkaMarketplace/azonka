@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import * as actions from "../../actions";
 import { withToastManager } from 'react-toast-notifications';
 import CustomInput from "../../common/CustomInput";
+import ErrorAlert from "../../common/ErrorAlert";
+import SuccessAlert from "../../common/SuccessAlert";
 
 class SellerSignUp extends Component {
     state = {
@@ -80,6 +82,9 @@ class SellerSignUp extends Component {
                  />
             </div>))
     }
+    closeSnackBar = () => {
+        this.props.closeSnackBar()
+    }
     renderQuestion = () => {
         return Object.keys(this.props.questions).length > 0 ?
          
@@ -132,8 +137,20 @@ class SellerSignUp extends Component {
             console.log('form is valid')
             console.log('security questions', this.state)
             //call the api
-            
-            
+            const pincode = this.state.pincode;
+            const referredBy = this.state.referredBy
+            const companyName = this.state.companyName;
+            const headOfficeAddress = this.state.headOfficeAddress;
+            const contactLine = this.state.contactLine;
+            const sellerIdentification = ''
+            const securityAnswerOne = this.state.questions.find(question => question.question_id === '1').answer
+            const securityAnswerTwo = this.state.questions.find(question => question.question_id === '2').answer
+            const securityAnswerThree = this.state.questions.find(question => question.question_id === '3').answer
+            this.props.updateUserType({
+                securityAnswerOne, securityAnswerTwo, securityAnswerThree,
+                pincode, referredBy, companyName, headOfficeAddress, contactLine, sellerIdentification
+                
+            }, 'seller')
             
             //naviagate the user to profile page
             //call the api
@@ -259,15 +276,26 @@ class SellerSignUp extends Component {
                         <button className="button mid secondary" onClick={this.handleFormSubmit}>Submit</button>
                     </div>
                 </form>
+                <SuccessAlert 
+                    open={this.props.showSuccessBar} closeSnackBar={this.closeSnackBar}
+                    message={this.props.successMessage} 
+                />
+                <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
             </div>
         );
     }
 }
 
 const mapStateToProps = state => {
-    const {reg: {questions, errorMessage, error}} = state;
+    const {reg:{ loading, error, errorMessage, successMessage,
+        questions, showSuccessBar}} = state;
     return {
-        questions,error, errorMessage
+        loading,
+        error, 
+        errorMessage,
+        showSuccessBar,
+        successMessage,
+        questions
     }
 }
 
