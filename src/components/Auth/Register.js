@@ -11,6 +11,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import withStyles from "@material-ui/core/styles/withStyles";
 import * as actions from "../../actions";
+import countryData from "../../assets/countryCode.json";
+import { Link } from 'react-router-dom';
 
 
 class Register extends Component {
@@ -22,20 +24,23 @@ class Register extends Component {
         repeatPassword: '',
         firstName:'',
         lastName: '',
-        gender:'',
+        gender:'Male',
         password:'',
         companyName:'',
         headOfficeAddress:'',
         contactLine: '',
+        country:'',
         inValidElments: [],
+        countryCode:'+234',
+        isoCode:'NGA',
         validationMessage: {},
         agreeToTerms: true
     }
     componentDidMount(){
-        if(sessionStorage.getItem('reg-type'))
-            this.setState({
-                extendedUserType: sessionStorage.getItem('reg-type')
-            })
+        // if(sessionStorage.getItem('reg-type'))
+        //     this.setState({
+        //         extendedUserType: sessionStorage.getItem('reg-type')
+        //     })
     }
     extendedUserTypeChange = (event, value) => {
         this.setState({
@@ -50,6 +55,20 @@ class Register extends Component {
             this.state.inValidElments.splice(index, 1)
         }
         newInvalidElements = [...this.state.inValidElments]
+        if(name ==='country'){
+            let countryCode, isoCode = null
+            const index = countryData.findIndex(element => element.country === value)
+            if(index !== -1){
+                countryCode = countryData.find(element => element.country === value).countryCode
+                isoCode = countryData.find(element => element.country === value).isoCode
+            }
+            return this.setState({
+                [name] : value,
+                newInvalidElements,
+                countryCode,
+                isoCode
+            }, () => console.log(this.state))
+        }
         this.setState({
             [name] : value,
             newInvalidElements
@@ -58,7 +77,7 @@ class Register extends Component {
 
     validateFormData = (formdata) => {
         const { emailAddress, phoneNumber, password, repeatPassword, headOfficeAddress,
-        contactLine, companyName, extendedUserType,gender, firstName, lastName} = formdata;
+        contactLine, companyName, extendedUserType,gender,country, firstName, lastName} = formdata;
         let isValid = true;
         const inValidElments = []
         const validationMessage = {}
@@ -67,6 +86,11 @@ class Register extends Component {
             inValidElments.push('emailAddress')
             
             validationMessage['emailAddress'] = 'Email required or not in right format'
+        }
+        if(country.trim() === ''){
+            isValid = false;
+            inValidElments.push('country')
+            validationMessage['country'] = 'Please select country'
         }
         if(!(phoneNumber.trim() !== '' && Validator.isNumeric(phoneNumber))){
             isValid = false
@@ -161,22 +185,26 @@ class Register extends Component {
         }
         const { emailAddress, phoneNumber, referredBy, 
         password, repeatPassword, extendedUserType, 
-        headOfficeAddress, companyName, firstName, lastName, gender, contactLine} = this.state;
+        headOfficeAddress, companyName, firstName, lastName, gender,country, countryCode,isoCode,
+         contactLine} = this.state;
         localStorage.setItem('userRegDetails', JSON.stringify({
             emailAddress, phoneNumber, referredBy, contactLine,
             headOfficeAddress, companyName, extendedUserType, password, repeatPassword,
-            firstName, lastName, gender
+            firstName, lastName, gender, country, countryCode, isoCode
         }))
         this.props.initiateRegistration()
 
         if(this.state.extendedUserType !== 'user'){
            return this.props.history.push('/users/securityquestions')
         }
+        console.log('this', this.state)
         return this.props.registerUser({
             emailAddress, phoneNumber, referredBy, password,
             repeatPassword, type:extendedUserType, headOfficeAddress, companyName,
-            firstName, lastName, gender, contactLine, profileImage:''
+            firstName, lastName, gender, contactLine, profileImage:'',
+            country, countryCode, isoCode
         })
+    
         // return setTimeout(() => {
         //     return this.props.history.push(`/users/verify`)
         // }, 2000)
@@ -265,6 +293,19 @@ class Register extends Component {
                                     </div>
                                 ): null 
                             }
+                            <label htmlFor="country" className="rl-label required">Select Country</label>
+                            <select name="country" className={`${this.state.inValidElments.includes('country') ? 'invalid' : '' }`} value={this.state.country} onChange={this.handleInputChange}>
+                                <option value="">Select Country</option>
+                                <option value="Nigeria">Nigeria</option>
+                            </select>
+                            {
+                                this.state.inValidElments.includes('country') ?
+                                (
+                                    <div className="error-message required">
+                                        {this.state.validationMessage['country']}
+                                    </div>
+                                ): null 
+                            }
                             <label htmlFor="referredBy" className="rl-label">Referral Code</label>
                             <input type="text" id="referredBy" className={`${this.state.inValidElments.includes('referredBy') ? 'invalid' : '' }`} value={this.state.referredBy} name="referredBy" onChange={this.handleInputChange}  placeholder="Enter your referral code..." />
                             {
@@ -295,31 +336,9 @@ class Register extends Component {
                                     </div>
                                 ): null 
                             }
-                            <div>
-                                <input type="radio" id="agent" name="extenedUserType"
-                                value="agent" checked={this.state.extendedUserType === 'user'} onChange={this.extendedUserTypeChange} />
-                                <label  className="label-check" onClick={(event) => this.extendedUserTypeChange(event, 'user')}>
-                                    <span className="checkbox primary primary"><span></span></span>
-                                    I want to Buy
-                                </label>
-                            </div>
-                            <div>
-                                <input type="radio" id="agent" name="extenedUserType"
-                                value="agent" checked={this.state.extendedUserType === 'agent'} onChange={this.extendedUserTypeChange} />
-                                <label  className="label-check" onClick={(event) => this.extendedUserTypeChange(event, 'agent')}>
-                                    <span className="checkbox primary primary"><span></span></span>
-                                    I want to be an agent
-                                </label>
-                            </div>
-                            <div>
-                                <input type="radio" id="seller" 
-                                    name="extenedUserType" value="sellers"
-                                        onChange={(event) => this.extendedUserTypeChange(event)} checked={this.state.extendedUserType === 'seller'} />
-                                <label  className="label-check" onClick={(event) => this.extendedUserTypeChange(event, 'seller')}>
-                                    <span className="checkbox primary primary"><span></span></span>
-                                    I want to sell
-                                </label>
-                            </div>
+                            
+                            
+                            
                             {
                                 this.state.extendedUserType === 'seller' ? (
                                     <Fade right>
@@ -376,9 +395,11 @@ class Register extends Component {
                                     I agree
                                 </label>
                                 <span className="terms">
-                                    terms and condition
+                                    Terms and Condition
                                 </span>
                             </div>
+                            <p style={{margin:'0px 0px', textAlign:'center'}}>Have an account? 
+                                <Link style={{color:'#00d7b3', cursor:'pointer'}} to="/users/login"> Login</Link></p>
                             <button className="button mid secondary" onClick={this.handleFormSubmit}>Register <span className="primary">Now!</span></button>
                         </form>
                         

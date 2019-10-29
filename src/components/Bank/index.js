@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import UserLayout from "../HOC/UserLayout";
 
 class Bank extends Component {
     render() {
         return (
-            <div>
+            <UserLayout>
                 
-            </div>
+            </UserLayout>
         );
     }
 }

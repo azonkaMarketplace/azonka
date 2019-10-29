@@ -1339,7 +1339,7 @@ header,
 
 .user-quickview {
     width: 155px;
-    padding: 10px 0 0 62px;
+    padding: 10px 0 0 20px;
     position: relative
 }
 
@@ -11362,8 +11362,10 @@ header .account-information .account-wishlist-quickview>span:first-child, header
 }
 
 .user-name.hover-menu, .user-name{
-    width: 150px;
+    width: 300px;
     word-wrap: break-word;
+    font-size: 1.5em;
+    line-height: 35px;
 }
 
 @media screen and (max-width: 935px){
@@ -11446,4 +11448,11 @@ select {
 
 label {
     margin-top: 10px !important;
+}
+
+.custom-file-input-button{
+    border: 1px solid #f3f3f3;
+    height: 40px;
+    padding: 5px 0 20px;
+    border-radius: 4px;
 }

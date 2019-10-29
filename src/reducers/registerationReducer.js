@@ -1,8 +1,9 @@
 import { SUCCESSFUL_REGISTRATION,INITIAL_REGISTRATION, 
     UNSUCCESSFUL_REGISTRATION, CLEAR_ERROR, SUCCESSFUL_VERIFICATION,
-ERROR_RESENDING_PASSCODE, SUCCESS_RESENDING_PASSCODE, GET_SEC_QUESTIONS, LOGOUT_USER, CLOSE_SNACKBAR } from "../actions/types";
+ERROR_RESENDING_PASSCODE, SUCCESS_RESENDING_PASSCODE, GET_SEC_QUESTIONS,
+ LOGOUT_USER, CLOSE_SNACKBAR, EMAIL_FORGOT_PASSWORD_SENT } from "../actions/types";
 const INITIAL_STATE = {loading: false,verified:null, error: null,errorMessage: null,
-     user: null, questions:{}}
+     user: null, questions:{}, successMessage: null, showSuccessBar: null}
 
 export default (state=INITIAL_STATE, actions) => {
     switch(actions.type){
@@ -25,7 +26,9 @@ export default (state=INITIAL_STATE, actions) => {
         case LOGOUT_USER: 
             return {...state, user: null}
         case CLOSE_SNACKBAR:
-            return {...state, error: null, errorMessage:null}
+            return {...state, error: null, errorMessage:null, showSuccessBar: null}
+        case EMAIL_FORGOT_PASSWORD_SENT: 
+            return {...state, showSuccessBar: true, successMessage:actions.payload}
         default: 
             return {...state}
     }

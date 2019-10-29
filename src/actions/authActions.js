@@ -1,16 +1,19 @@
 import { 
     SUCCESSFUL_REGISTRATION, UNSUCCESSFUL_REGISTRATION, CLEAR_ERROR, 
     SUCCESS_RESENDING_PASSCODE, SUCCESSFUL_VERIFICATION, 
-    ERROR_RESENDING_PASSCODE, GET_SEC_QUESTIONS, LOGOUT_USER } from "./types";
+    ERROR_RESENDING_PASSCODE, GET_SEC_QUESTIONS, LOGOUT_USER, EMAIL_FORGOT_PASSWORD_SENT } from "./types";
 import axios from "axios";
 
 export const registerUser = (userData) => {
     console.log('data', userData)
+    const data = {...userData, phoneNumber: userData.phoneNumber[0] === '0' ? userData.phoneNumber.substr(1,
+        userData.phoneNumber.length) : userData.phoneNumber}
     return async (dispatch) => {
         let response;
         try{
+            console.log('data', data)
             response = await axios.post('/api/v1/registration/signup',{
-                ...userData
+                ...data
             })
             console.log(response.data);
             if(response.status === 200 ){
@@ -25,7 +28,7 @@ export const registerUser = (userData) => {
             if(error.response.data.message === 'A user with that phoneNumber already exists!'){
                 return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Phone number exists'})
             }
-            dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'some errors were encountered'})
+            dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encountered'})
         }
         
         
@@ -48,7 +51,16 @@ export const verifyEmail = (userData) => {
                 console.log('response', response.data)
                 //localStorage.removeItem('userRegDetails')
                 dispatch({type: SUCCESSFUL_VERIFICATION, payload: response.data})
-                localStorage.setItem('azonta-user', JSON.stringify(response.data.user))
+                if(Array.isArray(response.data.user)){
+                    localStorage.setItem('azonta-user', JSON.stringify({
+                        ...response.data.user[0]
+                    }))
+                }else{
+                    localStorage.setItem('azonta-user', JSON.stringify({
+                        ...response.data.user
+                    }))
+                }
+                
                 //axios.defaults.headers.common['x-access-token'] = response.data.token
                 localStorage.setItem('x-access-token', response.data.token)
                 
@@ -92,7 +104,9 @@ export const login = user => {
             if(response.status === 200){
                 axios.defaults.headers.common['x-access-token'] = response.data.token
                 console.log('response', response.data)
-                localStorage.setItem('azonta-user', JSON.stringify(response.data.user))
+                localStorage.setItem('azonta-user', JSON.stringify({
+                    ...response.data.user, type: 'user'
+                }))
                 localStorage.setItem('x-access-token',response.data.token) 
                 window.location.href = window.origin + '/users/profile'
             }
@@ -105,7 +119,7 @@ export const login = user => {
             if(error.response.status === 404 || error.response.status === 400){
                 return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: error.response.data.message})
             }
-            dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'some errors were encountered, please try again'})
+            dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encountered, please try again'})
         }
     }
 }
@@ -117,15 +131,49 @@ export const getSecurityQuestions = () => {
             dispatch({type: GET_SEC_QUESTIONS, payload: response.data.questions})
         }catch(error){
 
-            dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'some errors were encountered'})
+            dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encountered'})
             window.location.href = window.origin + '/users/register'
         }
     }
 }
-
+export const forgotPassword = emailAddress => {
+    return async (dispatch) => {
+        try{
+            const response = await axios.post('/api/v1/user/forgot-password', {
+                emailAddress
+            })
+            return dispatch({type: EMAIL_FORGOT_PASSWORD_SENT, payload: response.data.message})
+        }catch(error) {
+            console.log('er', error.response)
+            if(error.response.status === 400){
+                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email address does not exists'})
+            }
+            return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encountered'})
+            
+        }
+    }
+ }
 export const logout = () => {
     localStorage.removeItem('azonta-user')
     localStorage.removeItem('x-access-token')
     window.location.href = window.origin;
     return {type: LOGOUT_USER, payload: '' }
+}
+
+export const resetPasswordWithToken = userData => {
+    return async (dispatch) =>{
+        try{
+            const response = await axios.post('/api/v1/user/reset-password', {...userData})
+            console.log('respnse', response)
+            dispatch({type: EMAIL_FORGOT_PASSWORD_SENT, payload: 'Password updated successful, please login'})
+            setTimeout(() => {
+                window.location.href = window.origin + '/users/login'
+            },2000)
+        }catch(error){
+            console.log('error response', error.response.data)
+            if(error.response.data.message === 'Reset token expired or invalid'){
+                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Not Allowed, Invalid token'})
+            }
+        }
+    }
 }

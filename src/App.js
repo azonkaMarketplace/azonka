@@ -2,6 +2,8 @@ import React, { Component} from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from 'redux';
+import AWS from "aws-sdk";
+import { endpoint, secretAccessKey, accessKeyId, agentBucketID } from "./config/config";
 import ReduxThunk from 'redux-thunk';
 import  "@fortawesome/fontawesome-free/css/all.css";
 import  "./css/style.css";
@@ -35,11 +37,33 @@ import CreateStore from "./components/CreateStore";
 import Bank from "./components/Bank";
 import WishList from "./components/WishList";
 
+import AgentSignUp from "./components/AgentSignUp";
+import SellerSignUp from "./components/SellerSignUp";
 
 import Reducer from './reducers';
+import ResetPassword from './components/Auth/ResetPassword';
 const createStoreWithMiddleware = applyMiddleware(ReduxThunk)(createStore)
 
+
+
 class App extends Component {
+  componentDidMount(){
+    const spacesEndpoint = new AWS.Endpoint(endpoint);
+
+    const s3 = new AWS.S3({
+        endpoint: spacesEndpoint,
+        accessKeyId,
+        secretAccessKey
+    });
+
+    s3.createBucket({ Bucket: agentBucketID }, function (err, data) {
+      if (!err) {
+          console.log('datat o', data);
+      } else {
+          console.log('errror', err)
+      }
+    })
+  }
   render(){
     return (
       <ToastProvider>
@@ -67,8 +91,11 @@ class App extends Component {
                     <AuthRoute exact path="/users/items/upload" component={UploadItem} />
                     <AuthRoute exact path="/users/items/manage" component={ManageItems} />
                     <AuthRoute exact path="/users/:id/referals" component={Referral} />
-                    <AuthRoute exact path="/users/:id/banks" component={Bank} />
+                    <AuthRoute exact path="/users/banks" component={Bank} />
+                    <AuthRoute exact path="/users/agent/signup" component={AgentSignUp} />
+                    <AuthRoute exact path="/users/seller/signup" component={SellerSignUp} />
                     <AuthRoute noAuthRequired  path="/users/wishlist" component={WishList} />
+                    <AuthRoute redirectIfAuth noAuthRequired exact = "/password/new" component={ResetPassword} />
                     <NotFoundRoute path="*" component={Home} />
                 </Switch>
                 <Footer />
@@ -81,4 +108,6 @@ class App extends Component {
   }
 }
 
-export default App;
+;
+
+export  {App};
