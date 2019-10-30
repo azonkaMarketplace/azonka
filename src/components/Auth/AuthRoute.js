@@ -1,9 +1,12 @@
 import React from 'react';
 import { Redirect, Route } from "react-router-dom";
 
-const AuthRoute = ({component: Component, noAuthRequired, redirectIfAuth, ...rest}) => {
+const AuthRoute = ({component: Component, noAuthRequired,redirectIfUser, redirectIfAuth, ...rest}) => {
     const user = localStorage.getItem('azonta-user')
     if(user){
+        if(redirectIfUser && user.type === 'user'){
+            return <Redirect {...rest} to="/"/>
+        }
         if(redirectIfAuth){
             return <Redirect {...rest} to="/users/profile"/>
         }

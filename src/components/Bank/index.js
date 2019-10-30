@@ -2,6 +2,7 @@ import React, { Component, forwardRef } from 'react';
 import UserLayout from "../HOC/UserLayout";
 import { connect } from "react-redux";
 import MaterialTable from "material-table";
+import { withToastManager } from 'react-toast-notifications';
 import * as actions from "../../actions";
 
 import AddBox from '@material-ui/icons/AddBox';
@@ -91,7 +92,7 @@ class Bank extends Component {
     }
     renderLookUp = () => {
         const lookupdata = {}
-        this.state.banks.forEach((element) => {
+        this.props.banks.forEach((element) => {
             lookupdata[element.longcode] = element.name
         })
         return lookupdata
@@ -108,16 +109,27 @@ class Bank extends Component {
     }
     handleFormSubmit = e => {
         e.preventDefault()
+        this.processForm()
+    }
+    processForm = (target = null) => {
         const {isValid, inValidElments, validationMessage} = this.validateFormData(this.state)
+        const {add} = this.props.toastManager;
         if(!isValid){
-            return this.setState({inValidElments, validationMessage})
+            if(target === 'data-table-add'){
+                add('Action cannot be performed,one or more fields required', { appearance: 'error' })
+            }else{
+                this.setState({
+                    inValidElments, validationMessage
+                })
+            }
+            
         }
         const selectedBank = this.state.banks.filter(element => element.longcode === this.state.longcode)
         const {accountNumber, accountName} = this.state
         if(selectedBank.length > 0){
             const bankDetails = selectedBank[0]
            return this.props.saveBank({
-                ...bankDetails, name:accountName, accountNumber
+                ...bankDetails, accountName, accountNumber
             })
         }
         console.log('some errror were encounteered')
@@ -143,7 +155,7 @@ class Bank extends Component {
                                             </div>
                                         </div>
                                         <div>
-                                            <span className="card-icon"><i class="fas fa-wallet"></i></span>
+                                            <span className="card-icon"><i className="fas fa-wallet"></i></span>
                                         </div>
                                     </div>
                                 </div>
@@ -160,7 +172,7 @@ class Bank extends Component {
                                             </div>
                                         </div>
                                         <div>
-                                            <span className="card-icon"><i class="fas fa-coins"></i></span>
+                                            <span className="card-icon"><i className="fas fa-coins"></i></span>
                                         </div>
                                     </div>
                                 </div>
@@ -250,14 +262,18 @@ class Bank extends Component {
                                     field: "longcode",
                                     lookup: this.renderLookUp()
                                     },
-                                { title: "Account Name", field: "name" },
+                                { title: "Account Name", field: "accountName" },
                                 { title: "Account Number", field: "accountNumber" },
-                                { title: "Date Added", field: "createdAt", type:"date" },
+                                { title: "Date Added", field: "createdAt", type:"date",
+                                render: rowData => {
+                                    const createdDate = new Date(rowData.createdAt)
+                                    const LocalDate = createdDate.getDate() + '-' + (createdDate.getMonth() + 1) + '-'+ createdDate.getFullYear()
+                                    
+                                    return LocalDate
+                                }
+                                },
                                 
                             ]}
-                            // data={[
-                            //     { bankName: '044150149', accountName: "Baran", accountNumber: '020919101', dateAdded: '2019-09-07' }
-                            // ]}
                             data={this.props.savedBanks}
                             title=""
 
@@ -269,10 +285,15 @@ class Bank extends Component {
                                     new Promise((resolve, reject) => {
                                         setTimeout(() => {
                                             {
-                                                console.log('new data', newData)
-                                                /* const data = this.state.data;
-                                                data.push(newData);
-                                                this.setState({ data }, () => resolve()); */
+                                                const $ = this;
+                                                const longcode = newData.longcode
+                                                const accountName = newData.accountName
+                                                const accountNumber = newData.accountNumber
+                                                this.setState({
+                                                    longcode,
+                                                    accountName,
+                                                    accountNumber
+                                                }, () => $.processForm('data-table-add'))
                                             }
                                             resolve();
                                         }, 1000);
@@ -281,10 +302,11 @@ class Bank extends Component {
                                     new Promise((resolve, reject) => {
                                         setTimeout(() => {
                                             {
-                                                /* const data = this.state.data;
-                                                const index = data.indexOf(oldData);
-                                                data[index] = newData;                
-                                                this.setState({ data }, () => resolve()); */
+                                                const longcode = newData.longcode
+                                                const accountName = newData.accountName
+                                                const accountNumber = newData.accountNumber
+
+                                                console.log({longcode, accountNumber, accountName})
                                             }
                                             resolve();
                                         }, 1000);
@@ -293,10 +315,11 @@ class Bank extends Component {
                                     new Promise((resolve, reject) => {
                                         setTimeout(() => {
                                             {
-                                                /* let data = this.state.data;
-                                                const index = data.indexOf(oldData);
-                                                data.splice(index, 1);
-                                                this.setState({ data }, () => resolve()); */
+                                                const longcode = oldData.longcode
+                                                const accountName = oldData.accountName
+                                                const accountNumber = oldData.accountNumber
+
+                                                console.log({longcode, accountNumber, accountName})
                                             }
                                             resolve();
                                         }, 1000);
@@ -318,9 +341,9 @@ class Bank extends Component {
 const mapStateToProps = state => {
     const {bank:{ loading, error, errorMessage, successMessage, 
         showSuccessBar, banks, savedBanks}} = state;
-
+    const sortedBanks = banks.sort((item1, item2) => item1.name.toLowerCase() > item2.name.toLowerCase() )
     return {
-        banks,
+        banks: sortedBanks,
         loading,
         error,
         errorMessage,
@@ -330,4 +353,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, actions)(Bank);
+export default connect(mapStateToProps, actions)(withToastManager(Bank));

@@ -10,7 +10,6 @@ export const getBanks = () => {
                     'x-access-token': `Bearer ${PAY_STACK_TEST_KEY}`
                 }
             })
-            console.log(response)
             dispatch({type: GET_BANKS, payload: response.data.data})
         }catch(error){
             console.log('error in: => ', error.response)
@@ -26,7 +25,6 @@ export const saveBank = (details) => {
                                     headers:{
                                 'x-access-token': localStorage.getItem('x-access-token')
                             }})
-            console.log(response)
             if(response.data.success){
                 const accounts = await getUserAccount()
                 dispatch({type: ACCOUNT_ADDED_SUCCESSFULLY, payload: accounts})

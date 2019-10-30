@@ -147,7 +147,7 @@ class AgentSignUp extends Component {
             const securityAnswerThree = this.state.questions.find(question => question.question_id === '3').answer
             this.props.updateUserType({
                 securityAnswerOne, securityAnswerTwo, securityAnswerThree,
-                pincode, agentIdentification
+                pin:pincode, agentIdentification
                 
             }, 'agent')
             

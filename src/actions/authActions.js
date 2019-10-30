@@ -188,9 +188,9 @@ export const updateUserType = (userData, type) => {
                                 }
                             })
             if(response.data.success){
-                dispatch({type: EMAIL_FORGOT_PASSWORD_SENT, payload: 'Account upgraded to seller'})
+                dispatch({type: EMAIL_FORGOT_PASSWORD_SENT, payload: 'Account upgraded'})
                 setTimeout(() => {
-                    window.location.href = window.origin + '/users/profile'
+                    window.location.href = window.origin + '/users/login'
                 },2000)
             }
         }catch(error){

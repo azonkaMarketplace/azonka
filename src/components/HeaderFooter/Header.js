@@ -7,6 +7,7 @@ import pullIcon from "../../images/pull-icon.png";
 import logoHeader from "../../images/logo_header.png";
 import searchIcon from "../../images/search-icon.png";
 import * as actions from "../../actions";
+import logoSmall from "../../images/logo_small.png";
 import DropdownItem from "../../common/DropdownItem";
 import DropdownTotal from '../../common/DropdownTotal';
 import Avatar from '../../common/Avatar';
@@ -374,9 +375,12 @@ class Header extends Component {
                     </svg> */}
                     <span className="svg-plus" onClick={this.toggleLeftMenu}>+</span>
                     <div className="side-menu-header">
-                        <span style={{color: '#fff',margin: '10px', lineHeight:'100px',
+                        {/* <span style={{color: '#fff',margin: '10px', lineHeight:'100px',
                          fontFamily:'Roboto, sans-seriff', fontSize:'1.4em'}}>
-                            Azonta Market Place</span>
+                            Azonta Market Place</span> */}
+                        <figure className="logo-small logo-side-menu" >
+                            <img src={logoSmall} alt="company" />
+                        </figure>
                     </div>
 
                     <p className="side-menu-title">Main Links</p>
@@ -484,10 +488,18 @@ class Header extends Component {
                             <Link onClick={this.sideMenuListItemClick} to="/users/profile/account">Account Settings</Link>
                         </li>
                         {
-                            user && user.type === 'agent' ? 
+                            user && user.type !== 'user' ? 
                             (
                                 <li className="dropdown-item">
                                     <Link onClick={this.sideMenuListItemClick} to={`/users/${user ? user.id: ''}/referals`}>Referals</Link>
+                                </li>
+                            ) : null
+                        }
+                        {
+                            user && user.type !== 'user' ? 
+                            (
+                                <li className="dropdown-item">
+                                    <Link onClick={this.sideMenuListItemClick} to={`/users/banks`}>Banks</Link>
                                 </li>
                             ) : null
                         }
@@ -496,7 +508,7 @@ class Header extends Component {
                         <Link onClick={this.sideMenuListItemClick} to="/users/purchases">Your Purchases</Link>
                         </li>
                         {
-                            user && user.type === 'seller' ?
+                            user && user.type !== 'user' ?
                             (<li className="dropdown-item">
                                 <Link onClick={this.sideMenuListItemClick} to="/users/sales">Sales statement</Link>
                             </li>) : null
@@ -509,19 +521,19 @@ class Header extends Component {
                             </li>) : null
                         }
                         {
-                            user && user.type === 'agent' ?
+                            user && user.type !== 'user' ?
                             (<li className="dropdown-item">
                                 <Link onClick={this.sideMenuListItemClick} to="/users/create/shop">Create Shop</Link>
                             </li>) : null
                         }
                         {
-                            user && (user.type === 'agent' || user.type === 'seller') ?
+                            user && user.type !== 'user'  ?
                             (<li className="dropdown-item">
                                 <Link onClick={this.sideMenuListItemClick} to="/users/withdrawal">Withdrawal</Link>
                             </li>) : null
                         }
                         {
-                            user && (user.type === 'agent' || user.type === 'seller') ?
+                            user && user.type !== 'user'  ?
                             (<li className={`dropdown-item`}
                                 onClick={() => this.sideMenuListItemClick('create-store')}
                             >
@@ -529,19 +541,19 @@ class Header extends Component {
                             </li>) : null
                         }
                         {
-                            user && (user.type === 'agent' || user.type === 'seller') ?
+                            user && user.type !== 'user' ?
                             (<li className="dropdown-item">
                                 <Link onClick={this.sideMenuListItemClick} to="/users/items/upload">Upload Item</Link>
                             </li>) : null
                         }
                         {
-                            user && (user.type === 'agent' || user.type === 'seller') ?
+                            user && user.type !== 'user' ?
                             (<li className="dropdown-item">
                                 <Link onClick={this.sideMenuListItemClick} to="/users/items/manage">Manage Items</Link>
                             </li>) : null
                         }
                         {
-                            user && (user.type === 'agent' || user.type === 'seller') ?
+                            user && user.type !== 'user'  ?
                             (<li className="dropdown-item">
                                 <Link onClick={this.sideMenuListItemClick} to="/users/customer/review">Customer Review</Link>
                             </li>) : null

@@ -1334,7 +1334,7 @@ header,
 
 .logo.small {
     width: 178px;
-    height: 41px
+    height: auto;
 }
 
 .user-quickview {
@@ -2515,6 +2515,7 @@ header {
 
 header .logo {
     float: left;
+    line-height: 100px;
     /* margin-top: 20px */
 }
 
@@ -3111,12 +3112,13 @@ header .account-actions .button:last-child {
 
 .side-menu .side-menu-header {
     height: 100px;
-    background-color: #2b373a;
+    /* background-color: #2b373a; */
     overflow: hidden
 }
 
 .side-menu .side-menu-title {
     padding-left: 20px;
+    margin-top: 30px;
     background-color: #202729;
     color: #535d5f;
     font-size: 0.625em;
@@ -11274,9 +11276,9 @@ pre {
      input[type="email"], input[type="password"], input[type="number"]{
         width: 85% !important;
     }
-    .logo-mobile{
+    /* .logo-mobile{
         display: none !important;
-    }
+    } */
     .sidebar.left.author-profile .dropdown.hover-effect{
         display: none;
     }
@@ -11284,9 +11286,15 @@ pre {
         min-height: 65px !important;
     }
     header .logo-mobile{
-        top: -13px !important;
+        /* top: -13px !important;
         left: 45% !important;
         margin-left: -25px !important;
+        height: 40px !important; */
+        /* top: -13px !important; */
+        left: calc(100vw / 2 - 60px);
+        /* margin-left: -25px !important; */
+        line-height: 50px;
+        margin-left: 0 !important;
         height: 40px !important;
     }
     .mobile-menu-handler.left.primary{
@@ -11505,4 +11513,22 @@ label {
     color: #fff;
     font-family: roboto, sans-serif;
     font-size: 1.2em;
+}
+
+.logo-small.logo-side-menu{
+    width: 80%;
+    margin: 10px auto 0px;
+    display: flex;
+    padding-bottom: 20px;
+    justify-content: center;
+}
+
+.logo-small.logo-side-menu img{
+    width: 50%;
+    /* margin: 10px auto; */
+    max-width: 120px;
+}
+
+.view-selectors a.button.mid-short.dark-light:hover{
+    color: #fff !important;
 }
