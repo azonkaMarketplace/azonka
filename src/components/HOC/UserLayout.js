@@ -76,7 +76,8 @@ class UserLayout extends Component {
                                 </div>
                                 <div className="author-profile-info-item">
                                     <p className="text-header">Contact Number</p>
-                                    <p>{currentUser && currentUser.phoneNumber ? currentUser.phoneNumber : null}</p>
+                                    <p>{currentUser && currentUser.phoneNumber ? 
+                                            (currentUser.countryCode + currentUser.phoneNumber) : null}</p>
                                 </div>
                             </div>
                             

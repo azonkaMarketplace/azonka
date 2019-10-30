@@ -83,14 +83,14 @@ class App extends Component {
                     <AuthRoute exact path="/users/profile/account" component={AccountSetting} />
                     <AuthRoute noAuthRequired exact path="/users/purchases" component={Purchases} />
                     <AuthRoute noAuthRequired exact path="/users/cart" component={Cart} />
-                    <AuthRoute exact path="/users/create-store" component={CreateStore} />
-                    <AuthRoute exact path="/users/buycredit" component={BuyCredit} />
-                    <AuthRoute exact path="/users/sales" component={Sales} />
-                    <AuthRoute exact path="/users/commissions" component={Commission} />
-                    <AuthRoute exact path="/users/withdrawal" component={WithDrawal} />
-                    <AuthRoute exact path="/users/items/upload" component={UploadItem} />
-                    <AuthRoute exact path="/users/items/manage" component={ManageItems} />
-                    <AuthRoute exact path="/users/:id/referals" component={Referral} />
+                    <AuthRoute redirectIfUser exact path="/users/create-store" component={CreateStore} />
+                    <AuthRoute  exact path="/users/buycredit" component={BuyCredit} />
+                    <AuthRoute redirectIfUser exact path="/users/sales" component={Sales} />
+                    <AuthRoute redirectIfUser exact path="/users/commissions" component={Commission} />
+                    <AuthRoute redirectIfUser exact path="/users/withdrawal" component={WithDrawal} />
+                    <AuthRoute redirectIfUser exact path="/users/items/upload" component={UploadItem} />
+                    <AuthRoute redirectIfUser exact path="/users/items/manage" component={ManageItems} />
+                    <AuthRoute redirectIfUser exact path="/users/:id/referals" component={Referral} />
                     <AuthRoute exact path="/users/banks" component={Bank} />
                     <AuthRoute exact path="/users/agent/signup" component={AgentSignUp} />
                     <AuthRoute exact path="/users/seller/signup" component={SellerSignUp} />
