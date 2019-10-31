@@ -137,6 +137,10 @@ class AgentSignUp extends Component {
         })
         return null
     }
+    logout = () => {
+        this.props.logout()
+        return <Redirect to="/users/login" />
+    }
     handleFormSubmit = (event) => {
         event.preventDefault();
         const {toastManager: { add}} = this.props;
@@ -237,6 +241,9 @@ class AgentSignUp extends Component {
                 {
                     this.props.loading ? <div className="spinner"><CircularProgress /></div> : null
                 }
+                {
+                    this.props.unAuthorized ? this.logout() : null
+                }
             </div>
         );
     }
@@ -244,7 +251,7 @@ class AgentSignUp extends Component {
 
 const mapStateToProps = state => {
     const {reg:{ loading, error, errorMessage, successMessage,
-        questions, showSuccessBar, redirectToLogin}} = state;
+        questions, showSuccessBar, redirectToLogin, unAuthorized}} = state;
     return {
         loading,
         error, 
@@ -252,7 +259,8 @@ const mapStateToProps = state => {
         showSuccessBar,
         successMessage,
         questions,
-        redirectToLogin
+        redirectToLogin,
+        unAuthorized
     }
 }
 

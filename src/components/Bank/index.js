@@ -1,5 +1,6 @@
 import React, { Component, forwardRef } from 'react';
 import UserLayout from "../HOC/UserLayout";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import MaterialTable from "material-table";
 import { withToastManager } from 'react-toast-notifications';
@@ -137,6 +138,10 @@ class Bank extends Component {
     }
     closeSnackBar = () => {
         this.props.closeSnackBar()
+    }
+    logout = () => {
+        this.props.logout()
+        return <Redirect to="/users/login" />
     }
     render() {
         return (
@@ -334,6 +339,9 @@ class Bank extends Component {
                 />
                 <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
                 </div>
+                {
+                    this.props.unAuthorized ? this.logout() : null
+                }
             </UserLayout>
         );
     }
@@ -341,8 +349,9 @@ class Bank extends Component {
 
 const mapStateToProps = state => {
     const {bank:{ loading, error, errorMessage, successMessage, 
-        showSuccessBar, banks, savedBanks}} = state;
+        showSuccessBar, banks, savedBanks}, reg:{unAuthorized}} = state;
     const sortedBanks = banks.sort((item1, item2) => item1.name.toLowerCase() > item2.name.toLowerCase() )
+    console.log('unathourized', unAuthorized)
     return {
         banks: sortedBanks,
         loading,
@@ -350,7 +359,8 @@ const mapStateToProps = state => {
         errorMessage,
         successMessage,
         showSuccessBar,
-        savedBanks
+        savedBanks,
+        unAuthorized
     }
 }
 

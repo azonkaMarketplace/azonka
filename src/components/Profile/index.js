@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 import UserLayout from "../HOC/UserLayout";
 import Card from "../../common/Card";
 import cardImage from "../../images/items/miniverse_m.jpg";
@@ -8,7 +9,10 @@ import ListCard from "../../common/ListCard";
 import * as actions from "../../actions";
 
 class index extends Component {
-
+    logout = () => {
+        this.props.logout()
+        return <Redirect to="/users/login" />
+    }
     renderItems = () => {
         const {viewType} = this.props;
         if(viewType === 'grid'){
@@ -38,15 +42,20 @@ class index extends Component {
             <UserLayout>
                 <Header title="Recommended For You" />
                 {this.renderItems()}
+                {
+                    this.props.unAuthorized ? this.logout() : null
+                }
             </UserLayout>
         );
     }
 }
 
 const mapStateToProps = state => {
-    const {home:{viewType}} = state;
+    const {home:{viewType}, reg:{unAuthorized}} = state;
+    console.log('in authorized', unAuthorized)
     return {
-        viewType
+        viewType,
+        unAuthorized
     }
 }
 

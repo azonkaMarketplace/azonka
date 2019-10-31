@@ -1,11 +1,11 @@
 import axios from 'axios'
 import { PAY_STACK_TEST_KEY } from "../config/config";
-import { GET_BANKS, UNSUCCESSFUL_REGISTRATION, ACCOUNT_ADDED_SUCCESSFULLY,GET_SAVED_ACCOUNTS } from "./types";
+import { GET_BANKS, UNSUCCESSFUL_REGISTRATION,UNAUTHORIZED_USER, ACCOUNT_ADDED_SUCCESSFULLY,GET_SAVED_ACCOUNTS } from "./types";
 
 export const getBanks = () => {
     return async (dispatch) => {
         try{
-            const response = await axios.get('/bank', {}, {
+            const response = await axios.get('https://api.paystack.co/bank', {}, {
                 headers:{
                     'x-access-token': `Bearer ${PAY_STACK_TEST_KEY}`
                 }
@@ -30,7 +30,9 @@ export const saveBank = (details) => {
                 dispatch({type: ACCOUNT_ADDED_SUCCESSFULLY, payload: accounts})
             }
         }catch(error){
-            console.log(error.response)
+            if(error.response.status === 401){
+               return  dispatch({type:UNAUTHORIZED_USER, payload: 'Account deactivated, please contact admininstrator' })
+            }
             dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encounterd'})
         }
     }
@@ -44,9 +46,13 @@ export const getSavedBanks = (lastCount = 0, numOfRecords = 10) => {
                                         'x-access-token': localStorage.getItem('x-access-token')
                                     }
                                 })
+            console.log('banksssssss')
             return dispatch({type: GET_SAVED_ACCOUNTS, payload:response.data.bankAccounts})
         }catch(error){
-            console.log(error.response)
+            console.log('called o')
+            if(error.response.status === 401){
+              return  dispatch({type:UNAUTHORIZED_USER, payload: 'Account deactivated, please contact admininstrator' })
+            }
             dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encounterd'})
         }
     }

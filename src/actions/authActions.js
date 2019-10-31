@@ -2,7 +2,7 @@ import {
     SUCCESSFUL_REGISTRATION, UNSUCCESSFUL_REGISTRATION, CLEAR_ERROR, 
     SUCCESS_RESENDING_PASSCODE, SUCCESSFUL_VERIFICATION, EMAIL_VERIFICATION_SUCCESFFUL,
     ERROR_RESENDING_PASSCODE, GET_SEC_QUESTIONS, LOGOUT_USER, EMAIL_FORGOT_PASSWORD_SENT,LOGIN_SUCCESS,
-    LOGIN_UNSUCCESSFUL, PASSWORD_REST_SUCCESSFUL, USER_ROLE_UPDATED_SUCCESSFUL
+    LOGIN_UNSUCCESSFUL, PASSWORD_REST_SUCCESSFUL, USER_ROLE_UPDATED_SUCCESSFUL, UNAUTHORIZED_USER
  } from "./types";
 import axios from "axios";
 
@@ -106,7 +106,6 @@ export const login = user => {
             })
             if(response.status === 200){
                 axios.defaults.headers.common['x-access-token'] = response.data.token
-                console.log('response', response.data)
                 localStorage.setItem('azonta-user', JSON.stringify({
                     ...response.data.user
                 }))
@@ -114,13 +113,15 @@ export const login = user => {
                 return dispatch({type: LOGIN_SUCCESS, payload:''})
             }
         }catch(error){
-            console.log('error', error.response)
             if(error.response.data.message === 'Please verify your email address'){
                 localStorage.setItem('userRegDetails', JSON.stringify(user))
                 return dispatch({type: LOGIN_UNSUCCESSFUL, payload: '' })
             }
             if(error.response.status === 404){
                 return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email or password does not exist'})
+            }
+            if(error.response.status === 401){
+                return dispatch({type:UNSUCCESSFUL_REGISTRATION, payload: 'Account deactivated, please contact admininstrator' })
             }
             dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encountered, please try again'})
         }
@@ -133,7 +134,9 @@ export const getSecurityQuestions = () => {
             const response = await axios.get('/api/v1/user/get-security-questions')
             dispatch({type: GET_SEC_QUESTIONS, payload: response.data.questions})
         }catch(error){
-
+            if(error.response.status === 401){
+               return dispatch({type:UNAUTHORIZED_USER, payload: 'Account deactivated, please contact admininstrator' })
+            }
             dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encountered'})
         }
     }
@@ -146,7 +149,6 @@ export const forgotPassword = emailAddress => {
             })
             return dispatch({type: EMAIL_FORGOT_PASSWORD_SENT, payload: response.data.message})
         }catch(error) {
-            console.log('er', error.response)
             if(error.response.status === 400){
                 return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email address does not exist'})
             }
@@ -155,11 +157,20 @@ export const forgotPassword = emailAddress => {
         }
     }
  }
-export const logout = () => {
+export const logout = (page= null) => {
     localStorage.removeItem('azonta-user')
     localStorage.removeItem('x-access-token')
+    localStorage.removeItem('userRegDetails')
     //window.location.href = window.origin;
-    return {type: LOGOUT_USER, payload: '' }
+    return {type: LOGOUT_USER, payload: page }
+}
+
+export const unauthorized = () => {
+    localStorage.removeItem('azonta-user')
+    localStorage.removeItem('x-access-token')
+    localStorage.removeItem('userRegDetails')
+    //window.location.href = window.origin;
+    return {type: UNAUTHORIZED_USER, payload: '' }
 }
 
 export const resetPasswordWithToken = userData => {
@@ -190,7 +201,7 @@ export const updateUserType = (userData, type) => {
                                     'x-access-token': localStorage.getItem('x-access-token')
                                 }
                             })
-            if(response.data.success){
+            if(response.data.success || response.data.status === 200){
                 dispatch({type: EMAIL_FORGOT_PASSWORD_SENT, payload: 'Account upgraded'})
                 setTimeout(() => {
                     //window.location.href = window.origin + '/users/login'
@@ -198,7 +209,9 @@ export const updateUserType = (userData, type) => {
                 },2000)
             }
         }catch(error){
-            console.log(error.response)
+            if(error.response.status === 401){
+               return  dispatch({type:UNAUTHORIZED_USER, payload: 'Account deactivated, please contact admininstrator' })
+            }
             dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encountered'})
         }
     }

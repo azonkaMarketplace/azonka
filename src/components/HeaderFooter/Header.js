@@ -80,7 +80,6 @@ class Header extends Component {
         return <Redirect to="/" />
     }
     updateUserLevel = accountType => {
-        console.log('acc', accountType)
     }
     render() {
         const useTag1 = '<use xlink:href="#svg-arrow"></use>'
@@ -716,8 +715,8 @@ class Header extends Component {
                                                 {
                                                     user && user.type === 'user' ?
                                                     (
-                                                        <li onClick={()=>this.updateUserLevel('seller')} className="button primary" style={{marginBottom:'16px'}} >
-                                                            <Link to="/users/seller/signup" style={{color:'#fff'}}>Become a seller</Link>
+                                                        <li onClick={()=>this.updateUserLevel('seller')} className="" style={{marginBottom:'16px'}} >
+                                                            <Link to="/users/seller/signup" style={{color:'#000'}}>Become a seller</Link>
                                                             
                                                         </li>
                                                     ): null
@@ -725,8 +724,8 @@ class Header extends Component {
                                                 {
                                                     user && user.type === 'user' ?
                                                     (
-                                                        <li onClick={()=>this.updateUserLevel('agen')}  className="button secondary" >
-                                                            <Link to="/users/agent/signup" style={{color:'#fff'}}>Become an agent</Link>
+                                                        <li onClick={()=>this.updateUserLevel('agen')}  className="" >
+                                                            <Link to="/users/agent/signup" style={{color:'#000'}}>Become an agent</Link>
                                                         </li>
                                                     ): null
                                                 }
@@ -763,9 +762,7 @@ class Header extends Component {
                             L0.217,5.638c-0.215,0.215-0.214,0.562,0,0.776c0.214,0.214,0.562,0.215,0.776,0l2.717-2.718C3.925,3.482,3.925,3.135,3.711,2.92z"/>
                     </symbol>
                 </svg>
-                {
-                    this.props.redirectToHome ? <Redirect to="/" /> : null
-                }
+                
             </div>
         );
     }
@@ -773,12 +770,13 @@ class Header extends Component {
 
 const mapStateToProps = state => {
 
-    const {home: {currentUser, cart, likes}, reg:{redirectToHome}} = state
+    const {home: {currentUser, cart, likes}, reg:{redirectToHome, unAuthorized}} = state
     return {
         currentUser,
         cart, 
         likes,
-        redirectToHome
+        redirectToHome,
+        unAuthorized
     }
 }
 

@@ -2,13 +2,21 @@ import { SUCCESSFUL_REGISTRATION,INITIAL_REGISTRATION,
     UNSUCCESSFUL_REGISTRATION, CLEAR_ERROR, SUCCESSFUL_VERIFICATION,
 ERROR_RESENDING_PASSCODE, SUCCESS_RESENDING_PASSCODE, GET_SEC_QUESTIONS,
  LOGOUT_USER, CLOSE_SNACKBAR, EMAIL_FORGOT_PASSWORD_SENT, GET_SAVED_ACCOUNTS,
- LOGIN_UNSUCCESSFUL, LOGIN_SUCCESS, PASSWORD_REST_SUCCESSFUL, USER_ROLE_UPDATED_SUCCESSFUL, EMAIL_VERIFICATION_SUCCESFFUL } from "../actions/types";
+ LOGIN_UNSUCCESSFUL, LOGIN_SUCCESS, PASSWORD_REST_SUCCESSFUL, USER_ROLE_UPDATED_SUCCESSFUL,
+ UNAUTHORIZED_USER, EMAIL_VERIFICATION_SUCCESFFUL, } from "../actions/types";
 const INITIAL_STATE = {loading: false,verified:null, error: null,errorMessage: null,
      user: null, questions:{}, successMessage: null, showSuccessBar: null, 
-    redirectToProfile: false, redirectToVerify: false, redirectToHome: false, redirectToLogin: false}
+    redirectToProfile: false,unAuthorized: false, redirectToVerify: false, redirectToHome: false, redirectToLogin: false}
 
 export default (state=INITIAL_STATE, actions) => {
     switch(actions.type){
+        case UNAUTHORIZED_USER:
+            console.log('called', actions.type)
+            localStorage.removeItem('azonta-user')
+            localStorage.removeItem('x-access-token')
+            localStorage.removeItem('userRegDetails')
+            return {...state,redirectToLogin: true, redirectToVerify:false,
+                redirectToVerify: false, unAuthorized: true}
         case INITIAL_REGISTRATION:
                 return {...state, loading:true, error: null}
         case SUCCESSFUL_REGISTRATION:
@@ -26,7 +34,7 @@ export default (state=INITIAL_STATE, actions) => {
         case GET_SEC_QUESTIONS:
             return {...state, questions: actions.payload, error: null, errorMessage: null}
         case LOGOUT_USER: 
-            return {...state, user: null, redirectToHome: true, redirectToLogin: false, redirectToProfile:false,
+            return {...state, user: null,unAuthorized:true, redirectToHome: true, redirectToLogin: false, redirectToProfile:false,
             redirectToVerify: false}
         case CLOSE_SNACKBAR:
             return {...state, error: null, errorMessage:null, showSuccessBar: null}
@@ -35,9 +43,9 @@ export default (state=INITIAL_STATE, actions) => {
         case GET_SAVED_ACCOUNTS:
             return {...state, showSuccessBar: true, successMessage:'Account added successfully'}
         case LOGIN_SUCCESS:
-            return {...state,loading: false, redirectToProfile: true, redirectToVerify: false}
+            return {...state,loading: false, unAuthorized: false, redirectToProfile: true, redirectToVerify: false}
         case LOGIN_UNSUCCESSFUL:
-            return {...state, redirectToProfile: false, redirectToVerify: true}
+            return {...state,unAuthorized: false, redirectToProfile: false, redirectToVerify: true}
         case PASSWORD_REST_SUCCESSFUL:
             return {...state, redirectToLogin: true}
         case USER_ROLE_UPDATED_SUCCESSFUL:

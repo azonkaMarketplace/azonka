@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 import withStyles from "@material-ui/core/styles/withStyles";
 import Avatar from "../../common/Avatar";
@@ -97,11 +97,29 @@ class UserLayout extends Component {
                                     <p className="text-header" style={{paddingTop:'20px'}}>{
                                       currentUser ?  `${currentUser.firstName} ${currentUser.lastName}` : null
                                     }</p>
+                                    <div className="user-role">
+                                        <div className="user-role-text"><span>{currentUser ?
+                                             currentUser.type.toUpperCase(): null}</span></div>
+                                    </div>
                                     <ul className="share-links">
                                         <li><span className="fb"></span></li>
                                         <li><span className="twt"></span></li>
                                         <li><span className="db"></span></li>
                                     </ul>
+                                    {
+                                       currentUser && currentUser.type === 'user' ?
+                                        (
+                                            <div className="account-upgrade">
+                                                <div className="account-upgrade-button">
+                                                    <button className="button secondary">Become an agent</button>
+                                                </div>
+                                                <div className="account-upgrade-button">
+                                                    <button className="button primary">Become a seller</button>
+                                                </div>
+                                            </div>
+                                        ): null
+                                    }
+                                    
                                 </div>
                                 <ul className="dropdown hover-effect">
                                     <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'profile'? 'active': ''}`}
@@ -249,7 +267,6 @@ class UserLayout extends Component {
                         </div>
                     </div>
                 </div>
-                
             </div>
         );
     }
@@ -276,12 +293,13 @@ const styles = theme => ({
 })
 
 const mapStateToProps = state => {
-    const {home: { currentUser, cart, likes, homeActiveLink}} = state;
+    const {home: { currentUser, cart, likes, homeActiveLink}, reg:{redirectToLogin, }} = state;
     return {
         currentUser, 
         cart,
         likes,
-        homeActiveLink
+        homeActiveLink,
+        redirectToLogin
     }
 }
 export default connect(mapStateToProps, actions)(withStyles(styles)(UserLayout));

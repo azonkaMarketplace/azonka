@@ -1,4 +1,4 @@
-import { UNSUCCESSFUL_REGISTRATION, UPDATE_ACCOUNT } from "./types";
+import { UNSUCCESSFUL_REGISTRATION, UPDATE_ACCOUNT, UNAUTHORIZED_USER } from "./types";
 import axios from "axios";
 
 export const updateUserProfile = userData => {
@@ -20,7 +20,6 @@ export const updateUserProfile = userData => {
                         
                     }))
                     .catch(error => {
-                        console.log('error', error.response)
                         return dispatch({type:UNSUCCESSFUL_REGISTRATION, payload: error.response.data.message})
                     })
                 }
@@ -45,6 +44,9 @@ export const updateUserProfile = userData => {
                 dispatch({
                     type: UNSUCCESSFUL_REGISTRATION, payload:'Not found'
                 })
+            }
+            if(error.response.status === 401){
+                return dispatch({type:UNAUTHORIZED_USER, payload: 'Account deactivated, please contact admininstrator' })
             }
             dispatch({
                 type: UNSUCCESSFUL_REGISTRATION, payload:'Some errors were encountered'

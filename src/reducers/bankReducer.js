@@ -14,6 +14,7 @@ export default (state=INITIATL_STATE , actions) => {
         case GET_SAVED_ACCOUNTS: 
             return {...state, savedBanks: actions.payload}
         case ACCOUNT_ADDED_SUCCESSFULLY:
+            console.log('why are u called')
             return {...state, savedBanks: actions.payload, 
                 showSuccessBar: true, successMessage:'Account added successfully'}
         case CLOSE_SNACKBAR:

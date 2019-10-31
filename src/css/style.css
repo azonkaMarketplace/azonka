@@ -11538,3 +11538,20 @@ label {
     top: calc(50vh - 30%);
     left: 40%;
 }
+
+.account-upgrade{
+    display: flex;
+    justify-content: space-around;
+}
+
+.account-upgrade button{
+    padding: 0 10px;
+}
+
+.user-role-text{
+    text-align: center;
+    margin: 10px 0;
+    font-family: roboto, sans-serif;
+    font-weight: 600;
+    color: #888;
+}
