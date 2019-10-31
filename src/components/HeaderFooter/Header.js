@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 
@@ -77,6 +77,7 @@ class Header extends Component {
     }
     logout = () => {
         this.props.logout()
+        return <Redirect to="/" />
     }
     updateUserLevel = accountType => {
         console.log('acc', accountType)
@@ -392,13 +393,13 @@ class Header extends Component {
                             <Link onClick={this.sideMenuListItemClick}  to="/how-to-shop.html">How to Shop</Link>
                         </li> */}
                         <li className="dropdown-item">
-                            <Link onClick={this.sideMenuListItemClick}  to="/products.html">Products</Link>
+                            <Link onClick={this.sideMenuListItemClick}  to="/">Products</Link>
                         </li>
                         <li className="dropdown-item">
-                            <Link onClick={this.sideMenuListItemClick}  to="/services.html">Services</Link>
+                            <Link onClick={this.sideMenuListItemClick}  to="/">Services</Link>
                         </li>
                         <li className="dropdown-item">
-                            <Link onClick={this.sideMenuListItemClick}  to="/shop-gridview-v1.html">Online Goods</Link>
+                            <Link onClick={this.sideMenuListItemClick}  to="/">Online Goods</Link>
                         </li>
                         {
                             user && user.type === 'user' ? (
@@ -570,26 +571,26 @@ class Header extends Component {
                         <nav>
                             <ul className="main-menu">
                                 <li className="menu-item">
-                                    <a href="/">Home</a>
+                                    <Link to="/">Home</Link>
                                 </li>
                                 <li className="menu-item">
-                                    <a href="how-to-shop.html">How to shop</a>
+                                    <Link to="/">How to shop</Link>
                                 </li>
                                 <li className="menu-item">
-                                    <a href="products.html">Products</a>
+                                    <Link to="/">Products</Link>
                                 </li>
                                 <li className="menu-item">
-                                    <a href="services.html">Services</a>
+                                    <Link to="/">Services</Link>
                                 </li>
                                 <li className="menu-item">
-                                    <a href="shop-gridview-v1.html">Online goods</a>
+                                    <Link to="/">Online goods</Link>
                                 </li>
                                 <li className="menu-item sub">
-                                    <a href="/">
+                                    <Link to="/">
                                         Features
                                         <svg className="svg-arrow" dangerouslySetInnerHTML={{__html:useTag1}}>
                                         </svg>
-                                    </a>
+                                    </Link>
                                     <div className="content-dropdown">
                                         <div className="feature-list-block">
                                             <h6 className="feature-list-title">Azonka Market Place</h6>
@@ -762,6 +763,9 @@ class Header extends Component {
                             L0.217,5.638c-0.215,0.215-0.214,0.562,0,0.776c0.214,0.214,0.562,0.215,0.776,0l2.717-2.718C3.925,3.482,3.925,3.135,3.711,2.92z"/>
                     </symbol>
                 </svg>
+                {
+                    this.props.redirectToHome ? <Redirect to="/" /> : null
+                }
             </div>
         );
     }
@@ -769,11 +773,12 @@ class Header extends Component {
 
 const mapStateToProps = state => {
 
-    const {home: {currentUser, cart, likes}} = state
+    const {home: {currentUser, cart, likes}, reg:{redirectToHome}} = state
     return {
         currentUser,
         cart, 
-        likes
+        likes,
+        redirectToHome
     }
 }
 

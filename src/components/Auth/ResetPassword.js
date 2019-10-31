@@ -7,7 +7,7 @@ import queryString from "query-string";
 import * as actions from "../../actions";
 import ErrorAlert from "../../common/ErrorAlert";
 import SuccessAlert from "../../common/SuccessAlert";
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 class ResetPassword extends Component {
     state = {
@@ -162,6 +162,9 @@ class ResetPassword extends Component {
                     message={this.props.successMessage} 
                 />
                 <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
+                {
+                    this.props.redirectToLogin ? <Redirect to="/users/profile" />: null
+                }
             </div>
         );
     }
@@ -191,13 +194,14 @@ const styles = theme => ( {
 )
 
 const mapStateToProps = state => {
-    const {reg:{ loading, error, errorMessage, successMessage, showSuccessBar}} = state;
+    const {reg:{ loading,redirectToLogin, error, errorMessage, successMessage, showSuccessBar}} = state;
     return {
         loading,
         error, 
         errorMessage,
         showSuccessBar,
-        successMessage
+        successMessage,
+        redirectToLogin
     }
 }
 export default connect(mapStateToProps, actions)(withStyles(styles)(withToastManager(ResetPassword)))

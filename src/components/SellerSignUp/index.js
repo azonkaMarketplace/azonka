@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import { withToastManager } from 'react-toast-notifications';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import CustomInput from "../../common/CustomInput";
 import ErrorAlert from "../../common/ErrorAlert";
 import SuccessAlert from "../../common/SuccessAlert";
+import { Redirect } from "react-router-dom";
 
 class SellerSignUp extends Component {
     state = {
@@ -16,6 +18,7 @@ class SellerSignUp extends Component {
         companyName:'',
         headOfficeAddress:'',
         contactLine: '',
+        showSpinner: false
     }
     componentDidMount(){
         this.props.getSecurityQuestions()
@@ -126,6 +129,12 @@ class SellerSignUp extends Component {
         })
         return isValid
     }
+    closeSpinner = () => {
+        this.setState({
+            showSpinner: false
+        })
+        return null
+    }
     handleFormSubmit = (event) => {
         event.preventDefault();
         const {toastManager: { add}} = this.props;
@@ -137,6 +146,7 @@ class SellerSignUp extends Component {
             console.log('form is valid')
             console.log('security questions', this.state)
             //call the api
+            this.props.initiateRegistration()
             const pincode = this.state.pincode;
             const referredBy = this.state.referredBy
             const companyName = this.state.companyName;
@@ -281,6 +291,12 @@ class SellerSignUp extends Component {
                     message={this.props.successMessage} 
                 />
                 <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
+                {
+                    this.props.redirectToLogin ? <Redirect to="/users/login" /> : null
+                }
+                {
+                    this.props.loading ? <div className="spinner"><CircularProgress /></div> : null
+                }
             </div>
         );
     }
@@ -288,14 +304,15 @@ class SellerSignUp extends Component {
 
 const mapStateToProps = state => {
     const {reg:{ loading, error, errorMessage, successMessage,
-        questions, showSuccessBar}} = state;
+        questions, showSuccessBar, redirectToLogin}} = state;
     return {
         loading,
         error, 
         errorMessage,
         showSuccessBar,
         successMessage,
-        questions
+        questions,
+        redirectToLogin
     }
 }
 

@@ -4,11 +4,14 @@ import queryString from "query-string";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import ErrorAlert from "../../common/ErrorAlert";
+import { Redirect } from 'react-router-dom'
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class VerifyEmail extends Component {
     state = {
         passcode: '',
-        userDetails:{}
+        userDetails:{},
+        showSpinner: false
     }
     componentDidMount(){
         const query = queryString.parse(this.props.location.search)
@@ -39,6 +42,7 @@ class VerifyEmail extends Component {
             return add('Please provide passcode', { appearance: 'error' })
         }
         //call the api
+        this.props.initiateRegistration()
         this.props.verifyEmail({
             emailAddress: JSON.parse(localStorage.getItem('userRegDetails')).emailAddress,
             emailProofToken: this.state.passcode,
@@ -46,6 +50,12 @@ class VerifyEmail extends Component {
         })
         //if result is successful, move the user to set up security questions
         
+    }
+    closeSpinner = () => {
+        this.setState({
+            showSpinner: false
+        })
+        return null
     }
     handleOnChange = e => {
         const {target: { name, value, size}} = e;
@@ -85,17 +95,28 @@ class VerifyEmail extends Component {
                     </form>
                 </div>
                 <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
+                {
+                    this.props.redirectToProfile ? <Redirect to="/users/profile" /> : null
+                }
+                {
+                    this.props.redirectToLogin ? <Redirect to="/users/login" /> : null
+                }
+                {
+                    this.props.loading ? <div className="spinner"><CircularProgress /></div> : null
+                }
             </div>
         );
     }
 }
 
 const mapStateToProps = state => {
-    const {reg: { loading, error, errorMessage}} = state;
+    const {reg: { loading,redirectToProfile,redirectToLogin, error, errorMessage}} = state;
     return {
         loading,
         error,
-        errorMessage
+        errorMessage,
+        redirectToProfile,
+        redirectToLogin 
     }
 }
 

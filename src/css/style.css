@@ -11532,3 +11532,9 @@ label {
 .view-selectors a.button.mid-short.dark-light:hover{
     color: #fff !important;
 }
+
+.spinner{
+    position: absolute;
+    top: calc(50vh - 30%);
+    left: 40%;
+}

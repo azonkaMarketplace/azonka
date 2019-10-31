@@ -5,6 +5,7 @@ import Fade from "react-reveal/Fade";
 import { connect } from 'react-redux';
 import ErrorIcon from '@material-ui/icons/Error';
 import CloseIcon from '@material-ui/icons/Close';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { amber } from '@material-ui/core/colors';
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -34,7 +35,8 @@ class Register extends Component {
         countryCode:'+234',
         isoCode:'NGA',
         validationMessage: {},
-        agreeToTerms: true
+        agreeToTerms: true,
+        showSpinner: false
     }
     componentDidMount(){
         // if(sessionStorage.getItem('reg-type'))
@@ -74,7 +76,12 @@ class Register extends Component {
             newInvalidElements
         })
     }
-
+    clearSpinner = () => {
+        this.setState({
+            showSpinner: false
+        })
+        return null
+    }
     validateFormData = (formdata) => {
         const { emailAddress, phoneNumber, password, repeatPassword, headOfficeAddress,
         contactLine, companyName, extendedUserType,gender,country, firstName, lastName} = formdata;
@@ -162,7 +169,7 @@ class Register extends Component {
         const {  error} = this.state; 
         const {toastManager: { add}} = this.props;
         if(error === 'some errors were encountered'){
-            add('some errors were encountered', { appearance: 'error' })
+            add('Some errors were encountered', { appearance: 'error' })
         }
         console.log('called', this.state)
         return null
@@ -183,6 +190,9 @@ class Register extends Component {
                 validationMessage
             })
         }
+        this.setState({
+            showSpinner : true
+        })
         const { emailAddress, phoneNumber, referredBy, 
         password, repeatPassword, extendedUserType, 
         headOfficeAddress, companyName, firstName, lastName, gender,country, countryCode,isoCode,
@@ -284,7 +294,7 @@ class Register extends Component {
                                 ): null 
                             }
                             <label htmlFor="phoneNumber" className="rl-label required">Phone Number</label>
-                            <input type="text" id="phoneNumber" className={`${this.state.inValidElments.includes('phoneNumber') ? 'invalid' : '' }`} value={this.state.phoneNumber} name="phoneNumber" onChange={this.handleInputChange}  placeholder="Enter your hone number..."/>
+                            <input type="text" id="phoneNumber" className={`${this.state.inValidElments.includes('phoneNumber') ? 'invalid' : '' }`} value={this.state.phoneNumber} name="phoneNumber" onChange={this.handleInputChange}  placeholder="Enter your phone number..."/>
                             {
                                 this.state.inValidElments.includes('phoneNumber') ?
                                 (
@@ -295,7 +305,7 @@ class Register extends Component {
                             }
                             <label htmlFor="country" className="rl-label required">Select Country</label>
                             <select name="country" className={`${this.state.inValidElments.includes('country') ? 'invalid' : '' }`} value={this.state.country} onChange={this.handleInputChange}>
-                                <option value="">Select Country</option>
+                                <option value="">Select country</option>
                                 <option value="Nigeria">Nigeria</option>
                             </select>
                             {
@@ -392,10 +402,10 @@ class Register extends Component {
                                     name="i agree" value="sellers" checked={this.state.agreeToTerms} />
                                 <label className="label-check" onClick={(event) => this.agreeTotermsChange(event)}>
                                     <span className="checkbox primary primary"><span></span></span>
-                                    I agree
+                                    I agree to
                                 </label>
                                 <span className="terms">
-                                    Terms and Condition
+                                    terms and condition
                                 </span>
                             </div>
                             <p style={{margin:'0px 0px', textAlign:'center'}}>Have an account? 
@@ -428,6 +438,9 @@ class Register extends Component {
                             ]}
                             />
                     </Snackbar>
+                    {
+                       this.props.loading ? <div className="spinner"><CircularProgress /></div> : null
+                    }
                 </div>
         );
     }

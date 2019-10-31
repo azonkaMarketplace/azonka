@@ -43,11 +43,11 @@ export const updateUserProfile = userData => {
             console.log('eeror', error.response.data)
             if(error.response.data.status === 404){
                 dispatch({
-                    type: UNSUCCESSFUL_REGISTRATION, payload:'not found'
+                    type: UNSUCCESSFUL_REGISTRATION, payload:'Not found'
                 })
             }
             dispatch({
-                type: UNSUCCESSFUL_REGISTRATION, payload:'some errors were encountered'
+                type: UNSUCCESSFUL_REGISTRATION, payload:'Some errors were encountered'
             })
         }
     }

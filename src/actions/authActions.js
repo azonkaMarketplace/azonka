@@ -1,7 +1,9 @@
 import { 
     SUCCESSFUL_REGISTRATION, UNSUCCESSFUL_REGISTRATION, CLEAR_ERROR, 
-    SUCCESS_RESENDING_PASSCODE, SUCCESSFUL_VERIFICATION, 
-    ERROR_RESENDING_PASSCODE, GET_SEC_QUESTIONS, LOGOUT_USER, EMAIL_FORGOT_PASSWORD_SENT } from "./types";
+    SUCCESS_RESENDING_PASSCODE, SUCCESSFUL_VERIFICATION, EMAIL_VERIFICATION_SUCCESFFUL,
+    ERROR_RESENDING_PASSCODE, GET_SEC_QUESTIONS, LOGOUT_USER, EMAIL_FORGOT_PASSWORD_SENT,LOGIN_SUCCESS,
+    LOGIN_UNSUCCESSFUL, PASSWORD_REST_SUCCESSFUL, USER_ROLE_UPDATED_SUCCESSFUL
+ } from "./types";
 import axios from "axios";
 
 export const registerUser = (userData) => {
@@ -18,7 +20,7 @@ export const registerUser = (userData) => {
             console.log(response.data);
             if(response.status === 200 ){
                  dispatch({type: SUCCESSFUL_REGISTRATION, payload: ''})
-                 return window.location.href = window.origin + '/users/verify'
+                // return window.location.href = window.origin + '/users/verify'
             }
         } catch(error){
             console.log('un able to o', error.response.data)
@@ -65,7 +67,8 @@ export const verifyEmail = (userData) => {
                 localStorage.setItem('x-access-token', response.data.token)
                 
                 localStorage.removeItem('userRegDetails')
-                return window.location.href = window.origin + '/users/profile'
+                return dispatch({type: EMAIL_VERIFICATION_SUCCESFFUL, payload: ''})
+                //return window.location.href = window.origin + '/users/profile'
            }
         }catch(error) {
             if(error.response.status === 498){
@@ -108,16 +111,16 @@ export const login = user => {
                     ...response.data.user
                 }))
                 localStorage.setItem('x-access-token',response.data.token) 
-                window.location.href = window.origin + '/users/profile'
+                return dispatch({type: LOGIN_SUCCESS, payload:''})
             }
         }catch(error){
             console.log('error', error.response)
             if(error.response.data.message === 'Please verify your email address'){
                 localStorage.setItem('userRegDetails', JSON.stringify(user))
-                return window.location.href = window.origin + '/users/verify'
+                return dispatch({type: LOGIN_UNSUCCESSFUL, payload: '' })
             }
-            if(error.response.status === 404 || error.response.status === 400){
-                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email or password does not exists'})
+            if(error.response.status === 404){
+                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email or password does not exist'})
             }
             dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encountered, please try again'})
         }
@@ -132,7 +135,6 @@ export const getSecurityQuestions = () => {
         }catch(error){
 
             dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encountered'})
-            window.location.href = window.origin + '/users/register'
         }
     }
 }
@@ -146,7 +148,7 @@ export const forgotPassword = emailAddress => {
         }catch(error) {
             console.log('er', error.response)
             if(error.response.status === 400){
-                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email address does not exists'})
+                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email address does not exist'})
             }
             return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encountered'})
             
@@ -156,7 +158,7 @@ export const forgotPassword = emailAddress => {
 export const logout = () => {
     localStorage.removeItem('azonta-user')
     localStorage.removeItem('x-access-token')
-    window.location.href = window.origin;
+    //window.location.href = window.origin;
     return {type: LOGOUT_USER, payload: '' }
 }
 
@@ -165,9 +167,10 @@ export const resetPasswordWithToken = userData => {
         try{
             const response = await axios.post('/api/v1/user/reset-password', {...userData})
             console.log('respnse', response)
-            dispatch({type: EMAIL_FORGOT_PASSWORD_SENT, payload: 'Password updated successful, please login'})
+            dispatch({type: EMAIL_FORGOT_PASSWORD_SENT, payload: 'Password update successful, please login'})
             setTimeout(() => {
-                window.location.href = window.origin + '/users/login'
+                //window.location.href = window.origin + '/users/login'
+                dispatch({type: PASSWORD_REST_SUCCESSFUL, payload: ''})
             },2000)
         }catch(error){
             console.log('error response', error.response.data)
@@ -190,7 +193,8 @@ export const updateUserType = (userData, type) => {
             if(response.data.success){
                 dispatch({type: EMAIL_FORGOT_PASSWORD_SENT, payload: 'Account upgraded'})
                 setTimeout(() => {
-                    window.location.href = window.origin + '/users/login'
+                    //window.location.href = window.origin + '/users/login'
+                    dispatch({type: USER_ROLE_UPDATED_SUCCESSFUL, payload: ''})
                 },2000)
             }
         }catch(error){

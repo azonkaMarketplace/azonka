@@ -106,6 +106,7 @@ class Bank extends Component {
         if(nextProps.banks.length > 0){
             return {...state, banks: nextProps.banks}
         }
+        return null
     }
     handleFormSubmit = e => {
         e.preventDefault()
