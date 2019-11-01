@@ -15,8 +15,7 @@ export default (state=INITIAL_STATE, actions) => {
             localStorage.removeItem('azonta-user')
             localStorage.removeItem('x-access-token')
             localStorage.removeItem('userRegDetails')
-            return {...state,redirectToLogin: true, redirectToVerify:false,
-                redirectToVerify: false, unAuthorized: true}
+            return {...state,redirectToLogin: true, redirectToVerify:false, unAuthorized: true}
         case INITIAL_REGISTRATION:
                 return {...state, loading:true, error: null}
         case SUCCESSFUL_REGISTRATION:

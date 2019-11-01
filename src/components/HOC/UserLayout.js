@@ -35,6 +35,10 @@ class UserLayout extends Component {
     sideMenuListItemClick = clickedItem => {
         this.props.switchActiveLink(clickedItem)
     }
+    logout = () => {
+        this.props.logout()
+        return <Redirect to="/users/login" />
+    }
     render() {
         let {currentUser} = this.props
          currentUser = Array.isArray(currentUser) ? currentUser[0] : currentUser;
@@ -111,10 +115,10 @@ class UserLayout extends Component {
                                         (
                                             <div className="account-upgrade">
                                                 <div className="account-upgrade-button">
-                                                    <button className="button secondary">Become an agent</button>
+                                                    <Link to="/users/agent/signup" className="button secondary">Become an agent</Link>
                                                 </div>
                                                 <div className="account-upgrade-button">
-                                                    <button className="button primary">Become a seller</button>
+                                                    <Link to="/users/seller/signup" className="button primary">Become a seller</Link>
                                                 </div>
                                             </div>
                                         ): null
@@ -266,6 +270,9 @@ class UserLayout extends Component {
                             <div className="clearfix"></div>
                         </div>
                     </div>
+                    {
+                        this.props.unAuthorized ? this.logout() : null
+                    }
                 </div>
             </div>
         );
@@ -293,13 +300,14 @@ const styles = theme => ({
 })
 
 const mapStateToProps = state => {
-    const {home: { currentUser, cart, likes, homeActiveLink}, reg:{redirectToLogin, }} = state;
+    const {home: { currentUser, cart, likes, homeActiveLink}, reg:{redirectToLogin,unAuthorized }} = state;
     return {
         currentUser, 
         cart,
         likes,
         homeActiveLink,
-        redirectToLogin
+        redirectToLogin,
+        unAuthorized
     }
 }
 export default connect(mapStateToProps, actions)(withStyles(styles)(UserLayout));

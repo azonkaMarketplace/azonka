@@ -117,7 +117,7 @@ export const login = user => {
                 localStorage.setItem('userRegDetails', JSON.stringify(user))
                 return dispatch({type: LOGIN_UNSUCCESSFUL, payload: '' })
             }
-            if(error.response.status === 404){
+            if(error.response.status === 404 || error.response.status === 400){
                 return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email or password does not exist'})
             }
             if(error.response.status === 401){

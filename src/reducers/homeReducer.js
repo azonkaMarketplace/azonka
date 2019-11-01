@@ -1,5 +1,5 @@
 import { FETCH_USER, SWITCH_ACTIVE_LINK, TOGGLE_VIEW_TYPE, LOGOUT_USER,
-     CLOSE_SNACKBAR, UPDATE_ACCOUNT, UNAUTHORIZED_USER, UNSUCCESSFUL_REGISTRATION } from "../actions/types";
+     CLOSE_SNACKBAR, UPDATE_ACCOUNT, UNAUTHORIZED_USER } from "../actions/types";
 const INITIATL_STATE = {currentUser: null, 
     cart: 0, likes: 0, homeActiveLink:'profile',
      viewType: 'grid', showSuccessBar:null, message:'Updated Successfully'}
