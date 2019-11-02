@@ -1,6 +1,6 @@
 import { 
     SUCCESSFUL_REGISTRATION, UNSUCCESSFUL_REGISTRATION, CLEAR_ERROR, 
-    SUCCESS_RESENDING_PASSCODE, SUCCESSFUL_VERIFICATION, EMAIL_VERIFICATION_SUCCESFFUL,
+    SUCCESS_RESENDING_PASSCODE, EMAIL_VERIFICATION_SUCCESFFUL,
     ERROR_RESENDING_PASSCODE, GET_SEC_QUESTIONS, LOGOUT_USER, EMAIL_FORGOT_PASSWORD_SENT,LOGIN_SUCCESS,
     LOGIN_UNSUCCESSFUL, PASSWORD_REST_SUCCESSFUL, USER_ROLE_UPDATED_SUCCESSFUL, UNAUTHORIZED_USER
  } from "./types";
@@ -18,17 +18,17 @@ export const registerUser = (userData) => {
                 ...data
             })
             console.log(response.data);
-            if(response.status === 200 ){
+            if(response.data.status === 200 ){
                  dispatch({type: SUCCESSFUL_REGISTRATION, payload: ''})
                 // return window.location.href = window.origin + '/users/verify'
             }
         } catch(error){
             console.log('un able to o', error.response.data)
             if(error.response.data.message === 'A user with that emailAddress already exists!'){
-                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email already exists'})
+                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Email already exist'})
             }
             if(error.response.data.message === 'A user with that phoneNumber already exists!'){
-                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Phone number exists'})
+                return dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Phone number exist'})
             }
             dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors were encountered'})
         }
@@ -52,7 +52,7 @@ export const verifyEmail = (userData) => {
             if(response.status === 200 ){
                 console.log('response', response.data)
                 //localStorage.removeItem('userRegDetails')
-                dispatch({type: SUCCESSFUL_VERIFICATION, payload: response.data})
+                //dispatch({type: SUCCESSFUL_VERIFICATION, payload: response.data})
                 if(Array.isArray(response.data.user)){
                     localStorage.setItem('azonta-user', JSON.stringify({
                         ...response.data.user[0]

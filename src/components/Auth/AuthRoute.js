@@ -12,8 +12,8 @@ const AuthRoute = ({component: Component, noAuthRequired,redirectIfUser, redirec
         }
         return <Route {...rest} component={Component} />
     }
-    // const userRegDetails = localStorage.getItem('userRegDetails')
-    return noAuthRequired ? <Route {...rest} component={Component} /> : 
+    const userRegDetails = localStorage.getItem('userRegDetails')
+    return noAuthRequired || userRegDetails ? <Route {...rest} component={Component} /> : 
     <Redirect to="/users/login" {...rest} />
 };
 

@@ -228,6 +228,10 @@ class Register extends Component {
         console.log('closeing snackbar', this.state)
         this.props.clearError()
     }
+    redirectToVeriy = () => {
+        this.props.history.push('/users/verify')
+        return null
+    }
     render() {
         const { classes } = this.props;
         return (
@@ -441,17 +445,21 @@ class Register extends Component {
                     {
                        this.props.loading ? <div className="spinner"><CircularProgress /></div> : null
                     }
+                    {
+                        this.props.redirectToVerify ? this.redirectToVeriy() : null
+                    }
                 </div>
         );
     }
 }
 
 const mapStateToProps = state => {
-    const {reg: { loading, error, errorMessage}} = state;
+    const {reg: { loading, error, errorMessage, redirectToVerify}} = state;
     return {
         loading,
         error,
-        errorMessage
+        errorMessage,
+        redirectToVerify
     }
 }
 const styles = theme => ({

@@ -17,9 +17,10 @@ export default (state=INITIAL_STATE, actions) => {
             localStorage.removeItem('userRegDetails')
             return {...state,redirectToLogin: true, redirectToVerify:false, unAuthorized: true}
         case INITIAL_REGISTRATION:
-                return {...state, loading:true, error: null}
+                return {...state,redirectToVerify:null, redirectToLogin: null,
+                    redirectToHome: false, loading:true, error: null}
         case SUCCESSFUL_REGISTRATION:
-            return {...state, loading:false, error: null, errorMessage: null}
+            return {...state, loading:false,redirectToVerify:true, error: null, errorMessage: null}
         case UNSUCCESSFUL_REGISTRATION:
             return {...state,redirectToLogin: true, loading: false,error:true, errorMessage: actions.payload}
         case SUCCESSFUL_VERIFICATION:
