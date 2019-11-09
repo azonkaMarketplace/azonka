@@ -8,13 +8,6 @@ module.exports = function(app) {
         changeOrigin: true,
       })
     );
-    app.use(
-        '/bank',
-        proxy({
-          target: 'https://api.paystack.co',
-          changeOrigin: true,
-        })
-      );
       
   };
 

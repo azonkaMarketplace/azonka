@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 
@@ -14,10 +14,21 @@ import Avatar from '../../common/Avatar';
 
 
 class Header extends Component {
-    state = {featureDrpdown: false,showDrpDownSmall:false,showCartDropDown: false,
-         showLeftMenu: false, showRightMenu: false}
+    constructor(props){
+        super(props)
+        this.state = {featureDrpdown: false,showDrpDownSmall:false,showCartDropDown: false,
+            showLeftMenu: false, showRightMenu: false, openFeatureDropdown: false}
+        this.featDrpdown = React.createRef()
+        this.otherFeatures = React.createRef()
+    }
     componentDidMount(){
         this.props.fetchUser()
+        this.otherFeatures.current.addEventListener('click', (e) => {
+            this.setState({
+                openFeatureDropdown: !this.state.openFeatureDropdown
+            })
+            this.featDrpdown.current.classList.toggle('open-feature-dropdown')
+        })
     }
     showCartDropDown = () => {
         this.setState({
@@ -77,9 +88,15 @@ class Header extends Component {
     }
     logout = () => {
         this.props.logout()
+        return <Redirect to="/" />
     }
     updateUserLevel = accountType => {
-        console.log('acc', accountType)
+    }
+    renderAngle = () => {
+        if(this.state.openFeatureDropdown){
+            return <i className="fas fa-angle-up"></i>
+        }
+        return <i className="fas fa-angle-down"></i>
     }
     render() {
         const useTag1 = '<use xlink:href="#svg-arrow"></use>'
@@ -89,7 +106,7 @@ class Header extends Component {
         const cart = this.props.cart
         const likes = this.props.likes
         return (
-            <div>
+            <div className="header-container">
                 <section className="account-info-mobile">
                     <div className="account-wishlist-quickview">
                         <Link to={`/users/wishlist`}>
@@ -382,7 +399,7 @@ class Header extends Component {
                             <img src={logoSmall} alt="company" />
                         </figure>
                     </div>
-
+                    
                     <p className="side-menu-title">Main Links</p>
                     <ul className="dropdown dark hover-effect interactive">
                         <li className="dropdown-item">
@@ -392,13 +409,13 @@ class Header extends Component {
                             <Link onClick={this.sideMenuListItemClick}  to="/how-to-shop.html">How to Shop</Link>
                         </li> */}
                         <li className="dropdown-item">
-                            <Link onClick={this.sideMenuListItemClick}  to="/products.html">Products</Link>
+                            <Link onClick={this.sideMenuListItemClick}  to="/">Products</Link>
                         </li>
                         <li className="dropdown-item">
-                            <Link onClick={this.sideMenuListItemClick}  to="/services.html">Services</Link>
+                            <Link onClick={this.sideMenuListItemClick}  to="/">Services</Link>
                         </li>
                         <li className="dropdown-item">
-                            <Link onClick={this.sideMenuListItemClick}  to="/shop-gridview-v1.html">Online Goods</Link>
+                            <Link onClick={this.sideMenuListItemClick}  to="/">Online Goods</Link>
                         </li>
                         {
                             user && user.type === 'user' ? (
@@ -466,11 +483,127 @@ class Header extends Component {
                             </div>
                             
                         </div>
-                    </div>
 
+                    </div>
+                    {
+                        <div style={{}}>
+                            <Link to="/users/securityquestions" className="button secondary" style={{ color: '#fff' }}>
+                                Setup wallet
+                                    </Link>
+                        </div>
+                    }
                     <p className="side-menu-title">Your Account</p>
                     
+                    
                     <ul className="dropdown dark hover-effect">
+                        <li className={`dropdown-item  ${this.props.homeActiveLink === 'profile' ? 'active' : ''}`}
+                            onClick={() => this.sideMenuListItemClick('profile')}
+                        >
+                            <Link to="/users/profile">Recommended For You</Link>
+                        </li>
+                        <li className={`dropdown-item  ${this.props.homeActiveLink === 'account-setting' ? 'active' : ''}`}
+                            onClick={() => this.sideMenuListItemClick('account-setting')}
+                        >
+                            <Link to="/users/profile/account">Profile</Link>
+                        </li>
+                        <li className={`dropdown-item  ${this.props.homeActiveLink === 'referals' ? 'active' : ''}`}
+                            onClick={() => this.sideMenuListItemClick('referals')}
+                        >
+                            <Link to="/users/referals">Referrals</Link>
+                        </li>
+                        <li className={`dropdown-item  ${this.props.homeActiveLink === 'cart' ? 'active' : ''}`}
+                            onClick={() => this.sideMenuListItemClick('cart')}
+                        >
+                            <Link to="/users/cart">Cart</Link>
+                        </li>
+                        <li className={`dropdown-item  ${this.props.homeActiveLink === 'wishlist' ? 'active' : ''}`}
+                            onClick={() => this.sideMenuListItemClick('wishlist')}
+                        >
+                            <Link to={`/users/wishlist`}>Wishlist</Link>
+                        </li>
+                        <li className={`dropdown-item  ${this.props.homeActiveLink === 'purchases' ? 'active' : ''}`}
+                            onClick={() => this.sideMenuListItemClick('purchases')}
+                        >
+                            <Link to="/users/purchases">Orders</Link>
+                        </li>
+                        <li className={`dropdown-item  ${this.props.homeActiveLink === 'buy-credit' ? 'active' : ''}`}
+                            onClick={() => this.sideMenuListItemClick('buy-credit')}
+                        >
+                            <Link to="/users/buycredit">Buy Credit</Link>
+                        </li>
+
+                        <li className={`dropdown-item  ${this.props.homeActiveLink === 'bank' ? 'active' : ''}`}
+                            onClick={() => this.sideMenuListItemClick('bank')}
+                        >
+                            <Link to="/users/banks">My Banks</Link>
+                        </li>
+                        <li className={`dropdown-item  ${this.props.homeActiveLink === 'azonkaPay' ? 'active' : ''}`}
+                            onClick={() => this.sideMenuListItemClick('azonkaPay')}
+                        >
+                            <Link to="/users/azonkaPay">Azonka Pay</Link>
+                        </li>
+                        <li className={`dropdown-item  ${this.props.homeActiveLink === 'address' ? 'active' : ''}`}
+                            onClick={() => this.sideMenuListItemClick('address')}
+                        >
+                            <Link to="/users/addressBook">Address Book</Link>
+                        </li>
+                        <li className={`dropdown-item `}
+
+                        >
+                            <div ref={this.otherFeatures} className="feature-drpdown custom-feature-dropdpwn custom-feature-color" to="#"><span>Other Features</span>
+                                <span>{this.renderAngle()}</span>
+                            </div>
+                            <div className="toggle-feature-dropdown" ref={this.featDrpdown}>
+                                <ul>
+                                    <li className={`dropdown-item ${this.props.homeActiveLink === 'other-features' ? 'active' : ''}`}
+                                    ><Link to="/users/reset-password">Reset Password</Link></li>
+                                    <li  className={`dropdown-item add-bottom-border ${this.props.homeActiveLink === 'other-features' ? 'active' : ''}`}
+                                    ><Link to="/users/reset-pin">Reset Pin</Link></li>
+
+                                </ul>
+                                {
+                                    user && user.type !== 'user' ?
+                                        (<ul>
+                                            <li className={`dropdown-item ${this.props.homeActiveLink === 'create-shop' ? 'active' : ''}`}
+                                                onClick={() => this.sideMenuListItemClick('create-shop')}
+                                            >
+                                                <Link to="/users/create/shop">Create Shop</Link>
+                                            </li>
+                                            <li className={`dropdown-item ${this.props.homeActiveLink === 'sales-statement' ? 'active' : ''}`}
+                                                onClick={() => this.sideMenuListItemClick('sales-statement')}
+                                            >
+                                                <Link to="/users/sales">Sales statement</Link>
+                                            </li>
+                                            <li className={`dropdown-item ${this.props.homeActiveLink === 'uploadItem' ? 'active' : ''}`}
+                                                onClick={() => this.sideMenuListItemClick('uploadItem')}
+                                            >
+                                                <Link to="/users/items/upload">Upload Item</Link>
+                                            </li>
+                                            <li className={`dropdown-item ${this.props.homeActiveLink === 'manageItems' ? 'active' : ''}`}
+                                                onClick={() => this.sideMenuListItemClick('manageItems')}
+                                            >
+                                                <Link to="/users/items/manage">Manage Items</Link>
+                                            </li>
+                                            <li
+                                                className=
+                                                {`dropdown-item  ${this.props.homeActiveLink === 'customer-review' ? 'active' : ''}`}
+                                                onClick={() => this.sideMenuListItemClick('customer-review')}
+                                            >
+                                                <Link to="/users/customer/review">Customer Review</Link>
+                                            </li>
+                                        </ul>
+
+                                        ) : null
+                                }
+                            </div>
+                        </li>
+
+
+                    </ul>
+                    
+                   
+
+                    {/* <ul className="dropdown dark hover-effect">
                         <li className="dropdown-item">
                             <Link onClick={this.sideMenuListItemClick} to="/users/cart">Your Cart</Link>
                         </li>
@@ -558,7 +691,7 @@ class Header extends Component {
                                 <Link onClick={this.sideMenuListItemClick} to="/users/customer/review">Customer Review</Link>
                             </li>) : null
                         }
-		            </ul>
+		            </ul> */}
                     <div onClick={this.logout} className="button medium secondary">Logout</div>
 		            {/* <Link to="/" className="button medium primary">Become a Seller</Link> */}
                 </div>
@@ -570,26 +703,26 @@ class Header extends Component {
                         <nav>
                             <ul className="main-menu">
                                 <li className="menu-item">
-                                    <a href="/">Home</a>
+                                    <Link to="/">Home</Link>
                                 </li>
                                 <li className="menu-item">
-                                    <a href="how-to-shop.html">How to shop</a>
+                                    <Link to="/">How to shop</Link>
                                 </li>
                                 <li className="menu-item">
-                                    <a href="products.html">Products</a>
+                                    <Link to="/">Products</Link>
                                 </li>
                                 <li className="menu-item">
-                                    <a href="services.html">Services</a>
+                                    <Link to="/">Services</Link>
                                 </li>
                                 <li className="menu-item">
-                                    <a href="shop-gridview-v1.html">Online goods</a>
+                                    <Link to="/">Online goods</Link>
                                 </li>
                                 <li className="menu-item sub">
-                                    <a href="/">
+                                    <Link to="/">
                                         Features
                                         <svg className="svg-arrow" dangerouslySetInnerHTML={{__html:useTag1}}>
                                         </svg>
-                                    </a>
+                                    </Link>
                                     <div className="content-dropdown">
                                         <div className="feature-list-block">
                                             <h6 className="feature-list-title">Azonka Market Place</h6>
@@ -715,8 +848,8 @@ class Header extends Component {
                                                 {
                                                     user && user.type === 'user' ?
                                                     (
-                                                        <li onClick={()=>this.updateUserLevel('seller')} className="button primary" style={{marginBottom:'16px'}} >
-                                                            <Link to="/users/seller/signup" style={{color:'#fff'}}>Become a seller</Link>
+                                                        <li onClick={()=>this.updateUserLevel('seller')} className="" style={{marginBottom:'16px'}} >
+                                                            <Link to="/users/seller/signup" style={{color:'#000'}}>Become a seller</Link>
                                                             
                                                         </li>
                                                     ): null
@@ -724,8 +857,8 @@ class Header extends Component {
                                                 {
                                                     user && user.type === 'user' ?
                                                     (
-                                                        <li onClick={()=>this.updateUserLevel('agen')}  className="button secondary" >
-                                                            <Link to="/users/agent/signup" style={{color:'#fff'}}>Become an agent</Link>
+                                                        <li onClick={()=>this.updateUserLevel('agen')}  className="" >
+                                                            <Link to="/users/agent/signup" style={{color:'#000'}}>Become an agent</Link>
                                                         </li>
                                                     ): null
                                                 }
@@ -762,6 +895,7 @@ class Header extends Component {
                             L0.217,5.638c-0.215,0.215-0.214,0.562,0,0.776c0.214,0.214,0.562,0.215,0.776,0l2.717-2.718C3.925,3.482,3.925,3.135,3.711,2.92z"/>
                     </symbol>
                 </svg>
+                
             </div>
         );
     }
@@ -769,11 +903,13 @@ class Header extends Component {
 
 const mapStateToProps = state => {
 
-    const {home: {currentUser, cart, likes}} = state
+    const {home: {currentUser, cart, likes}, reg:{redirectToHome, unAuthorized}} = state
     return {
         currentUser,
         cart, 
-        likes
+        likes,
+        redirectToHome,
+        unAuthorized
     }
 }
 

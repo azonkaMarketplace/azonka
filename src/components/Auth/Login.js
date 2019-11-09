@@ -7,9 +7,7 @@ import Fade from '@material-ui/core/Fade';
 import withStyles from "@material-ui/core/styles/withStyles";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
-import ErrorAlert from "../../common/ErrorAlert";
-import SuccessAlert from "../../common/SuccessAlert";
-import { Link } from 'react-router-dom';
+import { Link,  } from 'react-router-dom';
 
 class Login extends Component {
     state = {
@@ -19,7 +17,8 @@ class Login extends Component {
         validationMessage:{},
         rememberPassword: true,
         showModal: false,
-        resetPwdEmail: ''
+        resetPwdEmail: '',
+        showSpinner: false
     }
     validateFormData = (formdata) => {
         const { emailAddress, password,} = formdata;
@@ -59,7 +58,7 @@ class Login extends Component {
                 validationMessage
             })
         }
-
+        this.props.initiateRegistration()
         //call the api
         const {emailAddress, password} = this.state
         this.props.login({emailAddress, password})
@@ -111,6 +110,12 @@ class Login extends Component {
             showModal: true
         })
     }
+    clearSpinner = () => {
+        this.setState({
+            showSpinner: false
+        })
+        return null
+    }
     closeModal = () => {
         const index = this.state.inValidElments.indexOf('resetPwdEmail')
         let newInvalidElements = []
@@ -124,6 +129,9 @@ class Login extends Component {
         })
     }
     closeSnackBar = () => {
+        this.setState({
+            showSpinner: false
+        })
         this.props.closeSnackBar()
     }
     render() {
@@ -213,11 +221,6 @@ class Login extends Component {
                     </div>
                     </Fade>
                 </Modal>
-                <SuccessAlert 
-                    open={this.props.showSuccessBar} closeSnackBar={this.closeSnackBar}
-                    message={this.props.successMessage} 
-                />
-                <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
             </div>
         );
     }
@@ -245,15 +248,18 @@ const styles = theme => ( {
       }
     }
 )
-
+//redirectToVerify
 const mapStateToProps = state => {
-    const {reg:{ loading, error, errorMessage, successMessage, showSuccessBar}} = state;
+    const {reg:{ loading, error, errorMessage,redirectToProfile,
+        redirectToVerify, successMessage, showSuccessBar}} = state;
     return {
         loading,
         error, 
         errorMessage,
         showSuccessBar,
-        successMessage
+        successMessage,
+        redirectToProfile,
+        redirectToVerify
     }
 }
 export default connect(mapStateToProps, actions)(withStyles(styles)(withToastManager(Login)))

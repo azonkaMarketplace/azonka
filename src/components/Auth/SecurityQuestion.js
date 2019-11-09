@@ -10,48 +10,30 @@ class SecurityQuestion extends Component {
         inValidElments: [],
         validationMessage: {},
         container: 'form',
-        pincode: ''
+        pincode: '',
+        answer: '',
+        question: '',
+        securityQuestion: []
     }
     componentDidMount(){
         // call the api to fetch security questions
+        this.props.initiateRegistration()
         this.props.getSecurityQuestions()
+    }
+    static getDerivedStateFromProps(nextProps, state){
+        if(nextProps.questions.length !== state.securityQuestion.length){
+            const securityQuestion = []
+            Object.keys(nextProps.questions).forEach(key => {
+                securityQuestion.push({id: key, question: nextProps.questions[key]})
+            })
+            return {...state, securityQuestion}
+        }
     }
     handleInputChange = (event) => {
         const {target: { name, value}} = event;
-
-        const index = this.state.inValidElments.indexOf(name)
-        let newInvalidElements = []
-        newInvalidElements = [...this.state.inValidElments]
-        if(index !== -1){
-            this.state.inValidElments.splice(index, 1)
-        }
-        newInvalidElements = [...this.state.inValidElments]
-        if(name === 'pincode'){
-            return this.setState({
-                pincode: value
-            })
-        }
-        if(this.state.questions.length <= 0){
-            this.setState({
-                questions : [{question_id: name, answer: value}],
-                newInvalidElements
-            })
-        }else{
-            let newQuestion = []
-            const index = this.state.questions.findIndex(({question_id}) => question_id === name)
-            if(index !== -1){
-                newQuestion = this.state.questions;
-                newQuestion.splice(index, 1)
-                this.setState({
-                    questions: [...newQuestion, {[name]: value}],
-                    newInvalidElements
-                })
-            }
-            this.setState({
-                questions: [...this.state.questions, {question_id: name, answer: value}],
-                newInvalidElements
-            })
-        }
+        this.setState({
+            [name]: value
+        })
         
     }
     displayQuestions = () => {
@@ -71,82 +53,41 @@ class SecurityQuestion extends Component {
             </div>))
     }
     renderQuestion = () => {
-       return Object.keys(this.props.questions).length > 0 ?
-        
-            this.displayQuestions()
-         : null
-    }
-    
-    validateFormData = (answered_question) => {
-        const unansweredQuestions = []
-        let isValid = true;
-        const keys = Object.keys(this.props.questions)
-        if(answered_question.length !== keys.length){
-            isValid = false;
-            keys.forEach((element) => {
-                const index = answered_question.findIndex(({question_id: id}) => id === element)
-                if(index === -1){
-                    unansweredQuestions.push(`${element}`)
-                }
-            })
-            
-            //
-        }else{
-            answered_question.forEach(item => {
-                if(item.answer.trim() === ''){
-                    isValid = false
-                    unansweredQuestions.push(item.question_id)
-                }
-            })
-        }
-        this.setState({
-            inValidElments: [...unansweredQuestions]
+        console.log('questions', this.props.questions)
+        const securityQuestion = []
+        Object.keys(this.props.questions).forEach(key => {
+            securityQuestion.push({id: key, question: this.props.question[key]})
         })
-        return isValid
-    }
-    handleFormSubmit = (event) => {
-        event.preventDefault();
-        const {toastManager: { add}} = this.props;
-        const isValid = this.validateFormData(this.state.questions)
-        if(isValid){
-            console.log('form is valid')
-            console.log('security questions', this.state.questions)
-            //call the api
-            
-            
-            
-            //naviagate the user to profile page
+        if(this.props.questions.length !== this.state.securityQuestion.length ){
             this.setState({
-                container: 'pincode'
+                securityQuestion
             })
-        }else{
-            //form is not valid display error
-            
-            add('One or more fields not filled, please cheack and try again', { appearance: 'error' })
         }
-    } 
-    showForm = () => {
-        this.setState({
-            container: 'form'
-        })
+        return null
     }
     onSubmit = event => {
         event.preventDefault();
-        const {toastManager: { add}} = this.props;
-        if(this.state.pincode.trim() !== '' && this.state.pincode.length !== 6){
-           return  add('Please provide 6 digits pincode', { appearance: 'error' })
+        if(this.state.question.trim() === ''){
+            return this.props.renderError('Please choose a question and provide answer')
         }
-        console.log('this state', this.state)
+        if(this.state.answer.trim() === ''){
+            return this.props.renderError('Please provide answer')
+        }
+        if(this.state.pincode.trim() === ''){
+            
+           return  this.props.renderError('Please provide pincode')
+        }
+        if(this.state.pincode.length !== 6){
+            return this.props.renderError('Minimum of 6 characters required for Pincode')
+        }
         //call the api
-        const userData = JSON.parse(localStorage.getItem('userRegDetails'))
-        console.log('yser', userData)
         this.props.initiateRegistration()
-        const securityAnswerOne = this.state.questions.find(question => question.question_id === '1').answer
-        const securityAnswerTwo = this.state.questions.find(question => question.question_id === '2').answer
-        const securityAnswerThree = this.state.questions.find(question => question.question_id === '3').answer
-        return this.props
-                .registerUser({...userData,type: userData.extendedUserType,
-                     securityAnswerOne, securityAnswerThree, securityAnswerTwo, pin: this.state.pincode})
+        const { question, answer, pincode} = this.state;
+        const { type} = JSON.parse(localStorage.getItem('azonta-user'))
+        this.props.updateUserType({ securityQuestion: question, securityAnswer: answer, 
+            pin:pincode}, type)
+        // return this.props
+        //         .registerUser({ pin: this.state.pincode})
     }
     render() {
         return (
@@ -158,37 +99,26 @@ class SecurityQuestion extends Component {
                     </div>
                     <div className="form-popup-content">
                         <form id="login-form2">
-                            {this.renderQuestion()}
-                            <button className="button mid secondary" onClick={this.handleFormSubmit}>Continue</button>
+                        <label htmlFor="emailAddress" className="rl-label required">Question</label>
+                            <select name="question" value={this.state.question} onChange={this.handleInputChange}>
+                                <option value="">Select Question</option>
+                                {
+                                    this.state.securityQuestion.map(({id, question}, i) => {
+                                        return <option key={i} value={id}>{question}</option>
+                                    })
+                                }
+                            </select>
+                            <label htmlFor="answer" className="rl-label required">Response</label>
+                            <input type="text" name="answer" value={this.state.answer} onChange={this.handleInputChange} />
+                            <label htmlFor="emailAddress" className="rl-label required">Pincode</label>
+                            <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
+                                <input type="text" value={this.state.pincode}
+                                    size={6} name="pincode" onChange={this.handleInputChange} style={{width:'100%'}} className="one-time-pwd-input" placeholder="Enter Pin" />
+                            </div>
+                            <button className="button mid secondary" onClick={this.onSubmit}>Submit</button>
                         </form>
                     </div>
                 </div>
-                <div className={`form-popup ${this.state.container === 'pincode' ? 'show' : 'hide'}`}>
-                    <div className="form-popup-headline secondary">
-                        <h2><span onClick={this.showForm} style=
-                           {{fontSize: 30, marginRight: 10, color: '#fff'}}>
-                               <i className="fas fa-arrow-left"></i></span> Setup Pincode</h2>
-                        <p>Please setup  your pincode, this should be kept confidential</p>
-                    </div>
-                        <hr className="line-separator" />
-                        <div className="form-popup-content">
-                            <form id="register-form" noValidate>
-                                <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
-                                    <input type="text" value={this.state.pincode}
-                                        size={6} name="pincode" onChange={this.handleInputChange} className="one-time-pwd-input" placeholder="Enter Pin" />
-                                </div>
-
-                                <div className="otp-container">
-                                    <span style={{ fontSize: 40 }}>
-                                        <i className="fas fa-user-lock"></i>
-                                    </span>
-                                </div>
-                                <div className="right-content">
-                                    <button className="button mid secondary" onClick={this.onSubmit}>Submit</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
             </div>
         );
     }

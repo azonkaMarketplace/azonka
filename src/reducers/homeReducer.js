@@ -1,11 +1,19 @@
 import { FETCH_USER, SWITCH_ACTIVE_LINK, TOGGLE_VIEW_TYPE, LOGOUT_USER,
-     CLOSE_SNACKBAR, UPDATE_ACCOUNT } from "../actions/types";
+     CLOSE_SNACKBAR, UPDATE_ACCOUNT, UNAUTHORIZED_USER,SUCCESS_ALERT, DISPLAY_ERROR } from "../actions/types";
 const INITIATL_STATE = {currentUser: null, 
-    cart: 0, likes: 0, homeActiveLink:'profile', viewType: 'grid', showSuccessBar:null, message:'Updated Successfully'}
+    cart: 0, likes: 0, homeActiveLink:'profile',
+     viewType: 'grid',error: null, errorMessage:null,
+     successMessage:null, success: null, showSuccessBar:null, message:'Updated Successfully'}
 
 export default (state=INITIATL_STATE , actions) => {
     
     switch(actions.type){
+        case SUCCESS_ALERT: 
+            return {...state, success: true, successMessage: actions.payload}
+        case CLOSE_SNACKBAR:
+            return {...state, success: false, successMessage: null, error: false, errorMessage: null }
+        case DISPLAY_ERROR:
+            return {...state, error: true, errorMessage: actions.payload}
         case FETCH_USER:
             const {userData, cart, likes} = actions.payload
             return {...state, currentUser: userData, likes, cart}
@@ -17,9 +25,14 @@ export default (state=INITIATL_STATE , actions) => {
         case TOGGLE_VIEW_TYPE: 
             return {...state, viewType: actions.payload}
         case LOGOUT_USER:
-            return {...state, currentUser: null}
-        case CLOSE_SNACKBAR:
-            return {...state, showSuccessBar: false}
+            return {...state,likes:0, cart: 0,
+                viewType: 'grid', homeActiveLink:'profile',currentUser: null}
+        case UNAUTHORIZED_USER:
+                localStorage.removeItem('azonta-user')
+                localStorage.removeItem('x-access-token')
+                localStorage.removeItem('userRegDetails')
+                return {...state,likes:0, cart: 0,
+                    viewType: 'grid', homeActiveLink:'profile',currentUser: null}
         default:
             return  {...state}
     }
