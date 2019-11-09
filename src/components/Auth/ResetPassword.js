@@ -163,7 +163,7 @@ class ResetPassword extends Component {
                 />
                 <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
                 {
-                    this.props.redirectToLogin ? <Redirect to="/users/profile" />: null
+                    this.props.redirectToLogin ? <Redirect to="/users/login" />: null
                 }
             </div>
         );

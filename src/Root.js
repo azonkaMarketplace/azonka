@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch  } from "react-router-dom";
-import { connect } from "react-redux";
-
-import Header from "./components/HeaderFooter/Header";
-import Footer from "./components/HeaderFooter/Footer";
 import Home from "./components/Home";
 import VerifyEmail from "./components/Auth/VerifyEmail";
 import Login from "./components/Auth/Login";
@@ -27,25 +23,26 @@ import UploadItem from "./components/UploadItem";
 import CreateStore from "./components/CreateStore";
 import Bank from "./components/Bank";
 import WishList from "./components/WishList";
-import * as actions from "./actions";
 import AgentSignUp from "./components/AgentSignUp";
 import SellerSignUp from "./components/SellerSignUp";
+import AzonkaPay from "./components/AzonkaPay";
+import AddressBook  from "./components/AddressBook";
+import ChangePassword from "./components/Auth/changePassword";
 
 import ResetPassword from './components/Auth/ResetPassword';
-
+import  Layout from "./components/HOC/Layout";
 class Root extends Component {
     render() {
         return (
             <div>
                 <Router>
-                
-                    <Header />
+                    <Layout>
                         <Switch>
                             <Route exact path="/" component={Home} />
                             <AuthRoute redirectIfAuth noAuthRequired exact path="/users/register" component={Register} />
-                            <AuthRoute redirectIfAuth  exact path="/users/verify" component={VerifyEmail} />
+                            <AuthRoute redirectIfAuth noAuthRequired  exact path="/users/verify" component={VerifyEmail} />
                             <AuthRoute redirectIfAuth noAuthRequired exact path="/users/login" component={Login} />
-                            <AuthRoute redirectIfAuth exact path="/users/securityquestions" component={SecurityQuestion} />
+                            <Route redirectIfAuth exact path="/users/securityquestions" component={SecurityQuestion} />
                             <AuthRoute exact path="/users/profile" component={Profile} />
                             <AuthRoute exact path="/users/profile/account" component={AccountSetting} />
                             <AuthRoute noAuthRequired exact path="/users/purchases" component={Purchases} />
@@ -57,17 +54,18 @@ class Root extends Component {
                             <AuthRoute redirectIfUser exact path="/users/withdrawal" component={WithDrawal} />
                             <AuthRoute redirectIfUser exact path="/users/items/upload" component={UploadItem} />
                             <AuthRoute redirectIfUser exact path="/users/items/manage" component={ManageItems} />
-                            <AuthRoute redirectIfUser exact path="/users/:id/referals" component={Referral} />
+                            <AuthRoute redirectIfUser exact path="/users/referals" component={Referral} />
                             <AuthRoute  exact path="/users/banks" component={Bank} />
+                            <AuthRoute exact path="/users/azonkaPay" component={AzonkaPay} />
+                            <AuthRoute exact path="/users/addressBook" component={AddressBook} />
                             <AuthRoute exact path="/users/agent/signup" component={AgentSignUp} />
                             <AuthRoute exact path="/users/seller/signup" component={SellerSignUp} />
                             <AuthRoute noAuthRequired  path="/users/wishlist" component={WishList} />
+                            <AuthRoute exact path="/users/reset-password" component={ChangePassword} />
                             <AuthRoute redirectIfAuth noAuthRequired exact = "/password/new" component={ResetPassword} />
                             <NotFoundRoute path="*" component={Home} />
                         </Switch>
-                    
-                    <Footer />
-                    
+                    </Layout>
                 </Router>
             </div>
         );
@@ -75,4 +73,4 @@ class Root extends Component {
 }
 
 
-export default connect(null, actions)(Root);
+export default Root

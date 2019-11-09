@@ -42,9 +42,6 @@ class index extends Component {
             <UserLayout>
                 <Header title="Recommended For You" />
                 {this.renderItems()}
-                {
-                    this.props.unAuthorized ? this.logout() : null
-                }
             </UserLayout>
         );
     }

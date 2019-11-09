@@ -3,9 +3,6 @@ import { withToastManager } from 'react-toast-notifications';
 import queryString from "query-string";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
-import ErrorAlert from "../../common/ErrorAlert";
-import { Redirect } from 'react-router-dom'
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 class VerifyEmail extends Component {
     state = {
@@ -16,30 +13,28 @@ class VerifyEmail extends Component {
     componentDidMount(){
         const query = queryString.parse(this.props.location.search)
         const userRegDetails = JSON.parse(localStorage.getItem('userRegDetails'))
-        if(!query || !userRegDetails){
+        if (query['passcode']) {
+            localStorage.setItem('passcode', query['passcode'])
+        }        
+        if(!userRegDetails)  {
             return this.props.history.push('/users/login')
         }
-
-        if(query['passcode']){
-            this.setState({
-                passcode: query['passcode'],
-                userDetails: userRegDetails
-            })
-        }
-        
+        this.setState({
+            passcode: localStorage.getItem('passcode') ? localStorage.getItem('passcode'): '' ,
+            userDetails: userRegDetails
+        })        
     }
     resendEmailPasscode = (e) => {
-        const {add} = this.props.toastManager;
         //call database emailAddress
         console.log('e', JSON.parse(localStorage.getItem('userRegDetails')).emailAddress)
         this.props.resendEmail(JSON.parse(localStorage.getItem('userRegDetails')).emailAddress)
-        add('Successful, Please check your mail to continue', { appearance: 'success' })
+        //add('Successful, Please check your mail to continue', { appearance: 'success' })
+        this.props.showSuccessALert('Successful, Please check your mail to continue')
     }
     verifyEmail = e => {
         e.preventDefault()
-        const {add} = this.props.toastManager;
         if(this.state.passcode.trim() === ''){
-            return add('Please provide passcode', { appearance: 'error' })
+            return this.props.renderError('Please provide passcode')
         }
         //call the api
         this.props.initiateRegistration()
@@ -71,7 +66,7 @@ class VerifyEmail extends Component {
     }
     render() {
         return (
-            <div className="form-popup">
+            <div className="form-popup" style={{width:'430px'}}>
                 <div className="form-popup-content">
                     <h4 className="popup-title verify-email">Verify Email</h4>
                     <hr className="line-separator"/>
@@ -94,16 +89,8 @@ class VerifyEmail extends Component {
                         </div>
                     </form>
                 </div>
-                <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
-                {
-                    this.props.redirectToProfile ? <Redirect to="/users/profile" /> : null
-                }
-                {
-                    this.props.redirectToLogin ? <Redirect to="/users/login" /> : null
-                }
-                {
-                    this.props.loading ? <div className="spinner"><CircularProgress /></div> : null
-                }
+               
+                
             </div>
         );
     }

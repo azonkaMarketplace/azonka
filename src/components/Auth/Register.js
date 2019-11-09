@@ -1,11 +1,10 @@
 import React, {  Component } from 'react';
 import {  withToastManager } from 'react-toast-notifications';
 import Validator from 'validator';
-import Fade from "react-reveal/Fade";
 import { connect } from 'react-redux';
+import queryString from "query-string";
 import ErrorIcon from '@material-ui/icons/Error';
 import CloseIcon from '@material-ui/icons/Close';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { amber } from '@material-ui/core/colors';
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -35,14 +34,16 @@ class Register extends Component {
         countryCode:'+234',
         isoCode:'NGA',
         validationMessage: {},
-        agreeToTerms: true,
+        agreeToTerms: false,
         showSpinner: false
     }
     componentDidMount(){
-        // if(sessionStorage.getItem('reg-type'))
-        //     this.setState({
-        //         extendedUserType: sessionStorage.getItem('reg-type')
-        //     })
+        const query = queryString.parse(this.props.location.search)
+        if (query['referral']) {
+            this.setState({
+                referredBy: query['referral']
+            })
+        } 
     }
     extendedUserTypeChange = (event, value) => {
         this.setState({
@@ -176,15 +177,16 @@ class Register extends Component {
     }
     handleFormSubmit = (event) => {
         event.preventDefault();
-        const {add} = this.props.toastManager;
         const userData = {...this.state}
 
         if(!this.state.agreeToTerms)
-            return add('You must agree to terms and condition', { appearance: 'error' })
+            return this.props.renderError('You must agree to terms and condition')
         const validationResponse = this.validateFormData(userData)
         const { isValid} = validationResponse;
         if(!isValid){
             const { inValidElments, validationMessage} = validationResponse
+            this.props.renderError('Incorrect data provided, Please check and try again');
+            
            return  this.setState({
                 inValidElments,
                 validationMessage
@@ -228,179 +230,158 @@ class Register extends Component {
         console.log('closeing snackbar', this.state)
         this.props.clearError()
     }
-    redirectToVeriy = () => {
-        this.props.history.push('/users/verify')
-        return null
-    }
+    
     render() {
         const { classes } = this.props;
         return (
-                <div className="form-popup custom-input">
+                <div className="form-popup custom-input register-form">
                     <div className="form-popup-content">
                         <h4 className="popup-title">Register Account</h4>
                         <hr className="line-separator"/>
                         <form id="register-form" noValidate>
-                        <div className="">
-                            <label htmlFor="firstName" className="rl-label">First Name</label>
-                            <input type="text" value={this.state.firstName} 
-                                className={`${this.state.inValidElments.includes('firstName') ? 'invalid' : '' }`}
-                                onChange={this.handleInputChange} id="new_pwd" name="firstName" placeholder="Enter your firstname" />
-                            {
-                                this.state.inValidElments.includes('firstName') ?
-                                (
-                                    <div className="error-message required">
-                                        {this.state.validationMessage['firstName']}
-                                    </div>
-                                ): null 
-                            }
-                        </div>
-                        <div className="">
-                            <label htmlFor="lastName" className="rl-label">Last Name</label>
-                            <input type="text" value={this.state.lastName} 
-                                className={`${this.state.inValidElments.includes('lastName') ? 'invalid' : '' }`}
-                                onChange={this.handleInputChange} id="lastName" name="lastName" placeholder="Enter your lastname"/>
-                            {
-                                this.state.inValidElments.includes('lastName') ?
-                                (
-                                    <div className="error-message required">
-                                        {this.state.validationMessage['lastName']}
-                                    </div>
-                                ): null 
-                            }
-                        </div>
-                        <div>
-                            <label htmlFor="lastName" className="rl-label">Gender</label>
-                            <select name="gender" onChange={this.handleInputChange}
-                                value={this.state.gender}
-                                className={`${this.state.inValidElments.includes('gender') ? 'invalid' : '' }`}
-                            >
-                                <option value="">Select</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
-                            {
-                                this.state.inValidElments.includes('gender') ?
-                                (
-                                    <div className="error-message required">
-                                        {this.state.validationMessage['gender']}
-                                    </div>
-                                ): null 
-                            }
-                        </div>
-                            <label htmlFor="emailAddress"  className="rl-label required">Email Address</label>
-                            <input type="email" id="email_address2" className={`${this.state.inValidElments.includes('emailAddress') ? 'invalid' : '' }`} value={this.state.emailAddress} name="emailAddress" onChange={this.handleInputChange} placeholder="Enter your email address here..."/>
-                            {
-                                this.state.inValidElments.includes('emailAddress') ?
-                                (
-                                    <div className="error-message required">
-                                        {this.state.validationMessage['emailAddress']}
-                                    </div>
-                                ): null 
-                            }
-                            <label htmlFor="phoneNumber" className="rl-label required">Phone Number</label>
-                            <input type="text" id="phoneNumber" className={`${this.state.inValidElments.includes('phoneNumber') ? 'invalid' : '' }`} value={this.state.phoneNumber} name="phoneNumber" onChange={this.handleInputChange}  placeholder="Enter your phone number..."/>
-                            {
-                                this.state.inValidElments.includes('phoneNumber') ?
-                                (
-                                    <div className="error-message required">
-                                        {this.state.validationMessage['phoneNumber']}
-                                    </div>
-                                ): null 
-                            }
-                            <label htmlFor="country" className="rl-label required">Select Country</label>
-                            <select name="country" className={`${this.state.inValidElments.includes('country') ? 'invalid' : '' }`} value={this.state.country} onChange={this.handleInputChange}>
-                                <option value="">Select country</option>
-                                <option value="Nigeria">Nigeria</option>
-                            </select>
-                            {
-                                this.state.inValidElments.includes('country') ?
-                                (
-                                    <div className="error-message required">
-                                        {this.state.validationMessage['country']}
-                                    </div>
-                                ): null 
-                            }
-                            <label htmlFor="referredBy" className="rl-label">Referral Code</label>
-                            <input type="text" id="referredBy" className={`${this.state.inValidElments.includes('referredBy') ? 'invalid' : '' }`} value={this.state.referredBy} name="referredBy" onChange={this.handleInputChange}  placeholder="Enter your referral code..." />
-                            {
-                                this.state.inValidElments.includes('referredBy') ?
-                                (
-                                    <div className="error-message required">
-                                        {this.state.validationMessage['referredBy']}
-                                    </div>
-                                ): null 
-                            }
-                            <label htmlFor="password" className="rl-label required">Password</label>
-                            <input type="password" id="password2" className={`${this.state.inValidElments.includes('password') ? 'invalid' : '' }`} name="password" value={this.state.password} onChange={this.handleInputChange}  placeholder="Enter your password here..."/>
-                            {
-                                this.state.inValidElments.includes('password') ?
-                                (
-                                    <div className="error-message required">
-                                        {this.state.validationMessage['password']}
-                                    </div>
-                                ): null 
-                            }
-                            <label htmlFor="repeatPassword" className="rl-label required">Repeat Password</label>
-                            <input type="password" id="repeat_password2" className={`${this.state.inValidElments.includes('repeatPassword') ? 'invalid' : '' }`} value={this.state.repeatPassword} name="repeatPassword" onChange={this.handleInputChange}  placeholder="Repeat your password here..."/>
-                            {
-                                this.state.inValidElments.includes('repeatPassword') ?
-                                (
-                                    <div className="error-message required">
-                                        {this.state.validationMessage['repeatPassword']}
-                                    </div>
-                                ): null 
-                            }
-                            
-                            
-                            
-                            {
-                                this.state.extendedUserType === 'seller' ? (
-                                    <Fade right>
-                                        <div className="container-fluid" style={{paddingLeft: 0, paddingRight: 0}}>
-                                            <div className="row">
-                                                <div className="col-sm-12 col-md-6 shopLocationContainer">
-                                                    <label htmlFor="companyName" className="rl-label required">Company Name</label>
-                                                    <input className={`${this.state.inValidElments.includes('companyName') ? 'invalid' : '' }`} type="text" name="companyName" value={this.state.companyName} onChange={this.handleInputChange}   placeholder="Company Name..." />
-                                                    {
-                                                        this.state.inValidElments.includes('companyName') ?
-                                                        (
-                                                            <div className="error-message required">
-                                                                {this.state.validationMessage['companyName']}
-                                                            </div>
-                                                        ): null 
-                                                    }
+                        <div className="container-fluid">
+                            <div className="row">
+                                <div className="col-md-6 col-sm-12">
+                                    <div className="">
+                                        <label htmlFor="firstName" className="rl-label">First Name</label>
+                                        <input type="text" value={this.state.firstName} 
+                                            className={`${this.state.inValidElments.includes('firstName') ? 'invalid' : '' }`}
+                                            onChange={this.handleInputChange} id="new_pwd" name="firstName" placeholder="Enter your firstname" />
+                                        {
+                                            this.state.inValidElments.includes('firstName') ?
+                                            (
+                                                <div className="error-message required">
+                                                    {this.state.validationMessage['firstName']}
                                                 </div>
-                                                <div className="col-sm-12 col-md-6" >
-                                                    <label htmlFor="headOfficeAddress" className="rl-label required">Head Office Address</label>
-                                                    <input className={`${this.state.inValidElments.includes('headOfficeAddress') ? 'invalid' : '' }`} type="text" name="headOfficeAddress" value={this.state.headOfficeAddress} onChange={this.handleInputChange}   placeholder="Contact Address..." />
-                                                    {
-                                                        this.state.inValidElments.includes('headOfficeAddress') ?
-                                                        (
-                                                            <div className="error-message required">
-                                                                {this.state.validationMessage['headOfficeAddress']}
-                                                            </div>
-                                                        ): null 
-                                                    }
+                                            ): null 
+                                        }
+                                    </div>
+                                </div>
+                                <div className="col-md-6 col-sm-12">
+                                    <div className="">
+                                        <label htmlFor="lastName" className="rl-label">Last Name</label>
+                                        <input type="text" value={this.state.lastName} 
+                                            className={`${this.state.inValidElments.includes('lastName') ? 'invalid' : '' }`}
+                                            onChange={this.handleInputChange} id="lastName" name="lastName" placeholder="Enter your lastname"/>
+                                        {
+                                            this.state.inValidElments.includes('lastName') ?
+                                            (
+                                                <div className="error-message required">
+                                                    {this.state.validationMessage['lastName']}
                                                 </div>
+                                            ): null 
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-md-6 col-sm-12">
+                                    <div>
+                                        <label htmlFor="lastName" className="rl-label">Gender</label>
+                                        <select name="gender" onChange={this.handleInputChange}
+                                            value={this.state.gender}
+                                            className={`${this.state.inValidElments.includes('gender') ? 'invalid' : '' }`}
+                                        >
+                                            <option value="">Select</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        {
+                                            this.state.inValidElments.includes('gender') ?
+                                            (
+                                                <div className="error-message required">
+                                                    {this.state.validationMessage['gender']}
+                                                </div>
+                                            ): null 
+                                        }
+                                    </div>
+                                </div>
+                                <div className="col-md-6 col-sm-12">
+                                    <label htmlFor="emailAddress"  className="rl-label required">Email Address</label>
+                                    <input type="email" id="email_address2" className={`${this.state.inValidElments.includes('emailAddress') ? 'invalid' : '' }`} value={this.state.emailAddress} name="emailAddress" onChange={this.handleInputChange} placeholder="Enter your email address here..."/>
+                                    {
+                                        this.state.inValidElments.includes('emailAddress') ?
+                                        (
+                                            <div className="error-message required">
+                                                {this.state.validationMessage['emailAddress']}
                                             </div>
-                                            <div className="row">
-                                                <div className="col-sm-12 col-md-12">
-                                                    <label htmlFor="contactLine" className="rl-label required">Contact Line</label>
-                                                    <input className={`${this.state.inValidElments.includes('contactLine') ? 'invalid' : '' }`} type="text" name="contactLine" value={this.state.contactLine} onChange={this.handleInputChange}   placeholder="Contact Line..." />
-                                                    {
-                                                        this.state.inValidElments.includes('contactLine') ?
-                                                        (
-                                                            <div className="error-message required">
-                                                                {this.state.validationMessage['contactLine']}
-                                                            </div>
-                                                        ): null 
-                                                    }
-                                                </div>
+                                        ): null 
+                                    }
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-md-6 col-sm-12">
+                                    <label htmlFor="phoneNumber" className="rl-label required">Phone Number</label>
+                                    <input type="text" id="phoneNumber" className={`${this.state.inValidElments.includes('phoneNumber') ? 'invalid' : '' }`} value={this.state.phoneNumber} name="phoneNumber" onChange={this.handleInputChange}  placeholder="Enter your phone number..."/>
+                                    {
+                                        this.state.inValidElments.includes('phoneNumber') ?
+                                        (
+                                            <div className="error-message required">
+                                                {this.state.validationMessage['phoneNumber']}
                                             </div>
-                                        </div>
-                                    </Fade>
-                                ) : null
-                            }
+                                        ): null 
+                                    }
+                                </div>
+                                <div className="col-md-6 col-sm-12">
+                                    <label htmlFor="country" className="rl-label required">Select Country</label>
+                                    <select name="country" className={`${this.state.inValidElments.includes('country') ? 'invalid' : '' }`} value={this.state.country} onChange={this.handleInputChange}>
+                                        <option value="">Select country</option>
+                                        <option value="Nigeria">Nigeria</option>
+                                    </select>
+                                    {
+                                        this.state.inValidElments.includes('country') ?
+                                        (
+                                            <div className="error-message required">
+                                                {this.state.validationMessage['country']}
+                                            </div>
+                                        ): null 
+                                    }
+                                </div>
+                            </div>
+                            <div className="row">
+                                
+                                <div className="col-md-6 col-sm-12">
+                                    <label htmlFor="password" className="rl-label required">Password</label>
+                                    <input type="password" id="password2" className={`${this.state.inValidElments.includes('password') ? 'invalid' : '' }`} name="password" value={this.state.password} onChange={this.handleInputChange}  placeholder="Enter your password here..."/>
+                                    {
+                                        this.state.inValidElments.includes('password') ?
+                                        (
+                                            <div className="error-message required">
+                                                {this.state.validationMessage['password']}
+                                            </div>
+                                        ): null 
+                                    }
+                                </div>
+                                <div className="col-md-6 col-sm-12">
+                                    <label htmlFor="repeatPassword" className="rl-label required">Repeat Password</label>
+                                    <input type="password" id="repeat_password2" className={`${this.state.inValidElments.includes('repeatPassword') ? 'invalid' : '' }`} value={this.state.repeatPassword} name="repeatPassword" onChange={this.handleInputChange}  placeholder="Repeat your password here..."/>
+                                    {
+                                        this.state.inValidElments.includes('repeatPassword') ?
+                                        (
+                                            <div className="error-message required">
+                                                {this.state.validationMessage['repeatPassword']}
+                                            </div>
+                                        ): null 
+                                    }
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-md-6 col-sm-12">
+                                    <label htmlFor="referredBy" className="rl-label">Referral Code</label>
+                                    <input type="text" id="referredBy" className={`${this.state.inValidElments.includes('referredBy') ? 'invalid' : ''}`} value={this.state.referredBy} name="referredBy" onChange={this.handleInputChange} placeholder="Enter your referral code..." />
+                                    {
+                                        this.state.inValidElments.includes('referredBy') ?
+                                            (
+                                                <div className="error-message required">
+                                                    {this.state.validationMessage['referredBy']}
+                                                </div>
+                                            ) : null
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                            
                             <div className="terms-condition-container">
                                 <input type="checkbox" id="agreeToTerms"
                                     name="i agree" value="sellers" checked={this.state.agreeToTerms} />
@@ -409,12 +390,12 @@ class Register extends Component {
                                     I agree to
                                 </label>
                                 <span className="terms">
-                                    terms and condition
+                                    terms, condition and privacy policy
                                 </span>
                             </div>
                             <p style={{margin:'0px 0px', textAlign:'center'}}>Have an account? 
                                 <Link style={{color:'#00d7b3', cursor:'pointer'}} to="/users/login"> Login</Link></p>
-                            <button className="button mid secondary" onClick={this.handleFormSubmit}>Register <span className="primary">Now!</span></button>
+                            <button className="button mid secondary" style={{margin: '20px auto', width:'90%'}} onClick={this.handleFormSubmit}>Register <span className="primary">Now!</span></button>
                         </form>
                         
                     </div>
@@ -442,12 +423,6 @@ class Register extends Component {
                             ]}
                             />
                     </Snackbar>
-                    {
-                       this.props.loading ? <div className="spinner"><CircularProgress /></div> : null
-                    }
-                    {
-                        this.props.redirectToVerify ? this.redirectToVeriy() : null
-                    }
                 </div>
         );
     }

@@ -3,7 +3,7 @@ import { SUCCESSFUL_REGISTRATION,INITIAL_REGISTRATION,
 ERROR_RESENDING_PASSCODE, SUCCESS_RESENDING_PASSCODE, GET_SEC_QUESTIONS,
  LOGOUT_USER, CLOSE_SNACKBAR, EMAIL_FORGOT_PASSWORD_SENT, GET_SAVED_ACCOUNTS,
  LOGIN_UNSUCCESSFUL, LOGIN_SUCCESS, PASSWORD_REST_SUCCESSFUL, USER_ROLE_UPDATED_SUCCESSFUL,
- UNAUTHORIZED_USER, EMAIL_VERIFICATION_SUCCESFFUL, } from "../actions/types";
+ UNAUTHORIZED_USER, EMAIL_VERIFICATION_SUCCESFFUL, UNSUCCESSFUL_VERIFICATION, DISPLAY_ERROR, STOP_LOADING } from "../actions/types";
 const INITIAL_STATE = {loading: false,verified:null, error: null,errorMessage: null,
      user: null, questions:{}, successMessage: null, showSuccessBar: null, 
     redirectToProfile: false,unAuthorized: false, redirectToVerify: false, redirectToHome: false, redirectToLogin: false}
@@ -21,9 +21,14 @@ export default (state=INITIAL_STATE, actions) => {
                     redirectToHome: false, loading:true, error: null}
         case SUCCESSFUL_REGISTRATION:
             return {...state, loading:false,redirectToVerify:true, error: null, errorMessage: null}
+        case STOP_LOADING:
+            return {...state, loading:false}
         case UNSUCCESSFUL_REGISTRATION:
             return {...state,redirectToLogin: true, loading: false,error:true, errorMessage: actions.payload}
+        case DISPLAY_ERROR:
+            return {...state, loading:false}
         case SUCCESSFUL_VERIFICATION:
+        
             return {...state,redirectToVerify: true, loading: false,verfied: true, error: null, user: actions.payload}
         case CLEAR_ERROR:
             return {...state, error: null}
@@ -33,8 +38,8 @@ export default (state=INITIAL_STATE, actions) => {
             return {...state, error: true, errorMessage: actions.payload}
         case GET_SEC_QUESTIONS:
             return {...state, questions: actions.payload, error: null, errorMessage: null}
-        case LOGOUT_USER: 
-            return {...state, user: null,unAuthorized:true, redirectToHome: true, redirectToLogin: false, redirectToProfile:false,
+        case LOGOUT_USER:
+            return {...state, user: null,unAuthorized:true, redirectToHome: false, redirectToLogin: false, redirectToProfile:false,
             redirectToVerify: false}
         case CLOSE_SNACKBAR:
             return {...state, error: null, errorMessage:null, showSuccessBar: null}
@@ -45,13 +50,16 @@ export default (state=INITIAL_STATE, actions) => {
         case LOGIN_SUCCESS:
             return {...state,loading: false, unAuthorized: false, redirectToProfile: true, redirectToVerify: false}
         case LOGIN_UNSUCCESSFUL:
-            return {...state,unAuthorized: false, redirectToProfile: false, redirectToVerify: true}
+            return {...state,unAuthorized: false,loading: false, error: null,
+                 redirectToProfile: false, redirectToVerify: true, redirectToLogin: false}
         case PASSWORD_REST_SUCCESSFUL:
             return {...state, redirectToLogin: true}
         case USER_ROLE_UPDATED_SUCCESSFUL:
-            return {...state,loading: false, redirectToLogin:true}
+            return {...state,loading: false, redirectToProfile:true}
         case EMAIL_VERIFICATION_SUCCESFFUL:
-            return {...state,loading: false, redirectToProfile: true}
+            return {...state,loading: false,unAuthorized:false,redirectToVerify:false,error:null, redirectToProfile: true}
+        case UNSUCCESSFUL_VERIFICATION:
+            return {...state, loading: false,error:true, errorMessage: actions.payload}
         default: 
             return {...state}
     }

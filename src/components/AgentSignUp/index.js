@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import { withToastManager } from 'react-toast-notifications';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import CustomInput from "../../common/CustomInput";
-import ErrorAlert from "../../common/ErrorAlert";
-import SuccessAlert from "../../common/SuccessAlert";
-import { Redirect } from "react-router-dom";
 
 class AgentSignUp extends Component {
     state = {
@@ -100,52 +96,14 @@ class AgentSignUp extends Component {
 
      }
      validateFormData = (FormData) => {
-        const unansweredQuestions = []
         let isValid = true;
-        let requiredField = []
-        const answered_question = FormData.questions
-        const keys = Object.keys(this.props.questions)
-        if(answered_question.length !== keys.length){
-            isValid = false;
-            keys.forEach((element) => {
-                const index = answered_question.findIndex(({question_id: id}) => id === element)
-                if(index === -1){
-                    unansweredQuestions.push(`${element}`)
-                }
-            })
-            
-            //
-        }else{
-            answered_question.forEach(item => {
-                if(item.answer.trim() === ''){
-                    isValid = false
-                    unansweredQuestions.push(item.question_id)
-                }
-            })
-        }
-        if(FormData.pincode.trim() === ''){
-            requiredField.push('pincode')
-        }
-        this.setState({
-            inValidElments: [...unansweredQuestions, ...requiredField]
-        })
+    
         return isValid
-    }
-    clearSpinner = () => {
-        this.setState({
-            showSpinner: false
-        })
-        return null
-    }
-    logout = () => {
-        this.props.logout()
-        return <Redirect to="/users/login" />
     }
     handleFormSubmit = (event) => {
         event.preventDefault();
-        const {toastManager: { add}} = this.props;
         if(!this.state.agreeToTerms){
-            return add('You must agree to Policy and Privacy', { appearance: 'error' })
+            return this.props.renderError('You must agree to Policy and Privacy')
         }
         const isValid = this.validateFormData(this.state)
         if(isValid){
@@ -153,23 +111,18 @@ class AgentSignUp extends Component {
             console.log('security questions', this.state)
             //call the api
             this.props.initiateRegistration()
-            const pincode = this.state.pincode;
+            // const pincode = this.state.pincode;
             const agentIdentification = ''
-            const securityAnswerOne = this.state.questions.find(question => question.question_id === '1').answer
-            const securityAnswerTwo = this.state.questions.find(question => question.question_id === '2').answer
-            const securityAnswerThree = this.state.questions.find(question => question.question_id === '3').answer
-            this.props.updateUserType({
-                securityAnswerOne, securityAnswerTwo, securityAnswerThree,
-                pin:pincode, agentIdentification
-                
-            }, 'agent')
+            // const securityAnswerOne = this.state.questions.find(question => question.question_id === '1').answer
+            // const securityAnswerTwo = this.state.questions.find(question => question.question_id === '2').answer
+            // const securityAnswerThree = this.state.questions.find(question => question.question_id === '3').answer
+            this.props.updateUserType({ agentIdentification }, 'agent')
             
             //naviagate the user to profile page
             //call the api
         }else{
             //form is not valid display error
-            
-            add('One or more fields not filled, please cheack and try again', { appearance: 'error' })
+            this.props.renderError('One or more fields not filled, please cheack and try again')
         }
     }
     render() {
@@ -190,7 +143,7 @@ class AgentSignUp extends Component {
                     <div className="custom-file-input-button">
                         <input type="file" ref={this.fileInput}  name="agentID" value={this.state.agentID} onChange={this.uploadId} />
                     </div>
-                    <div style={{ padding: '20px 10px 0 10px' }}>
+                    {/* <div style={{ padding: '20px 10px 0 10px' }}>
                         <h4 className="popup-title verify-email" style={{
                             fontWeight: 'normal',
                             fontFamily: 'Roboto, sans-serif'
@@ -198,15 +151,15 @@ class AgentSignUp extends Component {
                         <hr className="line-separator" />
                     </div>
 
-                    {this.renderQuestion()}
-                    <div style={{ padding: '20px 10px 0 10px' }}>
+                    {this.renderQuestion()} */}
+                    {/* <div style={{ padding: '20px 10px 0 10px' }}>
                         <h4 className="popup-title verify-email" style={{
                             fontWeight: 'normal',
                             fontFamily: 'Roboto, sans-serif'
                         }}>Setup Pincode</h4>
                         <hr className="line-separator" />
-                    </div>
-                    <input className={`${this.state.inValidElments.includes('pincode') ? 'invalid' : ''}`} type="text" name="pincode" value={this.state.pincode} onChange={this.handleInputChange} placeholder="Enter Pincode" />
+                    </div> */}
+                    {/* <input className={`${this.state.inValidElments.includes('pincode') ? 'invalid' : ''}`} type="text" name="pincode" value={this.state.pincode} onChange={this.handleInputChange} placeholder="Enter Pincode" />
                     {
                         this.state.inValidElments.includes('pincode') ?
                             (
@@ -214,7 +167,7 @@ class AgentSignUp extends Component {
                                     {this.state.validationMessage['pincode']}
                                 </div>
                             ) : null
-                    }
+                    } */}
                     <div className="terms-condition-container">
                         <input type="checkbox" id="agreeToTerms"
                            onChange={this.agreeTotermsChange} name="i agree" value="sellers" checked={this.state.agreeToTerms} />
@@ -230,20 +183,8 @@ class AgentSignUp extends Component {
                         <button className="button mid secondary" onClick={this.handleFormSubmit}>Submit</button>
                     </div>
                 </form>
-                <SuccessAlert 
-                    open={this.props.showSuccessBar} closeSnackBar={this.closeSnackBar}
-                    message={this.props.successMessage} 
-                />
-                <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
-                {
-                    this.props.redirectToLogin ? <Redirect to="/users/login"/> : null
-                }
-                {
-                    this.props.loading ? <div className="spinner"><CircularProgress /></div> : null
-                }
-                {
-                    this.props.unAuthorized ? this.logout() : null
-                }
+                
+                
             </div>
         );
     }

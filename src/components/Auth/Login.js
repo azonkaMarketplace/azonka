@@ -3,14 +3,11 @@ import { withToastManager } from 'react-toast-notifications';
 import Validator from "validator";
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import withStyles from "@material-ui/core/styles/withStyles";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
-import ErrorAlert from "../../common/ErrorAlert";
-import SuccessAlert from "../../common/SuccessAlert";
-import { Link, Redirect } from 'react-router-dom';
+import { Link,  } from 'react-router-dom';
 
 class Login extends Component {
     state = {
@@ -224,20 +221,6 @@ class Login extends Component {
                     </div>
                     </Fade>
                 </Modal>
-                <SuccessAlert 
-                    open={this.props.showSuccessBar} closeSnackBar={this.closeSnackBar}
-                    message={this.props.successMessage} 
-                />
-                {
-                    this.props.redirectToProfile ? <Redirect to="/users/profile" /> : null
-                }
-                {
-                    this.props.redirectToVerify ? <Redirect to="/users/verify" /> : null
-                }
-                {
-                    this.props.loading ? <div className="spinner"><CircularProgress /></div> : null
-                }
-                <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
             </div>
         );
     }

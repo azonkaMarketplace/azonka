@@ -1,15 +1,10 @@
 import axios from 'axios'
-import { PAY_STACK_TEST_KEY } from "../config/config";
 import { GET_BANKS, UNSUCCESSFUL_REGISTRATION,UNAUTHORIZED_USER, ACCOUNT_ADDED_SUCCESSFULLY,GET_SAVED_ACCOUNTS } from "./types";
 
 export const getBanks = () => {
     return async (dispatch) => {
         try{
-            const response = await axios.get('https://api.paystack.co/bank', {}, {
-                headers:{
-                    'x-access-token': `Bearer ${PAY_STACK_TEST_KEY}`
-                }
-            })
+            const response = await axios.get('https://api.paystack.co/bank' )
             dispatch({type: GET_BANKS, payload: response.data.data})
         }catch(error){
             console.log('error in: => ', error.response)

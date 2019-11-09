@@ -339,9 +339,9 @@ class Bank extends Component {
                 />
                 <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
                 </div>
-                {
+                {/* {
                     this.props.unAuthorized ? this.logout() : null
-                }
+                } */}
             </UserLayout>
         );
     }

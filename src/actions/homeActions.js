@@ -1,4 +1,5 @@
-import { FETCH_USER, SWITCH_ACTIVE_LINK,TOGGLE_VIEW_TYPE,INITIAL_REGISTRATION,CLOSE_SNACKBAR
+import { FETCH_USER, SWITCH_ACTIVE_LINK,TOGGLE_VIEW_TYPE,INITIAL_REGISTRATION,CLOSE_SNACKBAR,
+    SUCCESS_ALERT, DISPLAY_ERROR
  } from "./types";
 
 
@@ -45,5 +46,13 @@ export const initiateRegistration = () => {
 
 export const closeSnackBar = () => {
     return { type: CLOSE_SNACKBAR, payload: ''}
+}
+
+export const renderError = (message = '') => {
+    return {type: DISPLAY_ERROR, payload: message}
+}
+
+export const showSuccessALert = (message='') => {
+    return {type: SUCCESS_ALERT, payload: message}
 }
 

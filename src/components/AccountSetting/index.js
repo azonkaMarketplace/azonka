@@ -4,8 +4,6 @@ import UserLayout from "../HOC/UserLayout";
 import * as actions from "../../actions";
 import Validator from "validator";
 import profileImage from "../../images/dashboard/profile-default-image.png";
-import SuccessAlert from "../../common/SuccessAlert";
-import ErrorAlert from "../../common/ErrorAlert";
 import { connect } from "react-redux";
 
 class index extends Component {
@@ -16,7 +14,8 @@ class index extends Component {
         copyToShip: false,
         showBalanceInStatusBar: true,
         sendEmails: true,
-        inValidElements: []
+        inValidElements: [],
+        changedElements: []
     }
     componentDidMount(){
         this.props.switchActiveLink('account-setting')
@@ -43,9 +42,15 @@ class index extends Component {
         if(index !== -1){
             this.state.inValidElements.splice(index, 1)
         }
+        const touchedElementsIndex = this.state.changedElements.findIndex(element => element === name)
+        const newTouchedElements = this.state.changedElements
+        if(touchedElementsIndex === -1){
+            newTouchedElements.push(name)
+        }
         this.setState({
             [field] : {...this.state[field], [name]: value},
-            inValidElements: [...this.state.inValidElements]
+            inValidElements: [...this.state.inValidElements],
+            changedElements: [...newTouchedElements]
         })
     }
     copyToShipInformation = (event) => {
@@ -72,33 +77,25 @@ class index extends Component {
     validateProfileInformation = (data, field) => {
         let isValid = true
         let inValidElements = []
-        if(!Validator.isEmail(data['emailAddress'])){
-            isValid = false;
-            inValidElements.push({field, input:'emailAddress'})
-        }
-        if(!/^[0-9]*$/.test(data['phoneNumber'])){
-            isValid = false;
-            inValidElements.push({field, input:'phoneNumber'})
-        }
-        if(data['firstName'].trim() === ''){
-            isValid = false;
-            inValidElements.push({field, input:'firstName'})
-        }
-        if(data['lastName'].trim() === ''){
-            isValid = false;
-            inValidElements.push({field, input:'lastName'})
-        }
-        if( data['newPassword'] && data['newPassword'].trim() !== ''){
-
-            if( !data['new_pwd2'] || data['new_pwd2'].trim() === '' ){
-                isValid = false
-                inValidElements.push({field, input:'new_pwd2'})
+        Object.keys(data).forEach(element => {
+            if(element === 'emailAddress'){
+                if(!Validator.isEmail(data[element])){
+                    isValid = false;
+                    inValidElements.push({field, input:'emailAddress'})
+                }
             }
-            if( !data['currentPassword'] || data['currentPassword'].trim() === ''){
-                isValid = false
-                inValidElements.push({field, input:'currentPassword'})
+            if(element === 'phoneNumber'){
+                if(!/^[0-9]*$/.test(data['phoneNumber'])){
+                    isValid = false;
+                    inValidElements.push({field, input:'phoneNumber'})
+                }
             }
-        }
+            else if(data[element].trim() === ''){
+                
+                isValid = false;
+                inValidElements.push({field, input:'firstName'})
+            }
+        })
         return {
             isValid,
             inValidElements
@@ -117,16 +114,26 @@ class index extends Component {
 
     handleFormSubmit = e => {
         e.preventDefault()
-        const {toastManager: {add}} = this.props;
-        const {isValid, inValidElements} = this.validateFormData(this.state.profileInformation, 'profileInformation')
+        const updatedElement = {};
+        this.state.changedElements.forEach(element => {
+            updatedElement[element] = this.state.profileInformation[element]
+        })
+        const {isValid, inValidElements} = this.validateFormData(updatedElement, 'profileInformation')
         
-        console.log('this profile', this.state.profileInformation)
+        console.log('this profile', updatedElement)
         console.log(isValid, inValidElements)
 
         if(isValid){
-           this.props.updateUserProfile(this.state.profileInformation)
+            if(Object.keys(updatedElement).length > 0){
+                this.props.initiateRegistration()
+                this.props.updateUserProfile(updatedElement)
+                this.setState({
+                    changedElements: []
+                })
+            }
         }else{
-            add('One or more fields not filled, Please check your form and try again', { appearance: 'error' })
+            console.log('not called')
+            this.props.renderError('One or more fields not filled, Please check your form and try again')
             this.setState({
                 inValidElements
             })
@@ -143,7 +150,7 @@ class index extends Component {
         return (
             <UserLayout>
                 <div className="headline buttons primary">
-                    <h4>Account Settings</h4>
+                    <h4>Profile</h4>
                     <button form="profile-info-form" onClick={this.handleFormSubmit} className="button mid-short primary">Save Changes</button>
                 </div>
                 <div className="form-box-items">
@@ -156,7 +163,7 @@ class index extends Component {
                                     <img src={profileImage} alt="profile-default" />
                                 </figure>
                                 <p className="text-header">Profile Photo</p>
-                                <p className="upload-details">Minimum size 70x70px</p>
+                                <p className="upload-details">Minimum size 70x70px (optional)</p>
                             </div>
                             <div className="upload-btn-wrapper" style={{margin: '10px 0'}}>
                                 <button className="btn">Upload photo</button>
@@ -172,18 +179,6 @@ class index extends Component {
                             <div className="input-container">
                                 <label htmlFor="lastName" className="rl-label required">Last Name</label>
                                 <input type="text" className={`${this.isInvalid('lastName', 'profileInformation') ?  'invalid': ''}`} onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} id="acc_name" name="lastName" value={this.state.profileInformation.lastName} placeholder="last name" />
-                            </div>
-                            <div className="input-container">
-                                <label htmlFor="currentPassword" className="rl-label">Current Password</label>
-                                <input type="password" className={`${this.isInvalid('currentPassword', 'profileInformation') ?  'invalid': ''}`} id="website_url" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} name="currentPassword" value={this.state.profileInformation.currentPassword} placeholder="Current password" />
-                            </div>
-                            <div className="input-container half">
-                                <label htmlFor="newPassword" className="rl-label">New Password</label>
-                                <input type="password" className={`${this.isInvalid('newPassword', 'profileInformation') ?  'invalid': ''}`} onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} id="new_pwd" name="newPassword" value={this.state.profileInformation.newPassword} placeholder="Enter your new password here..." />
-                            </div>
-                            <div className="input-container half">
-                                <label htmlFor="new_pwd2" className="rl-label">Repeat Password</label>
-                                <input type="password" className={`${this.isInvalid('new_pwd2', 'profileInformation') ?  'invalid': ''}`} onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} id="new_pwd2" name="new_pwd2" value={this.state.profileInformation.new_pwd2} placeholder="Repeat your password here..." />
                             </div>
                             <div className="input-container">
                                 <label htmlFor="emailAddress" className="rl-label">Email</label>
@@ -206,71 +201,10 @@ class index extends Component {
                                 <label htmlFor="about" className="rl-label">About</label>
                                 <input type="text" id="about" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} value={this.state.profileInformation.about} name="about" placeholder="This will appear bellow your avatar... (max 140 char)" />
                             </div>
-                            {/* <div className="input-container">
-                                <label className="rl-label">Preferences</label>
-                                <input type="checkbox" id="show_balance" onChange={this.handleInputChange} checked={this.state.showBalanceInStatusBar} value={this.state.profileInformation.show_balance} name="show_balance" />
-                                <label htmlFor="show_balance" onClick={this.toggleShowAccountBalance} className="label-check">
-                                    <span className="checkbox primary"><span></span></span>
-                                    Show account balance in the status bar
-                                </label>
-                                <input type="checkbox" onChange={this.handleInputChange} value={this.state.profileInformation.email_notif} checked={this.state.sendEmails} id="email_notif" name="email_notif" />
-                                <label htmlFor="email_notif" onClick={this.toggleSendEmailNotification} className="label-check">
-                                    <span className="checkbox primary"><span></span></span>
-                                    Send me email notifications
-                                </label>
-                            </div> */}
                         </form>
                     </div>
-                    <div className="form-box-item">
-                        <h4>Biling Information</h4>
-                        <hr className="line-separator"/>
-                        <div className="input-container half">
-                            <label htmlFor="first_name2" className="rl-label required">First Name</label>
-                            <input onChange={(event) => this.handleInputChange({event, field:'billingInformation'})} type="text" form="profile-info-form" id="first_name2" value={this.state.billingInformation.firstName} name="firstName" placeholder="Enter your first name here..."/>
-					    </div>
-                        <div className="input-container half">
-                            <label htmlFor="last_name2" className="rl-label required">Last Name</label>
-                            <input onChange={(event) => this.handleInputChange({event, field:'billingInformation'})} type="text" form="profile-info-form" value={this.state.billingInformation.lastName} id="last_name2" name="lastName" placeholder="Enter your last name here..."/>
-                        </div>
-                        <div className="input-container">
-                            <label htmlFor="email_address2" className="rl-label required">Email Address</label>
-                            <input onChange={(event) => this.handleInputChange({event, field:'billingInformation'})} type="email" value={this.state.billingInformation.email} form="profile-info-form" id="email_address2" name="email" placeholder="Enter your email address here..."/>
-                        </div>
-                        <div className="input-container">
-                            <label htmlFor="country2" className="rl-label required">Country</label>
-                            <label htmlFor="country2" className="select-block">
-                                <select onChange={(event) => this.handleInputChange({event, field:'billingInformation'})} value={this.state.billingInformation.country} form="profile-info-form" name="country" id="country2">
-                                    <option value="0">Select your Country...</option>
-                                    <option value="Nigeria">Nigeria</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div className="input-container half">
-                            <label htmlFor="state_city2" className="rl-label required">State/City</label>
-                            <label htmlFor="state_city2" className="select-block">
-                                <select onChange={(event) => this.handleInputChange({event, field:'billingInformation'})} value={this.state.billingInformation.city} form="profile-info-form" name="city" id="state_city2">
-                                    <option value="0">Select your State/City...</option>
-                                    <option value="Nigeria">Nigeria</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div className="input-container half">
-                            <label htmlFor="zipcode2" className="rl-label required">Zip Code</label>
-                            <input onChange={(event) => this.handleInputChange({event, field:'billingInformation'})} form="profile-info-form" value={this.state.billingInformation.zipcode} type="text" id="zipcode2" name="zipcode" placeholder="Enter your Zip Code here..."/>
-                        </div>
-                        <div className="input-container">
-                            <label htmlFor="address2" className="rl-label required">Full Address</label>
-                            <input onChange={(event) => this.handleInputChange({event, field:'billingInformation'})} form="profile-info-form" value={this.state.billingInformation.address} type="text" id="address" name="address" placeholder="Enter your address here..."/>
-                        </div>
-                        <div className="input-container">
-                            <input type="checkbox" onChange={this.handleInputChange} form="profile-info-form" id="copy_shipping" checked={this.state.copyToShip} name="copy_shipping"  />
-                            <label htmlFor="copy_shipping" onClick={this.copyToShipInformation} className="label-check">
-                                <span className="checkbox primary"><span></span></span>
-                                Copy information to shipping
-                            </label>
-                        </div>
-                    </div>
-                    <div className="form-box-item last-item">
+                    
+                    {/* <div className="form-box-item last-item">
                         <h4>Shipping Information</h4>
                         <hr className="line-separator"/>
                         <div className="input-container half">
@@ -315,14 +249,7 @@ class index extends Component {
                             <label htmlFor="notes2" className="rl-label">Aditional Notes</label>
                             <textarea onChange={(event) => this.handleInputChange({event, field:'shippingInformation'})} value={this.state.shippingInformation.note} form="profile-info-form" id="notes2" name="note1" placeholder="Enter aditional notes here..."></textarea>
                         </div>
-                    </div>
-                    <ErrorAlert 
-                        open={this.props.error} closeSnackBar={this.closeSnackBar}
-                         errorMessage={this.props.errorMessage} />
-                    <SuccessAlert 
-                        open={this.props.showSuccessBar} closeSnackBar={this.closeSnackBar}
-                        message={this.props.message} 
-                    />
+                    </div> */}
                 </div>
             </UserLayout>
         );

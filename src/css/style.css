@@ -343,9 +343,9 @@ p span.tertiary {
 
 input,
 textarea {
-    color: #888;
+    color: #000;
     font-family: "Titillium Web", sans-serif;
-    font-size: 0.8125em;
+    font-size: 1.1125em;
     border-radius: 4px
 }
 
@@ -1897,13 +1897,14 @@ header,
     pointer-events: auto
 }
 
-.dropdown .dropdown-item>a {
+.dropdown .dropdown-item>a, .dropdown .dropdown-item>div.feature-drpdown {
     display: block;
     padding-left: 15px;
     line-height: 50px;
     color: #2b373a;
     font-size: 0.875em;
-    font-weight: 700
+    font-weight: 700;
+    cursor: pointer;
 }
 
 .dropdown .dropdown-item>a .svg-arrow {
@@ -3874,7 +3875,7 @@ header .account-actions .button:last-child {
 
 .product-list .product-item .pin {
     position: absolute;
-    z-index: 9990
+    z-index: 500
 }
 
 .product-list .product-item .product-preview-image {
@@ -6520,6 +6521,11 @@ header .account-actions .button:last-child {
     position: relative
 }
 
+.register-form{
+    width: 80% !important;
+    max-width: 1200px !important;
+}
+
 .form-popup.new-message {
     width: 570px
 }
@@ -8159,7 +8165,9 @@ header .account-actions .button:last-child {
 
 .profile-image {
     margin-bottom: 22px;
-    min-height: 70px
+    min-height: 70px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .profile-image .profile-image-data {
@@ -9405,7 +9413,9 @@ header .account-actions .button:last-child {
 .transaction-list-item-item {
     width: 22.55%
 }
-
+.transaction-list-header-item.mobile-header{
+    display: none;
+}
 .transaction-list-header-detail,
 .transaction-list-item-detail {
     width: 10.75%
@@ -9452,7 +9462,7 @@ header .account-actions .button:last-child {
 }
 
 .transaction-list-item {
-    height: 50px
+    height: 66px
 }
 
 .transaction-list-item>* {
@@ -9593,11 +9603,21 @@ header .account-actions .button:last-child {
     .transaction-list-header-icon {
         display: none
     }
+    .transaction-list-header-item.email-header{
+        display: none !important;
+    }
+    .transaction-list-header-item.mobile-header{
+        display: block !important;
+    }
     .transaction-list-header-item {
         width: 100%
     }
     .transaction-list-header-item .text-header {
         text-align: center
+    }
+    .transaction-list-item-date, .transaction-list-item-author,
+    .transaction-list-item-item, .transaction-list-item-detail{
+        width: 100% !important;
     }
     .transaction-list-item-detail,
     .transaction-list-item-code,
@@ -11035,7 +11055,7 @@ pre {
     /* font-family: Roboto, sans-serif; */
     /* font-size: 2em; */
     color: #000;
-    width: 80% !important;
+    width: 80% ;
     margin: 10% auto 10px auto !important;
 }
 
@@ -11103,7 +11123,7 @@ pre {
 
 .form-box-items{
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px,1fr));
+    grid-template-columns: repeat(auto-fill, minmax(100%,1fr));
     grid-gap: 0 10px;
 }
 
@@ -11251,7 +11271,7 @@ pre {
     margin-left: 5px;
 }
 
-@media screen and (max-width: 1100px){
+@media screen and (max-width: 1200px){
     .user-money, .user-name{
         color: #fff;
     }
@@ -11274,7 +11294,7 @@ pre {
     }
     input[type="text"], input[type="file"], select,
      input[type="email"], input[type="password"], input[type="number"]{
-        width: 85% !important;
+        width: 100% !important;
     }
     /* .logo-mobile{
         display: none !important;
@@ -11317,6 +11337,15 @@ pre {
     .form-popup .form-popup-headline h2{
         font-size: 1em;
     }
+    .router-container{
+        padding-top: 150px !important;
+    }
+    .rerral-block{
+        flex-direction: column !important;
+    }
+    .ref-div{
+        margin-bottom: 10px !important;
+    }
 }
 
 div.user-avatar-placeholder{
@@ -11343,7 +11372,7 @@ header .account-information .account-wishlist-quickview>span:first-child, header
     position: absolute;
     top: 50%;
     margin-left: -10px;
-    z-index: 1000000000;
+    z-index: 800;
 }
 
 .fA-Icon{
@@ -11533,6 +11562,10 @@ label {
     color: #fff !important;
 }
 
+.terms-condition-container{
+    margin-top: 40px;
+}
+
 .spinner{
     position: absolute;
     top: calc(50vh - 30%);
@@ -11555,3 +11588,168 @@ label {
     font-weight: 600;
     color: #888;
 }
+
+.account-upgrade-button{
+    padding: 0 10px;
+}
+
+.header-container{
+    position: fixed;
+    width: 100%;
+    z-index: 999;
+    box-shadow: 2px 1px 4px -3px #f5f5f5;
+}
+
+.router-container{
+    padding-top: 180px;
+}
+
+.spinner-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    /* text-align: center; */
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner{
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 100000000;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+
+}
+
+.toggle-feature-dropdown{
+    display: none;
+}
+
+.open-feature-dropdown{
+    display: block !important;
+}
+
+.custom-feature-dropdpwn{
+    justify-content: space-between;
+    display: flex !important;
+    
+}
+
+.custom-feature-color{
+    color:#fff !important;
+}
+.add-bottom-border{
+    border-bottom: 1px solid #ebebeb;
+}
+
+
+.rerral-block{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+}
+
+.ref-div{
+    width: 100%;
+    background: #fff;
+    padding: 10px 20px;
+    margin-right: 10px;
+    display: flex;
+    align-items: safe;
+    /* height: 100px; */
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ref-heading{
+    border-bottom: 1px solid #ebebeb;
+    padding: 10px 0;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.ref-text{
+    padding: 10px 0;
+}
+
+.ref-text p {
+    color: #000 !important;
+}
+
+.referral-link{
+    color: #06b99b
+}
+
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 140px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -75px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .ref-icon{
+    width: 40px;
+    height: 40px;
+    line-height: 34px;
+    border-radius: 50%;
+    background: grey;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .ref-icon span{
+      color:#fff;
+      font-size: 1.3em;
+  }
+textarea.referralLink{
+    color: #06b99b;
+}
+  textarea.select-area{
+      border: none;
+      height: fit-content;
+  }
+
+  .copied-container{
+      background: #06b99b; 
+  }
+
+  .resetpassword-container {
+      background: #fff;
+      padding: 40px 20px;
+  }

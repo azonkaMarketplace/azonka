@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import { withToastManager } from 'react-toast-notifications';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import CustomInput from "../../common/CustomInput";
-import ErrorAlert from "../../common/ErrorAlert";
-import SuccessAlert from "../../common/SuccessAlert";
 import { Redirect } from "react-router-dom";
 
 class SellerSignUp extends Component {
@@ -99,37 +96,13 @@ class SellerSignUp extends Component {
          return <Redirect to="/users/login" />
      }
      validateFormData = (FormData) => {
-        const unansweredQuestions = []
         let isValid = true;
         let requiredField = []
-        const answered_question = FormData.questions
-        const keys = Object.keys(this.props.questions)
-        if(answered_question.length !== keys.length){
-            isValid = false;
-            keys.forEach((element) => {
-                const index = answered_question.findIndex(({question_id: id}) => id === element)
-                if(index === -1){
-                    unansweredQuestions.push(`${element}`)
-                }
-            })
-            
-            //
-        }else{
-            answered_question.forEach(item => {
-                if(item.answer.trim() === ''){
-                    isValid = false
-                    unansweredQuestions.push(item.question_id)
-                }
-            })
-        }
         if(FormData.companyName.trim() === ''){
             requiredField.push('companyName')
         }
-        if(FormData.pincode.trim() === ''){
-            requiredField.push('pincode')
-        }
         this.setState({
-            inValidElments: [...unansweredQuestions, ...requiredField]
+            inValidElments: [ ...requiredField]
         })
         return isValid
     }
@@ -151,19 +124,13 @@ class SellerSignUp extends Component {
             console.log('security questions', this.state)
             //call the api
             this.props.initiateRegistration()
-            const pincode = this.state.pincode;
             const referredBy = this.state.referredBy
             const companyName = this.state.companyName;
             const headOfficeAddress = this.state.headOfficeAddress;
             const contactLine = this.state.contactLine;
             const sellerIdentification = ''
-            const securityAnswerOne = this.state.questions.find(question => question.question_id === '1').answer
-            const securityAnswerTwo = this.state.questions.find(question => question.question_id === '2').answer
-            const securityAnswerThree = this.state.questions.find(question => question.question_id === '3').answer
-            this.props.updateUserType({
-                securityAnswerOne, securityAnswerTwo, securityAnswerThree,
-                pin:pincode, referredBy, companyName, headOfficeAddress, contactLine, sellerIdentification
-                
+            this.props.updateUserType({ referredBy, companyName, 
+                headOfficeAddress, contactLine, sellerIdentification
             }, 'seller')
             
             //naviagate the user to profile page
@@ -219,7 +186,7 @@ class SellerSignUp extends Component {
                         </div>
                         <div className="row">
                             <div className="col-sm-12 col-md-12">
-                                <label htmlFor="contactLine" className="rl-label">Contact Line</label>
+                                <label htmlFor="contactLine" className="rl-label">Phone Number</label>
                                 <input className={`${this.state.inValidElments.includes('contactLine') ? 'invalid' : ''}`} type="text" name="contactLine" value={this.state.contactLine} onChange={this.handleInputChange} placeholder="Contact Line..." />
                                 {
                                     this.state.inValidElments.includes('contactLine') ?
@@ -232,7 +199,7 @@ class SellerSignUp extends Component {
                             </div>
                         </div>
                     </div>
-
+{/* 
                     <div style={{ padding: '20px 10px 0 10px' }}>
                         <h4 className="popup-title verify-email" style={{
                             fontWeight: 'normal',
@@ -241,7 +208,7 @@ class SellerSignUp extends Component {
                         <hr className="line-separator" />
                     </div>
 
-                    {this.renderQuestion()}
+                    {this.renderQuestion()} */}
                     <div style={{ padding: '20px 10px 0 10px' }}>
                         <h4 className="popup-title verify-email" style={{
                             fontWeight: 'normal',
@@ -259,7 +226,7 @@ class SellerSignUp extends Component {
                                 </div>
                             ) : null
                     }
-                    <div style={{ padding: '20px 10px 0 10px' }}>
+                    {/* <div style={{ padding: '20px 10px 0 10px' }}>
                         <h4 className="popup-title verify-email" style={{
                             fontWeight: 'normal',
                             fontFamily: 'Roboto, sans-serif'
@@ -273,8 +240,8 @@ class SellerSignUp extends Component {
                                 <div className="error-message required">
                                     {this.state.validationMessage['pincode']}
                                 </div>
-                            ) : null
-                    }
+                            ) : null */}
+                    
                     <div className="terms-condition-container">
                         <input type="checkbox" id="agreeToTerms"
                            onChange={this.agreeTotermsChange} name="i agree" value="sellers" checked={this.state.agreeToTerms} />
@@ -290,20 +257,6 @@ class SellerSignUp extends Component {
                         <button className="button mid secondary" onClick={this.handleFormSubmit}>Submit</button>
                     </div>
                 </form>
-                <SuccessAlert 
-                    open={this.props.showSuccessBar} closeSnackBar={this.closeSnackBar}
-                    message={this.props.successMessage} 
-                />
-                <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
-                {
-                    this.props.redirectToLogin ? <Redirect to="/users/login" /> : null
-                }
-                {
-                    this.props.loading ? <div className="spinner"><CircularProgress /></div> : null
-                }
-                {
-                    this.props.unAuthorized ? this.logout() : null
-                }
             </div>
         );
     }
