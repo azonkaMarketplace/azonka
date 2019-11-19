@@ -20,6 +20,7 @@ export const registerUser = (userData) => {
             })
             console.log(response.data);
                 console.log('here o')
+                await localStorage.setItem('userRegDetails', JSON.stringify(data))
                  dispatch({type: SUCCESSFUL_REGISTRATION, payload: ''})
                 // return window.location.href = window.origin + '/users/verify'
             

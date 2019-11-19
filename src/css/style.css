@@ -11006,7 +11006,7 @@ pre {
 }
 
 .home-main-content{
-    min-height: 45vh;
+    min-height: 100vh;
 }
 
 .required{
@@ -11338,7 +11338,7 @@ pre {
         font-size: 1em;
     }
     .router-container{
-        padding-top: 150px !important;
+        padding-top: 200px !important;
     }
     .rerral-block{
         flex-direction: column !important;
@@ -11601,7 +11601,8 @@ label {
 }
 
 .router-container{
-    padding-top: 180px;
+    min-height: 100vh;
+    padding-top: 250px;
 }
 
 .spinner-container{
