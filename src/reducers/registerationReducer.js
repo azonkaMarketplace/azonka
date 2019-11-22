@@ -1,9 +1,9 @@
 import { SUCCESSFUL_REGISTRATION,INITIAL_REGISTRATION, 
     UNSUCCESSFUL_REGISTRATION, CLEAR_ERROR, SUCCESSFUL_VERIFICATION,
 ERROR_RESENDING_PASSCODE, SUCCESS_RESENDING_PASSCODE, GET_SEC_QUESTIONS,
- LOGOUT_USER, CLOSE_SNACKBAR, EMAIL_FORGOT_PASSWORD_SENT, GET_SAVED_ACCOUNTS,
+ LOGOUT_USER, CLOSE_SNACKBAR, EMAIL_FORGOT_PASSWORD_SENT, GET_SAVED_ACCOUNTS,STOP_IMAGE_LOADING,
  LOGIN_UNSUCCESSFUL, LOGIN_SUCCESS, PASSWORD_REST_SUCCESSFUL, USER_ROLE_UPDATED_SUCCESSFUL,
- UNAUTHORIZED_USER, EMAIL_VERIFICATION_SUCCESFFUL, UNSUCCESSFUL_VERIFICATION, DISPLAY_ERROR, STOP_LOADING } from "../actions/types";
+ UNAUTHORIZED_USER, EMAIL_VERIFICATION_SUCCESFFUL, UNSUCCESSFUL_VERIFICATION, DISPLAY_ERROR, STOP_LOADING, FILE_UPLOADED_FALIED, FILE_UPLOADED_SUCCESSFULL } from "../actions/types";
 const INITIAL_STATE = {loading: false,verified:null, error: null,errorMessage: null,
      user: null, questions:{}, successMessage: null, showSuccessBar: null, 
     redirectToProfile: false,unAuthorized: false, redirectToVerify: false, redirectToHome: false, redirectToLogin: false}
@@ -19,10 +19,16 @@ export default (state=INITIAL_STATE, actions) => {
         case INITIAL_REGISTRATION:
                 return {...state,redirectToVerify:null, redirectToLogin: null,
                     redirectToHome: false, loading:true, error: null}
+        case FILE_UPLOADED_FALIED:
+            return {...state, loading: false, error: true, errorMessage: 'File uploading failed'}
+        case FILE_UPLOADED_SUCCESSFULL:
+            return {...state, error: false, errorMessage: null}
         case SUCCESSFUL_REGISTRATION:
             return {...state, loading:false,redirectToVerify:true, error: null, errorMessage: null}
         case STOP_LOADING:
             return {...state, loading:false}
+        case STOP_IMAGE_LOADING:
+            return {...state, loading: false}
         case UNSUCCESSFUL_REGISTRATION:
             return {...state,redirectToLogin: true, loading: false,error:true, errorMessage: actions.payload}
         case DISPLAY_ERROR:
@@ -44,7 +50,7 @@ export default (state=INITIAL_STATE, actions) => {
         case CLOSE_SNACKBAR:
             return {...state, error: null, errorMessage:null, showSuccessBar: null}
         case EMAIL_FORGOT_PASSWORD_SENT: 
-            return {...state,loading: false, showSuccessBar: true, successMessage:actions.payload}
+            return {...state,loading: false, showSuccessBar: false, successMessage:actions.payload}
         case GET_SAVED_ACCOUNTS:
             return {...state, showSuccessBar: true, successMessage:'Account added successfully'}
         case LOGIN_SUCCESS:

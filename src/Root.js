@@ -28,7 +28,7 @@ import SellerSignUp from "./components/SellerSignUp";
 import AzonkaPay from "./components/AzonkaPay";
 import AddressBook  from "./components/AddressBook";
 import ChangePassword from "./components/Auth/changePassword";
-
+import Store from "./components/Store";
 import ResetPassword from './components/Auth/ResetPassword';
 import  Layout from "./components/HOC/Layout";
 class Root extends Component {
@@ -62,6 +62,7 @@ class Root extends Component {
                             <AuthRoute exact path="/users/seller/signup" component={SellerSignUp} />
                             <AuthRoute noAuthRequired  path="/users/wishlist" component={WishList} />
                             <AuthRoute exact path="/users/reset-password" component={ChangePassword} />
+                            <AuthRoute redirectIfUser exact path="/users/create/shop" component={Store} />
                             <AuthRoute redirectIfAuth noAuthRequired exact = "/password/new" component={ResetPassword} />
                             <NotFoundRoute path="*" component={Home} />
                         </Switch>

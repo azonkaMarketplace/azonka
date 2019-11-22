@@ -113,17 +113,16 @@ class Bank extends Component {
         e.preventDefault()
         this.processForm()
     }
-    processForm = (target = null) => {
+    processForm = () => {
         const {isValid, inValidElments, validationMessage} = this.validateFormData(this.state)
-        const {add} = this.props.toastManager;
+        
         if(!isValid){
-            if(target === 'data-table-add'){
-                add('Action cannot be performed,one or more fields required', { appearance: 'error' })
-            }else{
+                this.props.renderError('Action cannot be performed,one or more fields required', { appearance: 'error' })
+           
                 this.setState({
                     inValidElments, validationMessage
                 })
-            }
+            
             
         }
         const selectedBank = this.state.banks.filter(element => element.longcode === this.state.longcode)

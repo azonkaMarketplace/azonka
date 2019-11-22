@@ -3,6 +3,8 @@ import notifCloseIcon from "../../images/dashboard/notif-close-icon.png";
 import Zoom from 'react-reveal/Zoom';
 import SubscribeBanner from "../Banners/SubscribeBanner";
 import logoHeader from "../../images/logo_header.png";
+import {connect} from 'react-redux'
+import * as actions from '../../actions';
 
 class Home extends Component {
     state = { showPopUp: true}
@@ -13,8 +15,9 @@ class Home extends Component {
         })
     }
     componentDidMount(){
+        this.props.initiateRegistration()
+        this.props.getProductCategorySubcategory()
         //remove popup after 5secs
-
         setTimeout(()=> {
             this.setState({
                 showPopUp: false
@@ -53,4 +56,11 @@ class Home extends Component {
     }
 }
 
-export default Home;
+const mapStateToProps = state => {
+    const {home: {categories, subCategories}} = state;
+    return {
+        categories, subCategories
+    }
+}
+
+export default connect(mapStateToProps, actions)(Home);

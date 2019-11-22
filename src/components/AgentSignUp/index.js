@@ -6,11 +6,20 @@ import CustomInput from "../../common/CustomInput";
 
 class AgentSignUp extends Component {
     state = {
+        error: null,
+        file: null,
         questions: [],
         inValidElments: [],
         validationMessage: {},
         pincode: '',
         showSpinner: false
+    }
+    static getDerivedStateFromProps(nextProps, state){
+        if(nextProps.fileUrl){
+           nextProps.updateUserType({ agentIdentification: nextProps.fileUrl }, 'agent')
+           return {...state, fileUrl: nextProps.fileUrl}
+        }
+        return null
     }
     componentDidMount(){
         this.props.getSecurityQuestions()
@@ -89,11 +98,28 @@ class AgentSignUp extends Component {
     }
      uploadId = e => {
          e.preventDefault()
-         console.log('evebt', e.target.value)
-        //  const { name, size, type} = this.fileInput.current.files[0]
-         console.log(this.fileInput.current.files[0].name)
-         console.log(this.fileInput.current.files[0].size)
-
+         console.log('evebt', e.target.files[0])
+         const file = e.target.files[0]
+         const SUPPORTED_FILE_TYPES = ['image/png', 'image/jpeg']
+         if(file){
+            if(!SUPPORTED_FILE_TYPES.includes(file.type)){
+                this.props.renderError('File type not supported. Supported file types are jpg, png, jpeg ')
+                this.setState({
+                    file: null,
+                    error: true
+                })
+            }
+            return this.setState({
+                file : e.target.files[0],
+                error: false
+            })
+          }else{
+             return this.setState({
+                  file : e.target.files[0],
+                  error: false
+              })
+          }
+          
      }
      validateFormData = (FormData) => {
         let isValid = true;
@@ -105,25 +131,14 @@ class AgentSignUp extends Component {
         if(!this.state.agreeToTerms){
             return this.props.renderError('You must agree to Policy and Privacy')
         }
-        const isValid = this.validateFormData(this.state)
-        if(isValid){
-            console.log('form is valid')
-            console.log('security questions', this.state)
-            //call the api
-            this.props.initiateRegistration()
-            // const pincode = this.state.pincode;
-            const agentIdentification = ''
-            // const securityAnswerOne = this.state.questions.find(question => question.question_id === '1').answer
-            // const securityAnswerTwo = this.state.questions.find(question => question.question_id === '2').answer
-            // const securityAnswerThree = this.state.questions.find(question => question.question_id === '3').answer
-            this.props.updateUserType({ agentIdentification }, 'agent')
-            
-            //naviagate the user to profile page
-            //call the api
-        }else{
-            //form is not valid display error
-            this.props.renderError('One or more fields not filled, please cheack and try again')
+        if(this.state.error){
+            return this.props.renderError('Please select file or file format not supported.')
         }
+        //call the api
+        this.props.initiateRegistration()
+        this.props.fileuploadHandler(this.state.file, 'agentsId', 'agent')
+        //this.props.updateUserType({ agentIdentification }, 'agent')
+        
     }
     render() {
         return (
@@ -170,7 +185,7 @@ class AgentSignUp extends Component {
                     } */}
                     <div className="terms-condition-container">
                         <input type="checkbox" id="agreeToTerms"
-                           onChange={this.agreeTotermsChange} name="i agree" value="sellers" checked={this.state.agreeToTerms} />
+                           onChange={(event) => this.agreeTotermsChange(event)} name="i agree" value="sellers" checked={this.state.agreeToTerms} />
                         <label className="label-check" onClick={(event) => this.agreeTotermsChange(event)}>
                             <span className="checkbox primary primary"><span></span></span>
                             I agree To
@@ -192,7 +207,7 @@ class AgentSignUp extends Component {
 
 const mapStateToProps = state => {
     const {reg:{ loading, error, errorMessage, successMessage,
-        questions, showSuccessBar, redirectToLogin, unAuthorized}} = state;
+        questions, showSuccessBar, redirectToLogin, unAuthorized}, home: {fileUrl}} = state;
     return {
         loading,
         error, 
@@ -201,7 +216,8 @@ const mapStateToProps = state => {
         successMessage,
         questions,
         redirectToLogin,
-        unAuthorized
+        unAuthorized,
+        fileUrl
     }
 }
 

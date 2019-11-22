@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import * as actions from "../../actions";
 
 import ReferralItem from "../../common/ReferralItem";
+import NoRecordFound from "../../common/NoRecordFound";
 
 class index extends Component {
     constructor(props){
@@ -39,17 +40,12 @@ class index extends Component {
                     type={element.type}
                 />
             ))
-        ): (
-            <ReferralItem 
-            date='Dec 12th, 2014'
-            fullName="charles onuorah"
-            email="charles.onuorah@yahoo.com"
-            type="User"
-                />
-     
-        )
+        ): <NoRecordFound />
     }
     render() {
+        console.log('current user', this.props.currentUser)
+        const user = this.props.currentUser ? this.props.currentUser  : {}
+        const {referralCode} = user;
         return (
             <UserLayout>
                 <div className="headline buttons primary">
@@ -64,7 +60,7 @@ class index extends Component {
                             </div>
                         </div>
                         <div className="ref-text">
-                            <textarea className="select-area" readOnly ref={this.referralCode}  value="t6hyun90"></textarea>
+                            <textarea className="select-area" readOnly ref={this.referralCode}  value={`${referralCode }`}></textarea>
                         </div>
                     </div>
                     <div className="ref-div">
@@ -79,7 +75,7 @@ class index extends Component {
                         </div>
                         <div className="ref-text">
                         <textarea className="select-area referralLink" readOnly ref={this.referralLink} 
-                         value="http://167.99.154.149:1337/users/register?referral=t6hyun90"></textarea>
+                         value={`http://167.99.154.149:1337/users/register?referral=${referralCode}`}></textarea>
                         </div>
                     </div>
                 </div>

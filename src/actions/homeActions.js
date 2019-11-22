@@ -1,7 +1,10 @@
 import { FETCH_USER, SWITCH_ACTIVE_LINK,TOGGLE_VIEW_TYPE,INITIAL_REGISTRATION,CLOSE_SNACKBAR,
-    SUCCESS_ALERT, DISPLAY_ERROR
+    SUCCESS_ALERT,STOP_IMAGE_LOADING,
+     DISPLAY_ERROR, STOP_LOADING, ERROR_FETCHING_ITEMS, ITEMS_FETCHED_SUCCESSFULLY
  } from "./types";
+import axios from "axios";
 
+import async from "async";
 
 export const fetchUser = () => {
     const user =  JSON.parse(localStorage.getItem('azonta-user'))
@@ -56,3 +59,50 @@ export const showSuccessALert = (message='') => {
     return {type: SUCCESS_ALERT, payload: message}
 }
 
+export const stopLoading = () => {
+    return {type: STOP_LOADING, payload: ''}
+}
+
+export const getProductCategorySubcategory = () => {
+    return async (dispatch) => {
+        try{
+            async.parallel({
+                categories: function(callback){
+                     axios.get('/api/v1/category/get-categories/0/0')
+                            .then(response => {
+                                const {data: {categories}} = response;
+                                callback(null, categories)
+                            })
+                            .catch(error => {
+                                callback(error, null)
+                            }) 
+                    
+                },
+                subCategories:  function(callback) {
+                    axios.get('/api/v1/sub-category/get-sub-categories/0/0')
+                        .then(response => {
+                            const {data: {subCategories}} = response;
+                            callback(null, subCategories)
+                        })
+                        .catch(error => {
+                            callback(error, null)
+                        })
+                    
+                }
+            }, function(err, results){
+                if(err){
+                    dispatch({type: ERROR_FETCHING_ITEMS, payload: ''})
+                     return dispatch({type: STOP_LOADING, payload:''})
+                }
+                dispatch({type: STOP_LOADING, payload: ''})
+                return dispatch({type: ITEMS_FETCHED_SUCCESSFULLY, payload: results})
+            })
+        }catch(error){
+            
+        }
+    }
+}
+
+export const stopImageLoading = () => {
+    return {type: STOP_IMAGE_LOADING, payload: ''}
+}

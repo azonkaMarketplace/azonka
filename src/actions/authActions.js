@@ -2,10 +2,11 @@ import {
     SUCCESSFUL_REGISTRATION, CLEAR_ERROR, 
     SUCCESS_RESENDING_PASSCODE, EMAIL_VERIFICATION_SUCCESFFUL,
     ERROR_RESENDING_PASSCODE, GET_SEC_QUESTIONS, LOGOUT_USER, EMAIL_FORGOT_PASSWORD_SENT,LOGIN_SUCCESS,
-    LOGIN_UNSUCCESSFUL, PASSWORD_REST_SUCCESSFUL, STOP_LOADING,
+    LOGIN_UNSUCCESSFUL, PASSWORD_REST_SUCCESSFUL, STOP_LOADING,FILE_UPLOADED_FALIED, FILE_UPLOADED_SUCCESSFULL,
     USER_ROLE_UPDATED_SUCCESSFUL,UNSUCCESSFUL_VERIFICATION,SUCCESS_ALERT, UNAUTHORIZED_USER, DISPLAY_ERROR, FETCH_USER, CLOSE_SNACKBAR
  } from "./types";
 import axios from "axios";
+import { fileUpload } from "../components/util/FileUploader";
 
 export const registerUser = (userData) => {
     console.log('data', userData)
@@ -18,9 +19,9 @@ export const registerUser = (userData) => {
             response = await axios.post('/api/v1/registration/signup',{
                 ...data
             })
-            console.log(response.data);
+                console.log(response.data);
                 console.log('here o')
-                await localStorage.setItem('userRegDetails', JSON.stringify(data))
+                 localStorage.setItem('userRegDetails', JSON.stringify(data))
                  dispatch({type: SUCCESSFUL_REGISTRATION, payload: ''})
                 // return window.location.href = window.origin + '/users/verify'
             
@@ -122,8 +123,7 @@ export const login = user => {
                 return dispatch({type: LOGIN_SUCCESS, payload:''})
             }
         }catch(error){
-
-            if(error.response.status === 'Please verify your email address'){
+            if(error.response.data.message.toLowerCase() === 'please verify your email address'){
                 localStorage.setItem('userRegDetails', JSON.stringify(user))
                 return dispatch({type: LOGIN_UNSUCCESSFUL, payload: '' })
             }
@@ -197,7 +197,7 @@ export const resetPasswordWithToken = userData => {
                 //window.location.href = window.origin + '/users/login'
                 dispatch({type: PASSWORD_REST_SUCCESSFUL, payload: ''})
             },2000)
-            dispatch({type: SUCCESS_ALERT, payload: 'Password reset successful,re-directing to profile'})
+            dispatch({type: SUCCESS_ALERT, payload: 'Password reset successful'})
         }catch(error){
             console.log('error response', error.response.data)
             if(error.response.data.message){
@@ -211,36 +211,35 @@ export const resetPasswordWithToken = userData => {
 export const updateUserType = (userData, type) => {
     return async (dispatch) => {
         try {
+            console.log(userData, type)
+            const token = localStorage.getItem('x-access-token')
             const response = await axios.put('/api/v1/user/change-account-type', {
                                 ...userData,type}, {
                                 headers: {
-                                    'x-access-token': localStorage.getItem('x-access-token')
+                                    'x-access-token': token
                                 }
                             })
-            if(response.data.success){
-                   const userData = JSON.parse(localStorage.getItem('azonta-user'))
-                    let newUserData = {}
-                   if(type === 'user'){
-                         newUserData = {...userData}
-                        localStorage.setItem('azonta-user', JSON.stringify({...newUserData, pinSet:true}))
-                   }else{
-                    newUserData = {...userData, type}
-                    localStorage.setItem('azonta-user', JSON.stringify(newUserData))
-                   }
-                    const cart = newUserData.cart ? newUserData.cart : 0
-                   const likes = newUserData.likes ?  newUserData.likes : 0
-                    dispatch( {type: FETCH_USER, payload: {userData: newUserData, likes, cart}})
-                    setTimeout(() => {
-                        //redirect to profile
-                        dispatch({type: USER_ROLE_UPDATED_SUCCESSFUL, payload: ''})
-                        //close snackbar
-                        dispatch({type: CLOSE_SNACKBAR, payload: '' })
-                    }, 1000)
-                    if(type === 'user'){
-                        return dispatch({type: SUCCESS_ALERT, payload: 'Wallet setup successfully, redirecting...'})
-                    }
-                    return dispatch({type: SUCCESS_ALERT, payload: 'Account upgraded Successfully, redirecting...'})
+            console.log('response', response, token)
+            let newUserData = {}
+            const getUserResponse2 = await axios.get('/api/v1/user/get-user', {
+                headers: {
+                    'x-access-token': token
+                }
+            })
+            const user = getUserResponse2.data.user
+            const cart = newUserData.cart ? newUserData.cart : 0
+            const likes = newUserData.likes ?  newUserData.likes : 0
+            dispatch( {type: FETCH_USER, payload: {userData: user, likes, cart}})
+            if(type === 'user'){
+                    dispatch({type: SUCCESS_ALERT, payload: 'Wallet setup successfully, redirecting...'})
+            }else{
+                dispatch({type: SUCCESS_ALERT, payload: 'Account upgraded Successfully, redirecting...'})
             }
+            dispatch({type: USER_ROLE_UPDATED_SUCCESSFUL, payload: ''})
+            return setTimeout(() => {
+                return dispatch({type: CLOSE_SNACKBAR, payload: '' })
+            }, 1500)
+            
         }catch(error){
             console.log(error.response)
             if(error.response.status === 401){
@@ -251,6 +250,21 @@ export const updateUserType = (userData, type) => {
                 return dispatch({type: DISPLAY_ERROR, payload: error.response.data.message.substr(0, 100) })
             
             return dispatch({type: DISPLAY_ERROR, payload: error.response.data.substr(0, 100) })
+        }
+    }
+}
+
+export const fileuploadHandler = (file, foldername='', type = '') => {
+    return async (dispatch) => {
+        if(!file){
+            return ;
+        }
+        try{
+            const data = await fileUpload(file, foldername)
+            console.log('data', data)
+            return dispatch({type: FILE_UPLOADED_SUCCESSFULL, payload: data.Location})
+        }catch(error) {
+            dispatch({type: FILE_UPLOADED_FALIED, payload: error })
         }
     }
 }

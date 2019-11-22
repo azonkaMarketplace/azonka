@@ -13,7 +13,126 @@ class UserLayout extends Component {
         this.featDrpdown = React.createRef()
         this.state = {openFeatureDropdown: false}
     }
-    
+    showAdvancedMenu = user => {
+        if(user){
+            switch(user.type){
+                case 'seller':
+                    if(user.sellerApproved){
+                        return  (   <ul>
+                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'create-shop'? 'active': ''}`}
+                                onClick={() => this.sideMenuListItemClick('')}
+                            >
+                                <Link to="/users/create/shop">Create Shop</Link>
+                            </li>
+                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'sales-statement'? 'active': ''}`}
+                                onClick={() => this.sideMenuListItemClick('')}
+                            >
+                                <Link to="/users/sales">Sales statement</Link>
+                            </li>
+                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'uploadItem'? 'active': ''}`}
+                                onClick={() => this.sideMenuListItemClick('')}
+                            >
+                                <Link to="/users/items/upload">Upload Item</Link>
+                            </li>
+                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'manageItems'? 'active': ''}`}
+                                onClick={() => this.sideMenuListItemClick('')}
+                            >
+                                <Link to="/users/items/manage">Manage Items</Link>
+                            </li>
+                            <li 
+                                className=
+                                {`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'customer-review'? 'active': ''}`}
+                                    onClick={() => this.sideMenuListItemClick('')}
+                                >
+                                    <Link to="/users/customer/review">Customer Review</Link>
+                                </li>
+                        </ul>)
+                        
+                    }else{
+                        return null
+                    }
+                case 'agent':
+                        if(user.agentApproved){
+                            return  (   <ul>
+                                <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'create-shop'? 'active': ''}`}
+                                    onClick={() => this.sideMenuListItemClick('')}
+                                >
+                                    <Link to="/users/create/shop">Create Shop</Link>
+                                </li>
+                                <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'sales-statement'? 'active': ''}`}
+                                    onClick={() => this.sideMenuListItemClick('')}
+                                >
+                                    <Link to="/users/sales">Sales statement</Link>
+                                </li>
+                                <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'uploadItem'? 'active': ''}`}
+                                    onClick={() => this.sideMenuListItemClick('')}
+                                >
+                                    <Link to="/users/items/upload">Upload Item</Link>
+                                </li>
+                                <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'manageItems'? 'active': ''}`}
+                                    onClick={() => this.sideMenuListItemClick('')}
+                                >
+                                    <Link to="/users/items/manage">Manage Items</Link>
+                                </li>
+                                <li 
+                                    className=
+                                    {`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'customer-review'? 'active': ''}`}
+                                        onClick={() => this.sideMenuListItemClick('')}
+                                    >
+                                        <Link to="/users/customer/review">Customer Review</Link>
+                                    </li>
+                            </ul>)
+                            
+                        }else{
+                            return null
+                        }
+                default:
+                    return null
+                    
+            }
+        }
+        return null
+    }
+    renderApprovedStatus =  user => {
+        if(user){
+            if(user.type !== 'user'){
+                switch(user.type){
+                    case 'agent':
+                        if(!user.agentApproved){
+                            return (<div className="awaiting-approval-class">
+                                    <span>AWAITING APPROVAL</span>
+                            </div>)
+                        }else{
+                            return (
+                                
+                                <div className="approved-class">
+                                    <span>APPROVED</span>
+                                </div>
+                            )
+                        }
+                    case 'seller':
+                            if(!user.sellerApproved){
+                                return (
+                                <div className="awaiting-approval-class">
+                                    <span>AWAITING APPROVAL</span>
+                                </div>)
+                            }else{
+                                return (
+                                    <div className="approved-class">
+                                        <span>APPROVED</span>
+                                    </div>
+                                )
+                            }
+                    default:
+                        return null
+
+
+                }
+            }
+            return null
+        }
+        return null
+    }
     componentDidMount(){
         this.props.fetchUser()
        this.otherFeatures.current.addEventListener('click', (e) => {
@@ -137,6 +256,11 @@ class UserLayout extends Component {
                                         <div className="user-role-text"><span>{currentUser ?
                                              currentUser.type.toUpperCase(): null}</span></div>
                                     </div>
+                                    <div className="approval-status-container">
+                                        {
+                                            this.renderApprovedStatus(currentUser)
+                                        }
+                                    </div>
                                     <ul className="share-links">
                                         <li><span className="fb"></span></li>
                                         <li><span className="twt"></span></li>
@@ -205,16 +329,6 @@ class UserLayout extends Component {
                                         >
                                             <Link to="/users/addressBook">Address Book</Link>
                                         </li>
-                                    {
-                                        currentUser && currentUser.type === 'seller' ?
-                                        (
-                                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'create-store'? 'active': ''}`}
-                                                onClick={() => this.sideMenuListItemClick('create-store')}
-                                            >
-                                                <Link to="/users/create-store">Create Store</Link>
-                                            </li>
-                                        ) : null
-                                    }
                                     <li className={`dropdown-item normalize-sidebar`}
                                         
                                     >
@@ -232,38 +346,9 @@ class UserLayout extends Component {
                                             
                                         </ul>
                                         {
-                                                currentUser && currentUser.type !== 'user' ?
-                                                (   <ul>
-                                                        <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'create-shop'? 'active': ''}`}
-                                                            onClick={() => this.sideMenuListItemClick('')}
-                                                        >
-                                                            <Link to="/users/create/shop">Create Shop</Link>
-                                                        </li>
-                                                        <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'sales-statement'? 'active': ''}`}
-                                                            onClick={() => this.sideMenuListItemClick('')}
-                                                        >
-                                                            <Link to="/users/sales">Sales statement</Link>
-                                                        </li>
-                                                        <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'uploadItem'? 'active': ''}`}
-                                                            onClick={() => this.sideMenuListItemClick('')}
-                                                        >
-                                                            <Link to="/users/items/upload">Upload Item</Link>
-                                                        </li>
-                                                        <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'manageItems'? 'active': ''}`}
-                                                            onClick={() => this.sideMenuListItemClick('')}
-                                                        >
-                                                            <Link to="/users/items/manage">Manage Items</Link>
-                                                        </li>
-                                                        <li 
-                                                            className=
-                                                            {`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'customer-review'? 'active': ''}`}
-                                                                onClick={() => this.sideMenuListItemClick('')}
-                                                            >
-                                                                <Link to="/users/customer/review">Customer Review</Link>
-                                                            </li>
-                                                    </ul>
-
-                                                ): null
+                                                
+                                                this.showAdvancedMenu(currentUser)
+                                                
                                             }
                                         </div>
                                     </li>

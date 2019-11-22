@@ -86,8 +86,6 @@ class SecurityQuestion extends Component {
         const { type} = JSON.parse(localStorage.getItem('azonta-user'))
         this.props.updateUserType({ securityQuestion: question, securityAnswer: answer, 
             pin:pincode}, type)
-        // return this.props
-        //         .registerUser({ pin: this.state.pincode})
     }
     render() {
         return (
