@@ -1,4 +1,5 @@
-import { ERROR_FETCHING_ITEMS, ITEMS_FETCHED_SUCCESSFULLY, STOP_LOADING, SUCCESS_ALERT, DISPLAY_ERROR } from "./types";
+import { ERROR_FETCHING_ITEMS, ITEMS_FETCHED_SUCCESSFULLY, 
+    STOP_LOADING, SUCCESS_ALERT, DISPLAY_ERROR,EDIT_ITEM,INIT_FORM, PRODUCTS_FETCED_SUCCESSFULLY } from "./types";
 import {fileUpload} from "../components/util/FileUploader";
 import async from 'async';
 import axios from 'axios';
@@ -95,3 +96,47 @@ export const createItem = (data) => {
         }
     }
 }
+
+export const _itemClick = id => {
+    return async (dispatch) => {
+        try{
+            const response = await axios.get(`/api/v1/seller/product/get/${id}`, {
+                                    headers: {
+                                        'x-access-token': localStorage.getItem('x-access-token')
+                                    }
+                                })
+                                
+            const {data: {product}} = response;
+            
+            dispatch({type: EDIT_ITEM, payload: product})
+            dispatch({type: STOP_LOADING, payload: ''})
+        }catch(error){
+            console.log(error.response)
+            dispatch({type: DISPLAY_ERROR, payload: error.response.data.message.substr(0,100)})
+            dispatch({type: STOP_LOADING, payload: ''})
+        }
+    }
+}
+
+export const fetchItems = () => {
+    return async (dispatch) => {
+        try{
+            const response = await axios.get(`/api/v1/seller/product/get-products/${0}/${100}`, {
+                                    headers: {
+                                        'x-access-token': localStorage.getItem('x-access-token')
+                                    }
+                                })
+            const {data: {products}} = response;
+            dispatch({type: PRODUCTS_FETCED_SUCCESSFULLY, payload: products})
+            dispatch({type: STOP_LOADING, payload: ''})
+        }catch(error){
+            dispatch({type: DISPLAY_ERROR, payload: error.response.data.message.substr(0,100)})
+            dispatch({type: STOP_LOADING, payload: ''})
+        }
+    }
+}
+
+export const initForm = () => {
+    return {type: INIT_FORM, payload:''}
+}
+

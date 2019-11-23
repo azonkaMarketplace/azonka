@@ -3,32 +3,36 @@ import { connect } from "react-redux";
 import * as actions from "../../actions";
 
 class index extends Component {
-    
+      _initalState = {
+        
+    }
     constructor(props){
         super(props)
         this.state = {
             files: null,
-            previewImage: null,
-            subImages: [],
-            model: '',
-            inValidElments: [],
-            validationMessage: [],
-            name: '',
-            mainImageIndex: 0,
-            brandName:'',
-            sellingPrice:'',
-            finalPrice: '',
-            category: '',
-            store:'',
-            subCategory: '',
-            description: '',
-            width: '',
-            height:'',
-            length:'',
-            unit: '',
-            deliveryType: '',
-            deliveryLocation:'',
-            filteredSubCategory: []
+        previewImage: null,
+        subImages: [],
+        model: '',
+        inValidElments: [],
+        validationMessage: [],
+        name: '',
+        selectedId: null,
+        mainImageIndex: 0,
+        brandName:'',
+        sellingPrice:'',
+        finalPrice: '',
+        category: '',
+        store:'1',
+        subCategory: '1',
+        description: '',
+        width: '',
+        action:'save',
+        height:'',
+        length:'',
+        unit: '',
+        deliveryType: '',
+        deliveryLocation:'',
+        filteredSubCategory: []
         }
         this.uploadFileButton = React.createRef()
     }
@@ -36,11 +40,53 @@ class index extends Component {
         this.props.initiateRegistration();
         this.props._initUploadPage();
     }
+    componentWillUnmount(){
+        console.log('called')
+        this.props.initForm()
+    }
+    hanldeFormUpdate = e => {
+        e.preventDefault()
+    }
+    updateAction = () => {
+        if(this.state.action === 'update'){
+            const {
+                brandName,sellingPrice,finalPrice,category,
+                store,
+                subCategory,
+                description,
+                width,
+                height,
+                length,
+                unit,
+                name,
+                model,
+                id,
+                deliveryType,
+                deliveryLocation,
+                mainImageUrl
+            } = this.props.product
+            const {subCategories} =  this.props;
+            const subCategoryId = `${subCategory.id}`
+            const categoryId = `${category.id}`
+            const storeId = `${store.id}`
+            const fileterSubCategories = subCategories
+                                            .filter(category => parseInt(category.parentCategory) === parseInt(category.id))
+            this.setState({
+                name,model,
+                 brandName, sellingPrice, finalPrice,selectedId: id,action:null,
+                 description, width, height, length,unit,
+                deliveryType, deliveryLocation, previewImage: mainImageUrl, subCategory: subCategoryId,
+                category: categoryId, store: storeId, filteredSubCategory: [...fileterSubCategories] 
+            })
+        }
+    }
     static getDerivedStateFromProps(nextProps, state){
         if(nextProps.resetForm){
+            
             return {...state, files: null,
                 previewImage: null,
                 subImages: [],
+                model: '',
                 inValidElments: [],
                 validationMessage: [],
                 name: '',
@@ -56,12 +102,42 @@ class index extends Component {
                 height:'',
                 length:'',
                 unit: '',
-                model: '',
                 deliveryType: '',
                 deliveryLocation:'',
                 filteredSubCategory: []}
         }
-        return null
+        
+        if(nextProps.product){
+            const {
+                brandName,sellingPrice,finalPrice,category,
+                store,
+                subCategory,
+                description,
+                width,
+                height,
+                length,
+                unit,
+                name,
+                model,
+                id,
+                deliveryType,
+                deliveryLocation,
+                mainImageUrl
+            } = nextProps.product
+            const {subCategories} =  nextProps
+            const subCategoryId = `${subCategory.id}`
+            const categoryId = `${category.id}`
+            const storeId = `${store.id}`
+            const fileterSubCategories = subCategories
+                                            .filter(category => parseInt(category.parentCategory) === parseInt(category.id))
+            
+            return {...state,name,model,
+                 brandName, sellingPrice, finalPrice,selectedId: id,action:'update',
+                 description, width, height, length,unit,
+                deliveryType, deliveryLocation, previewImage: mainImageUrl, subCategory: subCategoryId,
+                category: categoryId, store: storeId, filteredSubCategory: [...fileterSubCategories] }
+        }
+        return {...state}
     }
     renderImage = () => {
         if(!this.state.previewImage){
@@ -178,7 +254,7 @@ class index extends Component {
         },() => {
             if(name === 'category'){
                 const subcatgeories = this.props.subCategories
-                                        .filter(category => parseInt(category.id)  === parseInt(value))
+                                        .filter(category => parseInt(category.parentCategory)  === parseInt(value))
 
                 this.setState({
                     filteredSubCategory: subcatgeories
@@ -260,6 +336,7 @@ class index extends Component {
         
     }
     render() {
+        
         return (
             <div className="container-fluid" style={{marginBottom: 40}}>
                 <div className="row">
@@ -274,7 +351,13 @@ class index extends Component {
                                 <div style={{marginTop:20, marginBottom: 40, 
                                         display: 'flex', justifyContent:'center', width: '100%', alignItems:'center'}}>
                                         <input accept="image/*" multiple onChange={this.handleFileSelect} type="file" ref={this.uploadFileButton} className="real-file btn btn-warning" hidden="hidden" />
-                                        <button onClick={this.uploadButton} type="button" className="button mid secondary">Select Photo</button>
+                                        {
+                                            this.state.action === 'save' ?
+                                            (
+                                                <button onClick={this.uploadButton} type="button" className="button mid secondary">Select Photo</button>
+                                            ):
+                                            <button onClick={this.uploadButton} type="button" className="button mid secondary">Change Photo</button>
+                                        }
                                 </div>
                             </div>
                             
@@ -346,7 +429,7 @@ class index extends Component {
                                             <label htmlFor="finalPrice" className="rl-label">FInal Price</label>
                                             <input type="text" id="finalPrice" 
                                             className={`${this.state.inValidElments.includes('finalPrice') ? 'invalid' : '' }`} 
-                                            value={this.state.itemName} onChange={this.handleInputChange} 
+                                            value={this.state.finalPrice} onChange={this.handleInputChange} 
                                             name="finalPrice" placeholder="Final Price" />
                                             {
                                                     this.state.inValidElments.includes('finalPrice') ?
@@ -443,7 +526,7 @@ class index extends Component {
                                         
                                     </div>
                                     <div className="row add-margin-item add-margin-sm-device">
-                                        <div className="col-md-6 col-sm-12 add-margin-sm-device">
+                                        <div className="col-md-12 col-sm-12 add-margin-sm-device">
                                             <label htmlFor="description" className="rl-label">Item Description</label>
                                             <textarea name="description"
                                                  className={`${this.state.inValidElments.includes('description') ? 'invalid' : '' }`}
@@ -506,8 +589,8 @@ class index extends Component {
                                     <div className="row add-margin-item">
                                         <div className="delivery-location-container">
                                             <div className="delivery-location">
-                                                <input type="checkbox" id="agreeToTerms"
-                                                    name="i agree" value="sellers" checked={this.state.deliveryLocation === 'state'} />
+                                                <input type="checkbox" id="agreeTo"
+                                                    name="agree" value="sellers" onChange={this.sellerPreference} checked={this.state.deliveryLocation === 'state'} />
                                                 <label className="label-check" onClick={(event) => this.sellerPreference({target:'deliveryLocation', value:'state'})}>
                                                     <span className="checkbox primary"><span></span></span>
                                                     Within Store State 
@@ -515,7 +598,7 @@ class index extends Component {
                                             </div>
                                             <div className="delivery-location">
                                                 <input type="checkbox" id="agreeToTerms"
-                                                    name="i agree" value="sellers" checked={this.state.deliveryLocation === 'everywhere'} />
+                                                    name="agree" value="sellers" onChange={this.sellerPreference}  checked={this.state.deliveryLocation === 'everywhere'} />
                                                 <label className="label-check " onClick={(event) => this.sellerPreference({target:'deliveryLocation', value:'everywhere'})}>
                                                     <span className="checkbox primary"><span></span></span>
                                                     Available Everywhere
@@ -528,16 +611,16 @@ class index extends Component {
                                     <div className="row add-margin-item">
                                         <div className="delivery-location-container">
                                             <div className="delivery-location">
-                                                <input type="checkbox" id="agreeToTerms"
-                                                    name="i agree" value="sellers" checked={this.state.deliveryType === 'pick-up'} />
+                                                <input type="checkbox" id="agreeToTer"
+                                                    name="iagree" value="sellers" onChange={this.sellerPreference}  checked={this.state.deliveryType === 'pick-up'} />
                                                 <label className="label-check color-black" onClick={(event) => this.sellerPreference({target:'deliveryType', value:'pick-up'})}>
                                                     <span className="checkbox primary"><span></span></span>
                                                     Pick Up
                                                 </label>
                                             </div>
                                             <div className="delivery-location">
-                                                <input type="checkbox" id="agreeToTerms"
-                                                    name="i agree" value="sellers" checked={this.state.deliveryType === 'home-delivery'} />
+                                                <input type="checkbox" id="agreeoTems"
+                                                    name="iagree" value="sellers" onChange={this.sellerPreference}  checked={this.state.deliveryType === 'home-delivery'} />
                                                 <label className="label-check color-black" onClick={(event) => this.sellerPreference({target:'deliveryType', value:'home-delivery'})}>
                                                     <span className="checkbox primary"><span></span></span>
                                                     Home Delivery
@@ -546,7 +629,15 @@ class index extends Component {
                                         </div>
                                     </div>
                                     <div className="add-margin-top" style={{width: '100%'}}>
-                                        <button style={{width:'100%'}} onClick={this.handleFormSubmit} className="button mid secondary">Submit for Review</button>
+                                        {
+                                            this.state.action === 'save' ?
+                                            (
+                                                <button style={{width:'100%'}} onClick={this.handleFormSubmit} className="button mid secondary">Submit for Review</button>
+                                            ) :
+                                            (
+                                                <button style={{width:'100%'}} onClick={this.hanldeFormUpdate} className="button mid secondary">Update Item</button>
+                                            )
+                                        }
                                     </div>
                                 </form>
                             </fieldset>
@@ -560,8 +651,8 @@ class index extends Component {
 }
 
 const mapStateToProps = state => {
-    const {inventory: {subCategories, categories, stores,resetForm}} = state;
-    return {subCategories, categories, stores, resetForm}
+    const {inventory: {subCategories, categories,product, stores,resetForm}} = state;
+    return {subCategories, categories, stores,product, resetForm}
 }
 
 export default connect(mapStateToProps, actions)(index);
