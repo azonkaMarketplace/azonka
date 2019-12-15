@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { ToastProvider} from 'react-toast-notifications'
-import Header from "../HeaderFooter/Header";
-import Footer from "../HeaderFooter/Footer";
 import * as actions from "../../actions";
 import Spinner from "../../assets/spinner.svg";
-import ErrorAlert from "../../common/ErrorAlert";
-import SuccessAlert from "../../common/SuccessAlert";
+import SweetAlert  from "react-bootstrap-sweetalert";
 
 class Layout extends Component {
     logout = () => {
@@ -32,14 +29,15 @@ class Layout extends Component {
         }
         return null
     }
+    hideAlert = () => {
+        this.props.closeSnackBar()
+    }
     render() {
         return (
             <ToastProvider>
-                <Header />
-                    <div className="router-container">
-                        {this.props.children}
-                    </div>
-                <Footer />
+                
+                    {this.props.children}
+               
                 {
                     this.props.unAuthorized ? this.logout() : null
                 }
@@ -53,8 +51,21 @@ class Layout extends Component {
                     this.props.redirectToLogin ? <Redirect to="/users/login" /> : null
                 }
                 {this.renderLoadingSpinner()}
-                <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
-                <SuccessAlert open={this.props.success} closeSnackBar={this.closeSnackBar} message={this.props.successMessage} />
+                {
+                    this.props.error ? <SweetAlert 
+                    title={this.props.errorMessage} 
+                    danger
+                    onConfirm={this.hideAlert} onCancel={this.hideAlert} 
+                    /> : null
+                }
+                {
+                    this.props.success ? <SweetAlert 
+                    title={this.props.successMessage} 
+                    success
+                    onConfirm={this.hideAlert} onCancel={this.hideAlert} 
+                    /> : null 
+
+                }
             </ToastProvider>
         );
     }

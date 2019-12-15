@@ -5,6 +5,8 @@ import Root from "./Root";
 import ReduxThunk from 'redux-thunk';
 import  "@fortawesome/fontawesome-free/css/all.css";
 import  "./css/style.css";
+import  "./css/css/app.css";
+import 'react-awesome-slider/dist/styles.css';
 import { ToastProvider} from 'react-toast-notifications'
 //Banners
 

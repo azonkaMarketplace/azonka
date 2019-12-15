@@ -4,11 +4,13 @@ import StoreItem from "../../common/StoreItem";
 import cardImage from "../../images/items/miniverse_m.jpg";
 import * as actions from "../../actions";
 import { connect } from "react-redux";
+import AdminLayout from '../HOC/AdminLayout';
 
 class index extends Component {
     componentDidMount(){
         this.props.initiateRegistration()
-		this.props.fetchItems()
+        this.props.fetchItems()
+        this.props.switchActiveLink('manageItems')
 	}
     uploadNewItem = (e) => {
         e.preventDefault()
@@ -16,7 +18,8 @@ class index extends Component {
     }
     render() {
         return (
-            <div className="dashboard-content" style={{marginTop: -60}}>
+            <AdminLayout>
+            <div className="dashboard-content" style={{marginTop: -30}}>
                 <div className="headline filter primary">
                     <h4>Manage Items</h4>
                     <form>
@@ -96,6 +99,7 @@ class index extends Component {
                     <div className="clearfix"></div>
                 </div>
             </div>
+            </AdminLayout>
         );
     }
 }

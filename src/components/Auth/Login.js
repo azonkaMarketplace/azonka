@@ -8,6 +8,8 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import { Link,  } from 'react-router-dom';
+import Header from '../HeaderFooter/Header';
+import Footer from '../HeaderFooter/Footer';
 
 class Login extends Component {
     state = {
@@ -137,6 +139,18 @@ class Login extends Component {
     render() {
         const { classes } = this.props;
         return (
+            <div>
+                <Header />
+                <div className="router-container">
+                <nav aria-label="breadcrumb" className="breadcrumb-nav">
+                    <div className="container">
+                        <ol className="breadcrumb">
+                            <li className="breadcrumb-item"><a href="index.html"><i className="icon-home"></i></a></li>
+                            <li className="breadcrumb-item active" aria-current="page">Login</li>
+                        </ol>
+                    </div>
+                </nav>
+                
             <div className="form-popup custom-input">
                 <div className="form-popup-headline secondary">
                     <h2>Login to your Account</h2>
@@ -177,8 +191,8 @@ class Login extends Component {
 						</label>
                         <p>Forgot your password? <span style={{cursor:'pointer'}} onClick={this.toggleModal} className="primary">Click here!</span></p>
                         <button className="button mid secondary" onClick={this.handleFormSubmit}>Login <span className="primary">Now!</span></button>
-                        <p style={{textAlign:'center', margin:'15px 0px'}}>Don't Have Account?
-                                <Link to="/users/register" style={{color:'#00d7b3', cursor:'pointer'}}> Signup</Link></p>
+                        <p style={{textAlign:'center', margin:'15px 0px'}}>New to Azonka?
+                                <Link to="/users/register" style={{color:'#00d7b3', cursor:'pointer'}}>  Create your account</Link></p>
                     </form>
                     <hr className="line-separator double" />
                 </div>
@@ -221,6 +235,9 @@ class Login extends Component {
                     </div>
                     </Fade>
                 </Modal>
+            </div>
+            </div>
+            <Footer />
             </div>
         );
     }

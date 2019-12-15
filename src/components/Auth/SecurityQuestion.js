@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import * as actions from "../../actions";
 import { withToastManager } from 'react-toast-notifications';
 import CustomInput from "../../common/CustomInput";
+import Header from '../HeaderFooter/Header';
+import Footer from '../HeaderFooter/Footer';
 
 class SecurityQuestion extends Component {
     state = {
@@ -77,18 +79,29 @@ class SecurityQuestion extends Component {
             
            return  this.props.renderError('Please provide pincode')
         }
-        if(this.state.pincode.length !== 6){
-            return this.props.renderError('Minimum of 6 characters required for Pincode')
+        if(this.state.pincode.length !== 4){
+            return this.props.renderError('Minimum of 4 characters required for Pincode')
         }
         //call the api
         this.props.initiateRegistration()
         const { question, answer, pincode} = this.state;
-        const { type} = JSON.parse(localStorage.getItem('azonta-user'))
-        this.props.updateUserType({ securityQuestion: question, securityAnswer: answer, 
-            pin:pincode}, type)
+        this.props.setPin({ securityQuestion: question, securityAnswer: answer, 
+            pin:pincode})
     }
     render() {
         return (
+            <div>
+                <Header/>
+                
+                <div className="router-container">
+                <nav aria-label="breadcrumb" className="breadcrumb-nav">
+                    <div className="container">
+                        <ol className="breadcrumb">
+                            <li className="breadcrumb-item"><a href="index.html"><i className="icon-home"></i></a></li>
+                            <li className="breadcrumb-item active" aria-current="page">Security Questions</li>
+                        </ol>
+                    </div>
+                </nav>
             <div>
                 <div className={`form-popup custom-input ${this.state.container === 'form' ? 'show': 'hide'}`}>
                     <div className="form-popup-headline secondary">
@@ -117,6 +130,9 @@ class SecurityQuestion extends Component {
                         </form>
                     </div>
                 </div>
+            </div>
+            </div>
+            <Footer />
             </div>
         );
     }

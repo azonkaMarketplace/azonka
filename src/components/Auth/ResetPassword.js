@@ -8,6 +8,8 @@ import * as actions from "../../actions";
 import ErrorAlert from "../../common/ErrorAlert";
 import SuccessAlert from "../../common/SuccessAlert";
 import { Link, Redirect } from 'react-router-dom';
+import Header from '../HeaderFooter/Header';
+import Footer from '../HeaderFooter/Footer';
 
 class ResetPassword extends Component {
     state = {
@@ -119,6 +121,18 @@ class ResetPassword extends Component {
     }
     render() {
         return (
+            <div>
+                <Header/>
+
+                <div className="router-container">
+                <nav aria-label="breadcrumb" className="breadcrumb-nav">
+                    <div className="container">
+                        <ol className="breadcrumb">
+                            <li className="breadcrumb-item"><a href="index.html"><i className="icon-home"></i></a></li>
+                            <li className="breadcrumb-item active" aria-current="page">Reset Password</li>
+                        </ol>
+                    </div>
+                </nav>
             <div className="form-popup custom-input">
                 <div className="form-popup-headline secondary">
                     <h2>Reset Your Password</h2>
@@ -165,6 +179,9 @@ class ResetPassword extends Component {
                 {
                     this.props.redirectToLogin ? <Redirect to="/users/login" />: null
                 }
+            </div>
+            </div>
+            <Footer/>
             </div>
         );
     }

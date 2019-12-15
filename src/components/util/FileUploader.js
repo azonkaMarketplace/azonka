@@ -9,8 +9,8 @@ export const fileUpload = (file, folderName = '') => {
         const options = {partSize: 10 * 1024 * 1024, queueSize: 1}; 
         return db.upload(params,options, function(err, data) {
             if(err){
-                console.log('uploading')
-               return reject('Error uploading file')
+                console.log('uploading >>', err)
+               return reject(err)
             }
             console.log('here')
             resolve(data)

@@ -3,7 +3,9 @@ import { Redirect, Route } from "react-router-dom";
 
 const AuthRoute = ({component: Component, noAuthRequired,redirectIfUser, redirectIfAuth, ...rest}) => {
     const user = localStorage.getItem('azonta-user')
+    console.log('users', user, isEmpty(user))
     if(user){
+        console.log('am here o', user, Object.keys(user).length, )
         if(redirectIfUser && user.type === 'user'){
             return <Redirect {...rest} to="/"/>
         }
@@ -16,4 +18,12 @@ const AuthRoute = ({component: Component, noAuthRequired,redirectIfUser, redirec
     <Redirect to="/users/login" {...rest} />
 };
 
+const isEmpty = (obj) => {
+    for(var key in obj) {
+        console.log('key', key, obj[key])
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
 export default AuthRoute;

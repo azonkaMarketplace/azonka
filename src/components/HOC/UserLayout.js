@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
-
+import Header from "../HeaderFooter/Header";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Avatar from "../../common/Avatar";
 import * as actions from "../../actions";
+import Footer from '../HeaderFooter/Footer';
 
 class UserLayout extends Component {
     constructor(props){
@@ -14,83 +15,14 @@ class UserLayout extends Component {
         this.state = {openFeatureDropdown: false}
     }
     showAdvancedMenu = user => {
-        if(user){
-            switch(user.type){
-                case 'seller':
-                    if(user.sellerApproved){
-                        return  (   <ul>
-                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'create-shop'? 'active': ''}`}
-                                onClick={() => this.sideMenuListItemClick('')}
-                            >
-                                <Link to="/users/create/shop">Create Shop</Link>
-                            </li>
-                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'sales-statement'? 'active': ''}`}
-                                onClick={() => this.sideMenuListItemClick('')}
-                            >
-                                <Link to="/users/sales">Sales statement</Link>
-                            </li>
-                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'uploadItem'? 'active': ''}`}
-                                onClick={() => this.sideMenuListItemClick('')}
-                            >
-                                <Link to="/users/items/upload">Upload Item</Link>
-                            </li>
-                            <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'manageItems'? 'active': ''}`}
-                                onClick={() => this.sideMenuListItemClick('')}
-                            >
-                                <Link to="/users/items/manage">Manage Items</Link>
-                            </li>
-                            <li 
-                                className=
-                                {`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'customer-review'? 'active': ''}`}
-                                    onClick={() => this.sideMenuListItemClick('')}
-                                >
-                                    <Link to="/users/customer/review">Customer Review</Link>
-                                </li>
-                        </ul>)
-                        
-                    }else{
-                        return null
-                    }
-                case 'agent':
-                        if(user.agentApproved){
-                            return  (   <ul>
-                                <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'create-shop'? 'active': ''}`}
-                                    onClick={() => this.sideMenuListItemClick('')}
-                                >
-                                    <Link to="/users/create/shop">Create Shop</Link>
-                                </li>
-                                <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'sales-statement'? 'active': ''}`}
-                                    onClick={() => this.sideMenuListItemClick('')}
-                                >
-                                    <Link to="/users/sales">Sales statement</Link>
-                                </li>
-                                <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'uploadItem'? 'active': ''}`}
-                                    onClick={() => this.sideMenuListItemClick('')}
-                                >
-                                    <Link to="/users/items/upload">Upload Item</Link>
-                                </li>
-                                <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'manageItems'? 'active': ''}`}
-                                    onClick={() => this.sideMenuListItemClick('')}
-                                >
-                                    <Link to="/users/items/manage">Manage Items</Link>
-                                </li>
-                                <li 
-                                    className=
-                                    {`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'customer-review'? 'active': ''}`}
-                                        onClick={() => this.sideMenuListItemClick('')}
-                                    >
-                                        <Link to="/users/customer/review">Customer Review</Link>
-                                    </li>
-                            </ul>)
-                            
-                        }else{
-                            return null
-                        }
-                default:
-                    return null
-                    
-            }
-        }
+        if( (user && user.type === 'seller') || (user && user.type === 'agent'))
+            return  (  
+                <li className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'create-shop'? 'active': ''}`}
+                    onClick={() => this.sideMenuListItemClick('')}
+                >
+                    <Link to="/users/create/shop">Shop</Link>
+                </li>
+            )
         return null
     }
     renderApprovedStatus =  user => {
@@ -110,19 +42,6 @@ class UserLayout extends Component {
                                 </div>
                             )
                         }
-                    case 'seller':
-                            if(!user.sellerApproved){
-                                return (
-                                <div className="awaiting-approval-class">
-                                    <span>AWAITING APPROVAL</span>
-                                </div>)
-                            }else{
-                                return (
-                                    <div className="approved-class">
-                                        <span>APPROVED</span>
-                                    </div>
-                                )
-                            }
                     default:
                         return null
 
@@ -153,6 +72,7 @@ class UserLayout extends Component {
     }
     renderAvatar = () => {
         let {currentUser} = this.props
+        console.log('cu', currentUser)
          currentUser = Array.isArray(currentUser) ? currentUser[0] : currentUser;
         return currentUser ? currentUser.profileImage ? (
             <img src={currentUser.profileImage} alt="avatar" />            
@@ -177,11 +97,12 @@ class UserLayout extends Component {
          currentUser = Array.isArray(currentUser) ? currentUser[0] : currentUser;
         return (
             <div>
-                <div>
+                <Header />
+                <div className="router-container">
                     <div className="section-headline-wrap">
                         {/* <h2 className="hide-on-sm">Dashboard</h2> */}
                         <div className="section-headline">
-                            <h2>Dashboard</h2>
+                            <h2 style={{color:'#fff'}}>Dashboard</h2>
                         </div>
                     </div>
                     <div className="author-profile-meta-wrap">
@@ -329,6 +250,11 @@ class UserLayout extends Component {
                                         >
                                             <Link to="/users/addressBook">Address Book</Link>
                                         </li>
+                                        {
+                                                
+                                                this.showAdvancedMenu(currentUser)
+                                                
+                                            }
                                     <li className={`dropdown-item normalize-sidebar`}
                                         
                                     >
@@ -340,16 +266,12 @@ class UserLayout extends Component {
                                             <li 
                                                 className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'other-features'? 'active': ''}`}
                                                 onClick={() => this.sideMenuListItemClick('')}
-                                            ><Link to="/users/reset-password">Reset Password</Link></li>
+                                            ><Link to="/users/reset-password">Change Password</Link></li>
                                             <li onClick={() => this.sideMenuListItemClick('')} style={{borderBottom: '1px solid #ebebeb'}} className={`dropdown-item normalize-sidebar ${this.props.homeActiveLink === 'other-features'? 'active': ''}`}
-                                            ><Link to="/users/reset-pin">Reset Pin</Link></li>
+                                            ><Link to="/users/reset-pin">Reset Pincode</Link></li>
                                             
                                         </ul>
-                                        {
-                                                
-                                                this.showAdvancedMenu(currentUser)
-                                                
-                                            }
+                                        
                                         </div>
                                     </li>
                                     
@@ -377,6 +299,7 @@ class UserLayout extends Component {
                         </div>
                     </div>
                 </div>
+                <Footer />
             </div>
         );
     }

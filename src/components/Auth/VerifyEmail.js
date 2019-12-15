@@ -3,6 +3,8 @@ import { withToastManager } from 'react-toast-notifications';
 import queryString from "query-string";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
+import Header from '../HeaderFooter/Header';
+import Footer from '../HeaderFooter/Footer';
 
 class VerifyEmail extends Component {
     state = {
@@ -66,6 +68,18 @@ class VerifyEmail extends Component {
     }
     render() {
         return (
+            <div>
+                <Header />
+                
+                <div className="router-container">
+                <nav aria-label="breadcrumb" className="breadcrumb-nav">
+                    <div className="container">
+                        <ol className="breadcrumb">
+                            <li className="breadcrumb-item"><a href="index.html"><i className="icon-home"></i></a></li>
+                            <li className="breadcrumb-item active" aria-current="page">Verify Email</li>
+                        </ol>
+                    </div>
+                </nav>
             <div className="form-popup" style={{width:'430px'}}>
                 <div className="form-popup-content">
                     <h4 className="popup-title verify-email">Verify Email</h4>
@@ -91,6 +105,9 @@ class VerifyEmail extends Component {
                 </div>
                
                 
+            </div>
+            </div>
+            <Footer/>
             </div>
         );
     }

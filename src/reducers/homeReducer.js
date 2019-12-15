@@ -21,6 +21,10 @@ export default (state=INITIATL_STATE , actions) => {
             return {...state, error: true, errorMessage: actions.payload}
         case FETCH_USER:
             const {userData, cart, likes} = actions.payload
+            if(userData){
+                localStorage.setItem('azonta-user', JSON.stringify({...userData}))
+            }
+            
             return {...state, currentUser: userData, likes, cart}
         case UPDATE_ACCOUNT:
             return {...state, currentUser: actions.payload.userData,

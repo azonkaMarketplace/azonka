@@ -2831,8 +2831,8 @@ header .account-actions .button:last-child {
 }
 
 .menu-bar .search-form {
-    width: 320px;
-    position: absolute;
+    /* width: 320px;
+    position: absolute; */
     top: 14px;
     right: 0;
     padding-left: 15px;
@@ -7963,13 +7963,13 @@ header .account-actions .button:last-child {
     background-color: #fff
 }
 
-.dashboard-header .dashboard-header-item.title {
+/* .dashboard-header .dashboard-header-item.title {
     padding: 0 0 0 30px
-}
+} */
 
-.dashboard-header .dashboard-header-item.title h6 {
+/* .dashboard-header .dashboard-header-item.title h6 {
     line-height: 70px
-}
+} */
 
 .dashboard-header .dashboard-header-item.form {
     float: right;
@@ -11028,6 +11028,7 @@ pre {
 
 .home-main-content{
     min-height: 100vh;
+    padding-top: 160px;
 }
 
 .required{
@@ -11181,7 +11182,7 @@ pre {
 
 @media screen and (max-width: 935px){
     .headline.buttons.primary{
-        height: 150px !important;
+        height: 60px !important;
     }
     .headline.buttons.primary::before{
         height: 150px !important;
@@ -11242,10 +11243,10 @@ pre {
         margin: 10px auto !important;
     }
     .section .content .headline.buttons, .dashboard-content .headline.buttons{
-        height: 160px !important;
+        height: 150px !important;
     }
     .headline.buttons.primary::before{
-        height: 160px !important;
+        height: 150px !important;
     }
     .sidebar.left.author-profile .dropdown.hover-effect{
         display: none;
@@ -11253,9 +11254,9 @@ pre {
 }
 
 @media screen and (max-width: 400px){
-    #view-selectors{
+    /* #view-selectors{
         display: none !important;
-    }
+    } */
     .section .content .headline.buttons, .dashboard-content .headline.buttons{
         height: 90px !important;
     }
@@ -11264,6 +11265,9 @@ pre {
     }
     .headline h4{
         line-height: 35px !important;
+    }
+    .headline.buttons.primary::before{
+        height: 60px !important;
     }
 }
 
@@ -11295,6 +11299,9 @@ pre {
 @media screen and (max-width: 1200px){
     .user-money, .user-name{
         color: #fff;
+    }
+    .home-main-content{
+        padding-top: 130px;
     }
     /* .account-info-mobile{
         display: flex !important;
@@ -11359,7 +11366,7 @@ pre {
         font-size: 1em;
     }
     .router-container{
-        padding-top: 200px !important;
+        padding-top: 11.2rem !important;
     }
     .rerral-block{
         flex-direction: column !important;
@@ -11471,15 +11478,15 @@ header .account-information .account-wishlist-quickview>span:first-child, header
     display: inline-block;
   }
   
-  .btn {
-    border: 1px solid #ff5722;
-    color: #fff;
-    background-color: #ff5722;
-    padding: 8px 20px;
+  /*.btn {
+    /* border: 1px solid #ff5722; */
+    /* color: #fff; */
+    /* background-color: #ff5722; */
+    /* padding: 8px 20px;
     border-radius: 8px;
     font-size: 13px;
-    font-weight: bold;
-  }
+    font-weight: bold; 
+  }*/
   
   .upload-btn-wrapper input[type=file] {
     font-size: 100px;
@@ -11623,7 +11630,7 @@ label {
 
 .router-container{
     min-height: 100vh;
-    padding-top: 250px;
+    padding-top: 11.2rem;
 }
 
 .spinner-container{
@@ -11941,3 +11948,153 @@ input, textarea, select{
 .color-black{
     color: #000 !important;
 }
+
+.switch-wrapper {
+    position: relative;
+  }
+  
+  .switch-wrapper > div {
+    position: absolute;
+  }
+
+  .admin-layout{
+      padding-top: 30px !important;
+     margin: 0px 1em 40px 20px;
+  }
+
+  @media screen and (min-width: 1300px){
+    .admin-layout{
+        margin-left: 30rem !important;
+    }
+  }
+
+  .back-arrow{
+    margin-left: 1em;
+    font-size: x-large;
+    color: #fff;
+    line-height: 66px;
+  }
+  .list-button{
+    font-size: x-large;
+    margin-left: 1em;
+    color: #fff;
+    line-height: 60px;
+  }
+  .x-close{
+    
+    justify-content: flex-end;
+    margin: 0.5em 1em 0.5em 0;
+    display: flex;
+    color: #fff;
+  }
+  .x-close, .x-delete{
+    font-size: x-large;
+    cursor: pointer;
+  }
+  .x-delete{
+      text-align: center;
+
+  }
+  .remove-background{
+      background: none !important;
+  }
+
+  .search-icon{
+    position: absolute;
+    right: 8em;
+    top: 0.47em;
+  }
+
+  .pager-wrap{
+    margin: 1em;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+
+  .dropdown-toggle.btn-default {
+    color: #292b2c;
+    background-color: #fff;
+    border-color: #ccc;
+  }
+  .bootstrap-select.show > .dropdown-menu > .dropdown-menu {
+    display: block;
+  }
+  .bootstrap-select > .dropdown-menu > .dropdown-menu li.hidden {
+    display: none;
+  }
+  .bootstrap-select > .dropdown-menu > .dropdown-menu li a {
+    display: block;
+    width: 100%;
+    padding: 3px 1.5rem;
+    clear: both;
+    font-weight: 400;
+    color: #292b2c;
+    text-align: inherit;
+    white-space: nowrap;
+    background: 0 0;
+    border: 0;
+    text-decoration: none;
+  }
+  .bootstrap-select > .dropdown-menu > .dropdown-menu li a:hover {
+    background-color: #f4f4f4;
+  }
+  .bootstrap-select > .dropdown-toggle {
+    width: 100%;
+  }
+  .dropdown-menu > li.active > a {
+    color: #fff !important;
+    background-color: #337ab7 !important;
+  }
+  .bootstrap-select .check-mark {
+    line-height: 14px;
+  }
+  .bootstrap-select .check-mark::after {
+    font-family: "FontAwesome";
+    content: "\f00c";
+  }
+  .bootstrap-select button {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Make filled out selects be the same size as empty selects */
+  .bootstrap-select.btn-group .dropdown-toggle .filter-option {
+    display: inline !important;
+  }
+
+  .react-flag{
+      width: 100%;
+  }
+
+  .section .content .headline.buttons, .dashboard-content .headline.buttons{
+      height: 5rem !important;
+      display: flex;
+        justify-content: space-between;
+        padding: 0 10px 0 10px;
+  }
+
+  .headline.buttons.primary::before{
+      height: 5rem !important;
+  }
+  .headline h4{
+      line-height: 5rem;
+  }
+
+  .section .content .headline .view-selectors, .dashboard-content .headline .view-selectors{
+      margin: 0 !important;
+      margin-top: 10px !important;
+  }
+
+  .form-popup-headline.secondary h2 {
+      color: #fff !important;
+      font-size: 2rem;
+  }
+
+  .dashboard-header .dashboard-header-item.title h6{
+      font-size: 2rem;
+  }
+
+  hr{
+      margin: 0 !important;
+  }

@@ -13,6 +13,15 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import * as actions from "../../actions";
 import countryData from "../../assets/countryCode.json";
 import { Link } from 'react-router-dom';
+import Header from '../HeaderFooter/Header';
+import Footer from '../HeaderFooter/Footer';
+
+import ReactFlagsSelect from 'react-flags-select';
+ 
+//import css module
+import 'react-flags-select/css/react-flags-select.css';
+ 
+
 
 
 class Register extends Component {
@@ -230,10 +239,35 @@ class Register extends Component {
         console.log('closeing snackbar', this.state)
         this.props.clearError()
     }
-    
+    _countryCodeChange = (countryCode) => {
+        this.props.initiateRegistration()
+        fetch(`https://restcountries.eu/rest/v2/alpha/${countryCode}`)
+            .then(res => res.json())
+            .then(result => {
+                this.setState({
+                    countryCode: result.callingCodes[0],
+                    isoCode: countryCode,
+                    country: result.name
+                }, () => this.props.stopLoading())
+            })
+            .catch((err) => console.log('error encountered', err) )
+        console.log('country code', countryCode)
+    }
     render() {
         const { classes } = this.props;
         return (
+                <div>
+                    <Header />
+                    
+                    <div className="router-container">
+                    <nav aria-label="breadcrumb" className="breadcrumb-nav">
+                    <div className="container">
+                        <ol className="breadcrumb">
+                            <li className="breadcrumb-item"><a href="index.html"><i className="icon-home"></i></a></li>
+                            <li className="breadcrumb-item active" aria-current="page">Create New Account</li>
+                        </ol>
+                    </div>
+                </nav>
                 <div className="form-popup custom-input register-form">
                     <div className="form-popup-content">
                         <h4 className="popup-title">Register Account</h4>
@@ -313,22 +347,30 @@ class Register extends Component {
                             <div className="row">
                                 <div className="col-md-6 col-sm-12">
                                     <label htmlFor="phoneNumber" className="rl-label required">Phone Number</label>
-                                    <input type="text" id="phoneNumber" className={`${this.state.inValidElments.includes('phoneNumber') ? 'invalid' : '' }`} value={this.state.phoneNumber} name="phoneNumber" onChange={this.handleInputChange}  placeholder="Enter your phone number..."/>
-                                    {
-                                        this.state.inValidElments.includes('phoneNumber') ?
-                                        (
-                                            <div className="error-message required">
-                                                {this.state.validationMessage['phoneNumber']}
-                                            </div>
-                                        ): null 
-                                    }
+                                    <div style={{display:"flex", flexDirection:"row", width:"100%"}}>
+                                        <input type="text" id="phoneNumber" className={`${this.state.inValidElments.includes('phoneNumber') ? 'invalid' : '' }`} value={this.state.phoneNumber} name="phoneNumber" onChange={this.handleInputChange}  placeholder="Enter your phone number..."/>
+                                        {
+                                            this.state.inValidElments.includes('phoneNumber') ?
+                                            (
+                                                <div className="error-message required">
+                                                    {this.state.validationMessage['phoneNumber']}
+                                                </div>
+                                            ): null 
+                                        }
+                                    </div>
+                                    
                                 </div>
                                 <div className="col-md-6 col-sm-12">
                                     <label htmlFor="country" className="rl-label required">Select Country</label>
-                                    <select name="country" className={`${this.state.inValidElments.includes('country') ? 'invalid' : '' }`} value={this.state.country} onChange={this.handleInputChange}>
+                                    {/* <select name="country" className={`${this.state.inValidElments.includes('country') ? 'invalid' : '' }`} value={this.state.country} onChange={this.handleInputChange}>
                                         <option value="">Select country</option>
                                         <option value="Nigeria">Nigeria</option>
-                                    </select>
+                                    </select> */}
+                                    <ReactFlagsSelect
+                                     searchable={true} searchPlaceholder={'Plese select country'} 
+                                        className="react-flag"
+                                        onSelect={this._countryCodeChange}
+                                     />
                                     {
                                         this.state.inValidElments.includes('country') ?
                                         (
@@ -423,6 +465,9 @@ class Register extends Component {
                             ]}
                             />
                     </Snackbar>
+                </div>
+                </div>
+                <Footer />
                 </div>
         );
     }

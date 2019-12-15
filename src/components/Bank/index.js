@@ -1,54 +1,24 @@
-import React, { Component, forwardRef } from 'react';
+import React, { Component } from 'react';
 import UserLayout from "../HOC/UserLayout";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import MaterialTable from "material-table";
+import NoRecordFound from "../../common/NoRecordFound";
 import { withToastManager } from 'react-toast-notifications';
 import * as actions from "../../actions";
+import BankListItem from "../../common/BankListItem";
+import SweetAlert from 'react-bootstrap-sweetalert';
 
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import Search from '@material-ui/icons/Search';
-import ViewColumn from '@material-ui/icons/ViewColumn';
-import ErrorAlert from "../../common/ErrorAlert";
-import SuccessAlert from "../../common/SuccessAlert";
 
-const tableIcons = {
-    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-    Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-    DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-    PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
-    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-    SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
-    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
-  };
+
 
 class Bank extends Component {
     state = {
         inValidElments: [],
         validationMessage: [],
-        banks: []
+        banks: [],
+        showAlert: false,
+        actionMode: 'save',
+        pin: ''
     }
     validateFormData = (formdata) => {
         const { accountNumber, accountName, longcode,} = formdata;
@@ -89,6 +59,14 @@ class Bank extends Component {
         this.setState({
             [name]: value,
             newInvalidElements
+        }, () => {
+            const {longcode, accountName, accountNumber} = this.state
+            if((longcode.trim() === '') && (accountName.trim()
+                 === '') && (accountNumber.trim() === '')){
+                return this.setState({
+                    actionMode:'save'
+                })
+            }
         })
     }
     renderLookUp = () => {
@@ -105,7 +83,14 @@ class Bank extends Component {
     }
     static getDerivedStateFromProps(nextProps, state){
         if(nextProps.banks.length > 0){
+            if(nextProps.resetForm){
+                return {...state,banks: nextProps.banks,pin: '',
+                     actionMode: 'save', longcode:'', accountNumber:'', accountName:''}
+            }
             return {...state, banks: nextProps.banks}
+        }
+        if(nextProps.resetForm){
+            return {...state, actionMode: 'save', longcode:'', accountNumber:'', accountName:''}
         }
         return null
     }
@@ -113,7 +98,13 @@ class Bank extends Component {
         e.preventDefault()
         this.processForm()
     }
+    handlePinChange = pin => {
+        this.setState({
+            pin: pin.target.value
+        })
+    }
     processForm = () => {
+        
         const {isValid, inValidElments, validationMessage} = this.validateFormData(this.state)
         
         if(!isValid){
@@ -127,6 +118,7 @@ class Bank extends Component {
         }
         const selectedBank = this.state.banks.filter(element => element.longcode === this.state.longcode)
         const {accountNumber, accountName} = this.state
+        this.props.initiateRegistration()
         if(selectedBank.length > 0){
             const bankDetails = selectedBank[0]
            return this.props.saveBank({
@@ -141,6 +133,77 @@ class Bank extends Component {
     logout = () => {
         this.props.logout()
         return <Redirect to="/users/login" />
+    }
+    converToDate = timestamp => {
+        const MONTHS = ['January','February', 'March', 'April', 'May', 'June', 'July'
+            ,'August','September', 'October', 'November', 'Decemeber']
+        const date = new Date(timestamp)
+        return `${date.getDate()} ${MONTHS[date.getMonth()]}, ${date.getFullYear()}`
+    }
+    _handleRowClick = (id) => {
+        console.log('id', id)
+        const index = this.props.savedBanks.findIndex(element => element.id === id)
+        if(index !== -1){
+            const bank = this.props.savedBanks.find(element => element.id === id)
+            this.setState({
+                longcode: bank.longcode,
+                accountNumber: bank.accountNumber,
+                accountName: bank.accountName,
+                actionMode: 'update',
+                name: bank.name,
+                id: bank.id
+            })
+        }
+    }
+    _renderStoreList = () => {
+        if(this.props.savedBanks.length > 0){
+            return this.props.savedBanks.map((bank, i) => {
+                const {id, name, accountName, accountNumber, createdAt} = bank
+               return (<BankListItem
+                    bank={name}
+                    accountName={accountName}
+                    accountNumber={accountNumber}
+                    createdAt={this.converToDate(createdAt)}
+                    key={id}
+                    id={id}
+                    handleRowClick={(id) => this._handleRowClick(id)}
+                />)
+            })
+        }
+        return <NoRecordFound />
+    }
+    handleFormUpdate = (e, actionMode = null) => {
+        e.preventDefault()
+        const {longcode, accountName, accountNumber} = this.state
+        if(longcode.trim() === '' || accountName.trim() === '' || accountNumber.trim() === ''){
+           return this.props.renderError('Bank, Account Number and Account Name is required')
+        }
+        if(this.state.pin.trim() === ''){
+            this.setState({
+                showAlert: true,
+                actionMode
+            })
+        }
+    }
+    handleFormDelete = (e, actionMode = null) => {
+        e.preventDefault()
+        if(this.state.pin.trim() === ''){
+            this.setState({
+                showAlert: true,
+                actionMode
+            })
+        }
+    }
+    updateDeleteBank = () => {
+        this.setState({
+            showAlert: false
+        }, () => {
+            this.props.initiateRegistration()
+            this.props.modifyAccount(this.state.actionMode, {longcode: this.state.longcode, name: this.state.name,
+                accountNumber: this.state.accountNumber, accountName: this.state.accountName,
+                pin: this.state.pin
+            }, this.state.id)
+        }) 
     }
     render() {
         return (
@@ -247,100 +310,86 @@ class Bank extends Component {
                                         }
                                     </div>
                                 </div>
-                                <div className="row" style={{padding: '20px 0 10px'}}>
-                                    <div className="col-md-8 col-sm-12"></div>
-                                    <div className="col-md-4 col-sm-12">
-                                        <button onClick={this.handleFormSubmit} className="button primary" style={{margin:'0 auto'}}>Save</button>
-                                    </div>
+                                <div style={{padding: '20px 0 10px'}}>
+                                    {
+                                        this.state.actionMode === 'save' ? (
+                                            <div className="row">
+                                                <div className="col-md-8 col-sm-12"></div>
+                                                <div className="col-md-4 col-sm-12">
+                                                    <button onClick={this.handleFormSubmit} className="button primary" style={{margin:'0 auto'}}>Save</button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="row">
+                                                <div className="col-md-8 col-sm-12"></div>
+                                                <div className="col-md-4 col-sm-12">
+                                                    <div style={{marginBottom: 10}}>
+                                                        <button  onClick={(e) => this.handleFormUpdate(e, 'update')} className="btn btn-warning" 
+                                                        style={{margin:'0 auto',borderColor:'#ffc107',
+                                                         background: '#ffc107', width:'100%', color:"#fff"}}>Update</button>
+                                                    </div>
+                                                    <div style={{marginBottom: 10}}>
+                                                        <button onClick={(e) => this.handleFormDelete(e, 'delete')} className="btn btn-danger" 
+                                                        style={{margin:'0 auto', width:'100%'}}>Delete</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+                                    
                                 </div>
                             </div>
                         
                         </form>
+                    
+                        <div style={{ maxWidth: "100%", background: '#fff',overflowX:'auto',
+                         padding: '20px 0px 20px 0px' }}>
+                            <table class="table table-hover">
+                                    <thead class="thead-light">   
+                                        <th scope="col">Bank</th>
+                                        <th scope="col">Account Name</th>
+                                        <th scope="col">Account Number</th>
+                                        <th scope="col">Date Created</th>
+                                        <th scope="col">Action</th>
+                                    </thead>
+                                    <tbody>
+                                        {this._renderStoreList()}
+                                    </tbody> 
+                                </table>
+                                <div className="pager-wrap">
+                                        <div className="pager primary">
+                                            <div className="pager-item active"><p>1</p></div>
+                                            <div className="pager-item "><p>2</p></div>
+                                            <div className="pager-item"><p>3</p></div>
+                                            <div className="pager-item"><p>...</p></div>
+                                            <div className="pager-item"><p>17</p></div>
+                                        </div>
+                                    </div>
+                            </div>
                     </div>
-                    <div style={{ maxWidth: "100%" }}>
-                        
-                        <MaterialTable
-                            icons={tableIcons}
-                            columns={[
-                                {
-                                    title: "Bank",
-                                    field: "longcode",
-                                    lookup: this.renderLookUp()
-                                    },
-                                { title: "Account Name", field: "accountName" },
-                                { title: "Account Number", field: "accountNumber" },
-                                { title: "Date Added", field: "createdAt", type:"date",
-                                render: rowData => {
-                                    const createdDate = new Date(rowData.createdAt)
-                                    const LocalDate = createdDate.getDate() + '-' + (createdDate.getMonth() + 1) + '-'+ createdDate.getFullYear()
-                                    
-                                    return LocalDate
-                                }
-                                },
-                                
-                            ]}
-                            data={this.props.savedBanks}
-                            title=""
+                   
+                    {
+                        this.state.showAlert ?
+                            <SweetAlert
+                            
+                            required
+                            type="custom"
+                            ref = {ref => this.inputRef = ref}
+                            inputType="password"
+                            title="Enter Pin"
+                            focusConfirmBtn
+                            validationMsg="Pin is required"
+                            onConfirm={(response) => this.updateDeleteBank()}
+                            showCancel
+                            showConfirm={this.state.pin.length > 0 ? true: false}
+                            onCancel={() => this.setState({showAlert:false})}
+                        >
+                            <input type="password" value={this.state.pin} onChange={this.handlePinChange} 
+                            className="form-control"/>
+                        </SweetAlert> : null
 
-                            editable={{
-                                isEditable: () => true, // only name(a) rows would be editable
-                                isDeletable: (rowData) => true, // only name(a) rows would be deletable
-                                onRowAdd: newData =>
-                                    
-                                    new Promise((resolve, reject) => {
-                                        setTimeout(() => {
-                                            {
-                                                const $ = this;
-                                                const longcode = newData.longcode
-                                                const accountName = newData.accountName
-                                                const accountNumber = newData.accountNumber
-                                                this.setState({
-                                                    longcode,
-                                                    accountName,
-                                                    accountNumber
-                                                }, () => $.processForm('data-table-add'))
-                                            }
-                                            resolve();
-                                        }, 1000);
-                                    }),
-                                onRowUpdate: (newData, oldData) =>
-                                    new Promise((resolve, reject) => {
-                                        setTimeout(() => {
-                                            {
-                                                const longcode = newData.longcode
-                                                const accountName = newData.accountName
-                                                const accountNumber = newData.accountNumber
-
-                                                console.log({longcode, accountNumber, accountName})
-                                            }
-                                            resolve();
-                                        }, 1000);
-                                    }),
-                                onRowDelete: oldData =>
-                                    new Promise((resolve, reject) => {
-                                        setTimeout(() => {
-                                            {
-                                                const longcode = oldData.longcode
-                                                const accountName = oldData.accountName
-                                                const accountNumber = oldData.accountNumber
-
-                                                console.log({longcode, accountNumber, accountName})
-                                            }
-                                            resolve();
-                                        }, 1000);
-                                    })
-                            }}
-                        />
-                    </div>
-                    <SuccessAlert 
-                    open={this.props.showSuccessBar} closeSnackBar={this.closeSnackBar}
-                    message={this.props.successMessage} 
-                />
-                <ErrorAlert open={this.props.error} closeSnackBar={this.closeSnackBar} errorMessage={this.props.errorMessage} />
+                    }
                 </div>
-                {/* {
-                    this.props.unAuthorized ? this.logout() : null
-                } */}
             </UserLayout>
         );
     }
@@ -348,7 +397,7 @@ class Bank extends Component {
 
 const mapStateToProps = state => {
     const {bank:{ loading, error, errorMessage, successMessage, 
-        showSuccessBar, banks, savedBanks}, reg:{unAuthorized}} = state;
+        showSuccessBar, banks, savedBanks, resetForm}, reg:{unAuthorized}} = state;
     const sortedBanks = banks.sort((item1, item2) => item1.name.toLowerCase() > item2.name.toLowerCase() )
     console.log('unathourized', unAuthorized)
     return {
@@ -359,7 +408,8 @@ const mapStateToProps = state => {
         successMessage,
         showSuccessBar,
         savedBanks,
-        unAuthorized
+        unAuthorized,
+        resetForm
     }
 }
 

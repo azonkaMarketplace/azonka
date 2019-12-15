@@ -3,7 +3,7 @@ import {  withToastManager } from 'react-toast-notifications';
 import UserLayout from "../HOC/UserLayout";
 import * as actions from "../../actions";
 import Validator from "validator";
-import profileImage from "../../images/dashboard/profile-default-image.png";
+import SweetAlert from 'react-bootstrap-sweetalert';
 import { connect } from "react-redux";
 
 class index extends Component {
@@ -15,21 +15,25 @@ class index extends Component {
         showBalanceInStatusBar: true,
         sendEmails: true,
         inValidElements: [],
-        changedElements: []
+        changedElements: [],
+        pin: '',
+        showAlert: false
     }
     componentDidMount(){
         this.props.switchActiveLink('account-setting')
+        //this.pinRef = React.createRef()
     }
     static getDerivedStateFromProps(nextProps, state){
         const {user} = nextProps;
         if(user){
-            const { firstName, lastName, emailAddress, phoneNumber} = user
+            const { firstName, lastName, emailAddress, phoneNumber, country} = user
             return {
                 profileInformation: {
                     firstName,
                     lastName,
                     emailAddress,
                     phoneNumber,
+                    country,
                     ...state.profileInformation
                 }
             }
@@ -111,8 +115,16 @@ class index extends Component {
         }
 
     }
-
+    handlePinChange = pin => {
+        this.setState({
+            pin: pin.target.value
+        })
+        // this.setState({
+        //     showAlert: false
+        // })
+    }
     handleFormSubmit = e => {
+     
         e.preventDefault()
         const updatedElement = {};
         this.state.changedElements.forEach(element => {
@@ -120,17 +132,22 @@ class index extends Component {
         })
         const {isValid, inValidElements} = this.validateFormData(updatedElement, 'profileInformation')
         
-        console.log('this profile', updatedElement)
-        console.log(isValid, inValidElements)
 
         if(isValid){
-            if(Object.keys(updatedElement).length > 0){
-                this.props.initiateRegistration()
-                this.props.updateUserProfile(updatedElement)
+            if(this.state.pin.trim() !== '' ){
+                if(Object.keys(updatedElement).length > 0){
+                    this.props.initiateRegistration()
+                    this.props.updateUserProfile(updatedElement)
+                    this.setState({
+                        changedElements: []
+                    })
+                }
+            }else{
                 this.setState({
-                    changedElements: []
+                    showAlert: true
                 })
             }
+            
         }else{
             console.log('not called')
             this.props.renderError('One or more fields not filled, Please check your form and try again')
@@ -138,6 +155,41 @@ class index extends Component {
                 inValidElements
             })
         }
+    }
+    processForm = () => {
+        this.setState({
+            showAlert: false,
+            
+        }, () => {
+            const updatedElement = {};
+            this.state.changedElements.forEach(element => {
+                updatedElement[element] = this.state.profileInformation[element]
+            })
+            const {isValid, inValidElements} = this.validateFormData(updatedElement, 'profileInformation')
+            
+            console.log('this profile', updatedElement)
+            console.log(isValid, inValidElements)
+            
+            if(Object.keys(updatedElement).length > 0){
+                this.props.initiateRegistration()
+                this.props.updateUserProfile(updatedElement)
+                this.setState({
+                    changedElements: [],
+                    pin: ''
+                })
+
+            }else{
+                this.setState({
+                    pin: ''
+                })
+            }
+        })
+        
+    }
+    onCancel = () => {
+        this.setState({
+            showAlert: false
+        })
     }
     isInvalid = (target,field) => {
         const index = this.state.inValidElements.findIndex(element => element.field === field && element.input === target)
@@ -151,13 +203,13 @@ class index extends Component {
             <UserLayout>
                 <div className="headline buttons primary">
                     <h4>Profile</h4>
-                    <button form="profile-info-form" onClick={this.handleFormSubmit} className="button mid-short primary">Save Changes</button>
+                    
                 </div>
                 <div className="form-box-items">
                     <div className="form-box-item">
                         <h4>Profile Information</h4>
                         <hr className="line-separator" />
-                        <div className="profile-image">
+                        {/* <div className="profile-image">
                             <div className="profile-image-data" style={{float:'none'}}>
                                 <figure className="user-avatar medium">
                                     <img src={profileImage} alt="profile-default" />
@@ -169,7 +221,7 @@ class index extends Component {
                                 <button className="btn">Upload photo</button>
                                 <input type="file" name="myfile" />
                             </div>
-                        </div>
+                        </div> */}
 
                         <form id="profile-info-form">
                             <div className="input-container">
@@ -182,7 +234,7 @@ class index extends Component {
                             </div>
                             <div className="input-container">
                                 <label htmlFor="emailAddress" className="rl-label">Email</label>
-                                <input type="email" id="new_email" className={`${this.isInvalid('emailAddress', 'profileInformation') ?  'invalid': ''}`} onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} name="emailAddress" value={this.state.profileInformation.emailAddress} placeholder="Enter your email address here..." />
+                                <input disabled type="email" id="new_email" className={`${this.isInvalid('emailAddress', 'profileInformation') ?  'invalid': ''}`} onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} name="emailAddress" value={this.state.profileInformation.emailAddress} placeholder="Enter your email address here..." />
                             </div>
                             <div className="input-container">
                                 <label htmlFor="phoneNumber" className="rl-label">Phone number</label>
@@ -201,55 +253,32 @@ class index extends Component {
                                 <label htmlFor="about" className="rl-label">About</label>
                                 <input type="text" id="about" onChange={(event) => this.handleInputChange({event, field:'profileInformation'})} value={this.state.profileInformation.about} name="about" placeholder="This will appear bellow your avatar... (max 140 char)" />
                             </div>
+                            <div style={{margin:'20px 0 20px 10px', display:"flex", justifyContent:"flex-end", width:"100%"}}>
+                                <button form="profile-info-form" onClick={this.handleFormSubmit} className="button mid-short secondary">Save Changes</button>
+                            </div>
                         </form>
                     </div>
-                    
-                    {/* <div className="form-box-item last-item">
-                        <h4>Shipping Information</h4>
-                        <hr className="line-separator"/>
-                        <div className="input-container half">
-                            <label htmlFor="first_name2" className="rl-label required">First Name</label>
-                            <input onChange={(event) => this.handleInputChange({event, field:'shippingInformation'})} type="text" form="profile-info-form" id="first_name21" value={this.state.shippingInformation.firstName} name="firstName" placeholder="Enter your first name here..."/>
-					    </div>
-                        <div className="input-container half">
-                            <label htmlFor="last_name2" className="rl-label required">Last Name</label>
-                            <input onChange={(event) => this.handleInputChange({event, field:'shippingInformation'})} type="text" form="profile-info-form" value={this.state.shippingInformation.lastName} id="last_name21" name="lastName" placeholder="Enter your last name here..."/>
-                        </div>
-                        <div className="input-container">
-                            <label htmlFor="email_address2" className="rl-label required">Email Address</label>
-                            <input onChange={(event) => this.handleInputChange({event, field:'shippingInformation'})} type="email" value={this.state.shippingInformation.email} form="profile-info-form" id="email_address21" name="email" placeholder="Enter your email address here..."/>
-                        </div>
-                        <div className="input-container">
-                            <label htmlFor="country2" className="rl-label required">Country</label>
-                            <label htmlFor="country2" className="select-block">
-                                <select onChange={(event) => this.handleInputChange({event, field:'shippingInformation'})} value={this.state.shippingInformation.country} form="profile-info-form" name="country" id="country21">
-                                    <option value="0">Select your Country...</option>
-                                    <option value="Nigeria">Nigeria</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div className="input-container half">
-                            <label htmlFor="state_city2" className="rl-label required">State/City</label>
-                            <label htmlFor="state_city2" className="select-block">
-                                <select onChange={(event) => this.handleInputChange({event, field:'shippingInformation'})} value={this.state.shippingInformation.city} form="profile-info-form" name="city" id="state_city21">
-                                    <option value="0">Select your State/City...</option>
-                                    <option value="Nigeria">Nigeria</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div className="input-container half">
-                            <label htmlFor="zipcode2" className="rl-label required">Zip Code</label>
-                            <input onChange={(event) => this.handleInputChange({event, field:'shippingInformation'})} form="profile-info-form" value={this.state.shippingInformation.zipcode} type="text" id="zipcode21" name="zipcode" placeholder="Enter your Zip Code here..."/>
-                        </div>
-                        <div className="input-container">
-                            <label htmlFor="address2" className="rl-label required">Full Address</label>
-                            <input onChange={(event) => this.handleInputChange({event, field:'shippingInformation'})} form="profile-info-form" value={this.state.shippingInformation.address} type="text" id="address1" name="address" placeholder="Enter your address here..."/>
-                        </div>
-                        <div className="input-container">
-                            <label htmlFor="notes2" className="rl-label">Aditional Notes</label>
-                            <textarea onChange={(event) => this.handleInputChange({event, field:'shippingInformation'})} value={this.state.shippingInformation.note} form="profile-info-form" id="notes2" name="note1" placeholder="Enter aditional notes here..."></textarea>
-                        </div>
-                    </div> */}
+                    {
+                        this.state.showAlert ?
+                            <SweetAlert
+                            
+                            required
+                            type="custom"
+                            ref = {ref => this.inputRef = ref}
+                            inputType="password"
+                            title="Enter Pin"
+                            focusConfirmBtn
+                            validationMsg="Pin is required"
+                            onConfirm={(response) => this.processForm()}
+                            showCancel
+                            showConfirm={this.state.pin.length > 0 ? true: false}
+                            onCancel={() => this.setState({showAlert: false})}
+                        >
+                            <input type="password" value={this.state.pin} onChange={this.handlePinChange} 
+                            className="form-control"/>
+                        </SweetAlert> : null
+
+                    }
                 </div>
             </UserLayout>
         );

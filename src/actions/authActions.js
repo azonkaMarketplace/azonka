@@ -3,7 +3,7 @@ import {
     SUCCESS_RESENDING_PASSCODE, EMAIL_VERIFICATION_SUCCESFFUL,
     ERROR_RESENDING_PASSCODE, GET_SEC_QUESTIONS, LOGOUT_USER, EMAIL_FORGOT_PASSWORD_SENT,LOGIN_SUCCESS,
     LOGIN_UNSUCCESSFUL, PASSWORD_REST_SUCCESSFUL, STOP_LOADING,FILE_UPLOADED_FALIED, FILE_UPLOADED_SUCCESSFULL,
-    USER_ROLE_UPDATED_SUCCESSFUL,UNSUCCESSFUL_VERIFICATION,SUCCESS_ALERT, UNAUTHORIZED_USER, DISPLAY_ERROR, FETCH_USER, CLOSE_SNACKBAR
+    USER_ROLE_UPDATED_SUCCESSFUL,UNSUCCESSFUL_VERIFICATION,SUCCESS_ALERT, UNAUTHORIZED_USER, DISPLAY_ERROR, FETCH_USER,
  } from "./types";
 import axios from "axios";
 import { fileUpload } from "../components/util/FileUploader";
@@ -22,6 +22,7 @@ export const registerUser = (userData) => {
                 console.log(response.data);
                 console.log('here o')
                  localStorage.setItem('userRegDetails', JSON.stringify(data))
+                 dispatch({type: SUCCESS_ALERT, payload: 'Registration successful please check your mail to continue'})
                  dispatch({type: SUCCESSFUL_REGISTRATION, payload: ''})
                 // return window.location.href = window.origin + '/users/verify'
             
@@ -68,6 +69,7 @@ export const verifyEmail = (userData) => {
                 localStorage.setItem('x-access-token', response.data.token)
                 
                 localStorage.removeItem('userRegDetails')
+                dispatch({type: SUCCESS_ALERT, payload: 'Account Verified successfully'})
                 return dispatch({type: EMAIL_VERIFICATION_SUCCESFFUL, payload: ''})
                 //return window.location.href = window.origin + '/users/profile'
            }
@@ -219,26 +221,25 @@ export const updateUserType = (userData, type) => {
                                     'x-access-token': token
                                 }
                             })
-            console.log('response', response, token)
+            console.log('response', response)
             let newUserData = {}
             const getUserResponse2 = await axios.get('/api/v1/user/get-user', {
                 headers: {
                     'x-access-token': token
                 }
             })
+            console.log('get response', getUserResponse2)
             const user = getUserResponse2.data.user
             const cart = newUserData.cart ? newUserData.cart : 0
             const likes = newUserData.likes ?  newUserData.likes : 0
             dispatch( {type: FETCH_USER, payload: {userData: user, likes, cart}})
             if(type === 'user'){
-                    dispatch({type: SUCCESS_ALERT, payload: 'Wallet setup successfully, redirecting...'})
+                    dispatch({type: SUCCESS_ALERT, payload: 'Wallet setup successfully'})
             }else{
-                dispatch({type: SUCCESS_ALERT, payload: 'Account upgraded Successfully, redirecting...'})
+                dispatch({type: SUCCESS_ALERT, payload: 'Account upgraded Successfully'})
             }
             dispatch({type: USER_ROLE_UPDATED_SUCCESSFUL, payload: ''})
-            return setTimeout(() => {
-                return dispatch({type: CLOSE_SNACKBAR, payload: '' })
-            }, 1500)
+            
             
         }catch(error){
             console.log(error.response)
@@ -265,6 +266,40 @@ export const fileuploadHandler = (file, foldername='', type = '') => {
             return dispatch({type: FILE_UPLOADED_SUCCESSFULL, payload: data.Location})
         }catch(error) {
             dispatch({type: FILE_UPLOADED_FALIED, payload: error })
+        }
+    }
+}
+
+export const setPin = userData => {
+    return async (dispatch) => {
+        try{
+            const token = localStorage.getItem('x-access-token')
+            const response = await axios.post('/api/v1/user/set-account-pin', {
+                                ...userData}, {
+                                headers: {
+                                    'x-access-token': token
+                                }
+                            })
+            console.log('response', response)
+            let newUserData = {}
+            const getUserResponse2 = await axios.get('/api/v1/user/get-user', {
+                headers: {
+                    'x-access-token': token
+                }
+            })
+            console.log('get response', getUserResponse2)
+            const user = getUserResponse2.data.user
+            const newUSer = {...user, pinSet: true}
+            const cart = newUserData.cart ? newUserData.cart : 0
+            const likes = newUserData.likes ?  newUserData.likes : 0
+            dispatch( {type: FETCH_USER, payload: {userData: newUSer, likes, cart}})
+            dispatch({type: SUCCESS_ALERT, payload: 'Wallet setup successfully'})
+            return dispatch({type: USER_ROLE_UPDATED_SUCCESSFUL, payload: ''})
+        }catch(error){
+            if(error.response.data.message)
+                return dispatch({type: DISPLAY_ERROR, payload: error.response.data.message.substr(0, 100) })
+            
+            return dispatch({type: DISPLAY_ERROR, payload: error.response.data.substr(0, 100) })
         }
     }
 }

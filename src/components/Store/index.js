@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import * as actions from "../../actions";
-import UserLayout from "../HOC/UserLayout";
 import StoreListItem from "../../common/StoreListItem";
 import NoRecordFound from "../../common/NoRecordFound";
+import AdminLayout from '../HOC/AdminLayout';
 class Store extends Component {
     state = {
         name: '',
@@ -128,7 +128,6 @@ class Store extends Component {
         return `${date.getDate()} ${MONTHS[date.getMonth()]}, ${date.getFullYear()}`
     }
     _renderStoreList = () => {
-        if(this.props.stores.length > 0){
             return this.props.stores.map((store, i) => {
                 const {id, country, state, address,name, createdAt} = store
                return (<StoreListItem
@@ -142,12 +141,11 @@ class Store extends Component {
                     handleRowClick={(id) => this._handleRowClick(id)}
                 />)
             })
-        }
-        return <NoRecordFound />
+        
     }
     render() {
         return (
-            <UserLayout>
+            <AdminLayout>
                 <div className="headline buttons primary">
                     <h4>Store</h4>
                 </div>
@@ -159,7 +157,7 @@ class Store extends Component {
                         }}>Add Store</h4>
                     <hr className="line-separator" />
                     <form>
-                            <div className="container">
+                            <div className="container-fluid">
                                 <div className="row">
                                     <div className="col-md-4 col-sm-12">
                                         <label htmlFor="name" className="rl-label">Store Name</label>
@@ -267,30 +265,27 @@ class Store extends Component {
                                 marginTop: 30,
                                 marginBottom: 10
                             }}>Stores</h4>
-                        <div className="transaction-list">
-                            <div className="transaction-list-header" >
-                                <div className="transaction-list-header-date" style={{width:'15%'}}>
-                                    <p className="text-header small">Country</p>
-                                </div>
-                                <div className="transaction-list-header-author" style={{width:'15%'}}>
-                                    <p className="text-header small">State</p>
-                                </div>
-                                <div className="transaction-list-header-item email-header" style={{width:'30%'}}>
-                                    <p className="text-header small">Shop Address</p>
-                                </div>
-                                <div className="transaction-list-header-item" style={{width:'25%'}}>
-                                    <p className="text-header small">Shop Name</p>
-                                </div>
-                                <div className="transaction-list-header-item mobile-header" style={{width:'100%'}}>
-                                    <p className="text-header small">Shop Details</p>
-                                </div>
-                                <div className="transaction-list-header-detail" style={{width:'15%'}}>
-                                    <p className="text-header small">Date</p>
-                                </div>
-                                <div className="transaction-list-header-icon"></div>
-                            </div>
-                            {this._renderStoreList()}
-                            <div className="pager-wrap">
+
+                        <table class="table table-hover">
+                            <thead class="thead-light">   
+                                <th scope="col">Country</th>
+                                <th scope="col">State</th>
+                                <th scope="col">Shop Adress</th>
+                                <th scope="col">Shop Name</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Action</th>
+                            </thead>
+                            {
+                                this.props.stores.length > 0 ?
+                                <tbody>
+                                {this._renderStoreList()}
+                                </tbody> 
+                                
+                                : <NoRecordFound />
+                            }
+                            
+                        </table>
+                        <div className="pager-wrap">
                                 <div className="pager primary">
                                     <div className="pager-item active"><p>1</p></div>
                                     <div className="pager-item "><p>2</p></div>
@@ -299,11 +294,10 @@ class Store extends Component {
                                     <div className="pager-item"><p>17</p></div>
                                 </div>
                             </div>
-                        </div>
                         
                     </div>
                 </div>
-            </UserLayout>
+            </AdminLayout>
         );
     }
 }

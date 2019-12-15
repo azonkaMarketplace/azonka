@@ -19,7 +19,11 @@ export const getStores = (id = 0, pageNumber = 20) => {
                 dispatch({type: DISPLAY_ERROR,  payload: 'Action unauthourized'})
             }
             console.log('error', error.response)
-            return dispatch({type: DISPLAY_ERROR,  payload: error.response.data.message.substr(0,100)})
+            if(error.response.data.message)
+                return dispatch({type: DISPLAY_ERROR,  payload: error.response.data.message.substr(0,100)})
+            if(error.response.data)
+                return dispatch({type: DISPLAY_ERROR,  payload: error.response.data.substr(0,100)})
+            return dispatch({type: DISPLAY_ERROR,  payload: 'some errors were encountered'})
         }
     }
 }
@@ -39,8 +43,12 @@ export const createStore = (data, id=0, pageNumber=10) => {
                 dispatch({type:UNAUTHORIZED_USER, payload: '' })
                 dispatch({type: DISPLAY_ERROR,  payload: 'Action unauthourized'})
             }
-            console.log('error', error.response)
-            return dispatch({type: DISPLAY_ERROR,  payload: error.response.data.message.substr(0,100)})
+            console.log('error', error.response.data.message)
+            if(error.response.data.message)
+                return dispatch({type: DISPLAY_ERROR,  payload: error.response.data.message.substr(0,100)})
+            if(error.response.data)
+                return dispatch({type: DISPLAY_ERROR,  payload: error.response.data.substr(0,100)})
+            return dispatch({type: DISPLAY_ERROR,  payload: 'some errors were encountered'})
         }
     }
 }

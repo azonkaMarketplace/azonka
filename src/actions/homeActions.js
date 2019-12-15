@@ -11,26 +11,37 @@ export const fetchUser = () => {
     let likes = 0
     let cart = 0
     let userData = null
-    let anonynmousUser = {}
+    let anonynmousUser = null
     //if there is no authenticated user, check if there is userdata stored in localstorage
     //this enables user to carry out operation without registering or logging
-    if(!user)
-        anonynmousUser = localStorage.getItem('anonynmous-azonta-user')
+    console.log('new user', user)
+    // if(isEmpty(user))
+    //     anonynmousUser = localStorage.getItem('anonynmous-azonta-user')
     //if there is an authenticated user get the cart and the likes  
-    if(user){
-        
+    // if(!isEmpty(user) ){
+    //     console.log('here o')
+    //     cart = user.cart ? user.cart : 0
+    //     likes = user.likes ?  user.likes : 0
+    //     userData = user;
+    // }
+    // if there is no authenticated user, get the user data for anonynmous user from localstorage
+    // else{
+    //     cart = anonynmousUser.cart
+    //     likes = anonynmousUser.cart
+    //     userData = anonynmousUser;
+    // }
+    if(isEmpty(user)){
+        anonynmousUser =  JSON.parse(localStorage.getItem('anonynmous-azonta-user'))
+        console.log('anony', anonynmousUser)
+        cart = anonynmousUser ? anonynmousUser.cart : 0
+        likes = anonynmousUser ? anonynmousUser.likes : 0
+        userData = anonynmousUser;
+    }else{
         cart = user.cart ? user.cart : 0
         likes = user.likes ?  user.likes : 0
         userData = user;
     }
-    // if there is no authenticated user, get the user data for anonynmous user from localstorage
-    else if(anonynmousUser){
-        cart = anonynmousUser.cart
-        likes = anonynmousUser.cart
-        userData = anonynmousUser;
-    }
-
-    
+    console.log('userData', userData)
 
     return {type: FETCH_USER, payload: {userData, likes, cart}}
 }
@@ -105,4 +116,12 @@ export const getProductCategorySubcategory = () => {
 
 export const stopImageLoading = () => {
     return {type: STOP_IMAGE_LOADING, payload: ''}
+}
+
+const isEmpty = (obj) => {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
 }
