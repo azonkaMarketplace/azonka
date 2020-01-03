@@ -2,7 +2,8 @@ import { ERROR_FETCHING_ITEMS, ITEMS_FETCHED_SUCCESSFULLY,
     STOP_LOADING, SUCCESS_ALERT,ITEM_CHANGE_ACTION,
      DISPLAY_ERROR,EDIT_ITEM,INIT_FORM,
       PRODUCTS_FETCED_SUCCESSFULLY, 
-      INITIAL_REGISTRATION, INVALIDE_FORM_DATA} from "./types";
+      INITIAL_REGISTRATION, INVALIDE_FORM_DATA,SET_ITEM_IMAGE,
+       INVALID_ITEM_FORM_DATA, CLEAR_ITEM_FORM_INPUTS} from "./types";
 import {fileUpload} from "../components/util/FileUploader";
 import async from 'async';
 import axios from 'axios';
@@ -91,9 +92,11 @@ export const createItem = (data) => {
                 }
             })
             dispatch({type: SUCCESS_ALERT, payload: 'Item created successfully'})
+            dispatch({type: CLEAR_ITEM_FORM_INPUTS, payload:''})
             dispatch({type: STOP_LOADING, payload: ''})
         }catch(error){
             console.log(error)
+            console.log(error.response)
             if(error.response){
                 dispatch({type: DISPLAY_ERROR, payload: error.response.data.message.substr(0,50)})
                 return dispatch({type: STOP_LOADING, payload: ''})
@@ -276,4 +279,14 @@ export const validateFormData = (state) => {
 
     }
     
+}
+
+export const inValidFormData = ( inValidElments,
+    validationMessage) => {
+    return {type: INVALID_ITEM_FORM_DATA, payload:{ inValidElments,
+        validationMessage}}
+}
+
+export const setItemImage = (image = null) => {
+    return {type: SET_ITEM_IMAGE, payload: image}
 }

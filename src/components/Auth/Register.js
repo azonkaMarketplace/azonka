@@ -263,7 +263,7 @@ class Register extends Component {
                     <nav aria-label="breadcrumb" className="breadcrumb-nav">
                     <div className="container">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"><a href="index.html"><i className="icon-home"></i></a></li>
+                            <li className="breadcrumb-item"><Link to="/"><i className="icon-home"></i></Link></li>
                             <li className="breadcrumb-item active" aria-current="page">Create New Account</li>
                         </ol>
                     </div>
@@ -276,12 +276,14 @@ class Register extends Component {
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col-md-6 col-sm-12">
-                                    <div className="">
+                                    <div className="form-group">
                                         <label htmlFor="firstName" className="rl-label">First Name</label>
                                         <input type="text" value={this.state.firstName} 
-                                            className={`${this.state.inValidElments.includes('firstName') ? 'invalid' : '' }`}
+                                            className={`form-control ${this.state.inValidElments.includes('firstName') ? 'invalid' : '' }`}
                                             onChange={this.handleInputChange} id="new_pwd" name="firstName" placeholder="Enter your firstname" />
-                                        {
+                                        
+                                    </div>
+                                    {
                                             this.state.inValidElments.includes('firstName') ?
                                             (
                                                 <div className="error-message required">
@@ -289,15 +291,16 @@ class Register extends Component {
                                                 </div>
                                             ): null 
                                         }
-                                    </div>
                                 </div>
                                 <div className="col-md-6 col-sm-12">
-                                    <div className="">
+                                    <div className="form-group">
                                         <label htmlFor="lastName" className="rl-label">Last Name</label>
                                         <input type="text" value={this.state.lastName} 
-                                            className={`${this.state.inValidElments.includes('lastName') ? 'invalid' : '' }`}
+                                            className={`form-control ${this.state.inValidElments.includes('lastName') ? 'invalid' : '' }`}
                                             onChange={this.handleInputChange} id="lastName" name="lastName" placeholder="Enter your lastname"/>
-                                        {
+                                        
+                                    </div>
+                                    {
                                             this.state.inValidElments.includes('lastName') ?
                                             (
                                                 <div className="error-message required">
@@ -305,23 +308,24 @@ class Register extends Component {
                                                 </div>
                                             ): null 
                                         }
-                                    </div>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col-md-6 col-sm-12">
-                                    <div>
+                                    <div className="form-group">
                                         <label htmlFor="lastName" className="rl-label">Gender</label>
                                         <select name="gender" onChange={this.handleInputChange}
                                             value={this.state.gender}
-                                            className={`${this.state.inValidElments.includes('gender') ? 'invalid' : '' }`}
+                                            className={`form-control ${this.state.inValidElments.includes('gender') ? 'invalid' : '' }`}
                                         >
                                             <option value="">Select</option>
                                             <option value="Male">Male</option>
                                             <option value="Female">Female</option>
                                             <option value="Other">Other</option>
                                         </select>
-                                        {
+                                        
+                                    </div>
+                                    {
                                             this.state.inValidElments.includes('gender') ?
                                             (
                                                 <div className="error-message required">
@@ -329,11 +333,12 @@ class Register extends Component {
                                                 </div>
                                             ): null 
                                         }
-                                    </div>
                                 </div>
                                 <div className="col-md-6 col-sm-12">
-                                    <label htmlFor="emailAddress"  className="rl-label required">Email Address</label>
-                                    <input type="email" id="email_address2" className={`${this.state.inValidElments.includes('emailAddress') ? 'invalid' : '' }`} value={this.state.emailAddress} name="emailAddress" onChange={this.handleInputChange} placeholder="Enter your email address here..."/>
+                                    <div className="form-group" style={{marginTop:'2.6rem'}}>
+                                        <label htmlFor="emailAddress"  className="rl-label required">Email Address</label>
+                                        <input type="email" id="email_address2" className={`form-control ${this.state.inValidElments.includes('emailAddress') ? 'invalid' : '' }`} value={this.state.emailAddress} name="emailAddress" onChange={this.handleInputChange} placeholder="Enter your email address here..."/>
+                                    </div>
                                     {
                                         this.state.inValidElments.includes('emailAddress') ?
                                         (
@@ -342,25 +347,27 @@ class Register extends Component {
                                             </div>
                                         ): null 
                                     }
+                                    
+                                    
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="col-md-6 col-sm-12">
-                                    <label htmlFor="phoneNumber" className="rl-label required">Phone Number</label>
-                                    <div style={{display:"flex", flexDirection:"row", width:"100%"}}>
-                                        <input type="text" id="phoneNumber" className={`${this.state.inValidElments.includes('phoneNumber') ? 'invalid' : '' }`} value={this.state.phoneNumber} name="phoneNumber" onChange={this.handleInputChange}  placeholder="Enter your phone number..."/>
-                                        {
-                                            this.state.inValidElments.includes('phoneNumber') ?
-                                            (
-                                                <div className="error-message required">
-                                                    {this.state.validationMessage['phoneNumber']}
-                                                </div>
-                                            ): null 
-                                        }
+                                <div className="form-group col-md-6 col-sm-12">
+                                    <div className="form-group" style={{marginTop:'2.6rem'}}>
+                                        <label htmlFor="phoneNumber" className="rl-label required">Phone Number</label>
+                                         <input type="text" id="phoneNumber" className={`form-control ${this.state.inValidElments.includes('phoneNumber') ? 'invalid' : '' }`} value={this.state.phoneNumber} name="phoneNumber" onChange={this.handleInputChange}  placeholder="Enter your phone number..."/>
                                     </div>
-                                    
+                                    {
+                                        this.state.inValidElments.includes('phoneNumber') ?
+                                        (
+                                            <div className="error-message required">
+                                                {this.state.validationMessage['phoneNumber']}
+                                            </div>
+                                        ): null 
+                                    }
                                 </div>
-                                <div className="col-md-6 col-sm-12">
+                                
+                                <div className="form-group col-md-6 col-sm-12" style={{marginTop:'2.6rem'}}>
                                     <label htmlFor="country" className="rl-label required">Select Country</label>
                                     {/* <select name="country" className={`${this.state.inValidElments.includes('country') ? 'invalid' : '' }`} value={this.state.country} onChange={this.handleInputChange}>
                                         <option value="">Select country</option>
@@ -371,7 +378,9 @@ class Register extends Component {
                                         className="react-flag"
                                         onSelect={this._countryCodeChange}
                                      />
-                                    {
+                                    
+                                </div>
+                                {
                                         this.state.inValidElments.includes('country') ?
                                         (
                                             <div className="error-message required">
@@ -379,48 +388,50 @@ class Register extends Component {
                                             </div>
                                         ): null 
                                     }
-                                </div>
                             </div>
                             <div className="row">
                                 
-                                <div className="col-md-6 col-sm-12">
+                                <div className="form-group col-md-6 col-sm-12">
                                     <label htmlFor="password" className="rl-label required">Password</label>
-                                    <input type="password" id="password2" className={`${this.state.inValidElments.includes('password') ? 'invalid' : '' }`} name="password" value={this.state.password} onChange={this.handleInputChange}  placeholder="Enter your password here..."/>
-                                    {
-                                        this.state.inValidElments.includes('password') ?
-                                        (
-                                            <div className="error-message required">
-                                                {this.state.validationMessage['password']}
-                                            </div>
-                                        ): null 
-                                    }
+                                    <input type="password" id="password2" className={`form-control ${this.state.inValidElments.includes('password') ? 'invalid' : '' }`} name="password" value={this.state.password} onChange={this.handleInputChange}  placeholder="Enter your password here..."/>
+                                    
                                 </div>
-                                <div className="col-md-6 col-sm-12">
+                                {
+                                    this.state.inValidElments.includes('password') ?
+                                    (
+                                        <div className="error-message required">
+                                            {this.state.validationMessage['password']}
+                                        </div>
+                                    ): null 
+                                }
+                                <div className="form-group col-md-6 col-sm-12">
                                     <label htmlFor="repeatPassword" className="rl-label required">Repeat Password</label>
-                                    <input type="password" id="repeat_password2" className={`${this.state.inValidElments.includes('repeatPassword') ? 'invalid' : '' }`} value={this.state.repeatPassword} name="repeatPassword" onChange={this.handleInputChange}  placeholder="Repeat your password here..."/>
-                                    {
-                                        this.state.inValidElments.includes('repeatPassword') ?
-                                        (
-                                            <div className="error-message required">
-                                                {this.state.validationMessage['repeatPassword']}
-                                            </div>
-                                        ): null 
-                                    }
+                                    <input type="password" id="repeat_password2" className={`form-control ${this.state.inValidElments.includes('repeatPassword') ? 'invalid' : '' }`} value={this.state.repeatPassword} name="repeatPassword" onChange={this.handleInputChange}  placeholder="Repeat your password here..."/>
+                                    
                                 </div>
+                                {
+                                    this.state.inValidElments.includes('repeatPassword') ?
+                                    (
+                                        <div className="error-message required">
+                                            {this.state.validationMessage['repeatPassword']}
+                                        </div>
+                                    ): null 
+                                }
                             </div>
                             <div className="row">
-                                <div className="col-md-6 col-sm-12">
+                                <div className="form-group col-md-6 col-sm-12">
                                     <label htmlFor="referredBy" className="rl-label">Referral Code</label>
-                                    <input type="text" id="referredBy" className={`${this.state.inValidElments.includes('referredBy') ? 'invalid' : ''}`} value={this.state.referredBy} name="referredBy" onChange={this.handleInputChange} placeholder="Enter your referral code..." />
-                                    {
-                                        this.state.inValidElments.includes('referredBy') ?
-                                            (
-                                                <div className="error-message required">
-                                                    {this.state.validationMessage['referredBy']}
-                                                </div>
-                                            ) : null
-                                    }
+                                    <input type="text" id="referredBy" className={`form-control ${this.state.inValidElments.includes('referredBy') ? 'invalid' : ''}`} value={this.state.referredBy} name="referredBy" onChange={this.handleInputChange} placeholder="Enter your referral code..." />
+                                    
                                 </div>
+                                {
+                                    this.state.inValidElments.includes('referredBy') ?
+                                        (
+                                            <div className="error-message required">
+                                                {this.state.validationMessage['referredBy']}
+                                            </div>
+                                        ) : null
+                                }
                             </div>
                         </div>
                             
@@ -437,7 +448,10 @@ class Register extends Component {
                             </div>
                             <p style={{margin:'0px 0px', textAlign:'center'}}>Have an account? 
                                 <Link style={{color:'#00d7b3', cursor:'pointer'}} to="/users/login"> Login</Link></p>
-                            <button className="button mid secondary" style={{margin: '20px auto', width:'90%'}} onClick={this.handleFormSubmit}>Register <span className="primary">Now!</span></button>
+                            <div style={{textAlign:'center'}}>
+                                <button className="btn btn-primary" style={{margin: '20px auto', width:'50%', maxWidth: 400}} onClick={this.handleFormSubmit}>Register <span className="primary">Now!</span></button>
+                            </div>
+                            
                         </form>
                         
                     </div>

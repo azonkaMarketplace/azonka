@@ -3,7 +3,8 @@ import {
     SUCCESS_RESENDING_PASSCODE, EMAIL_VERIFICATION_SUCCESFFUL,
     ERROR_RESENDING_PASSCODE, GET_SEC_QUESTIONS, LOGOUT_USER, EMAIL_FORGOT_PASSWORD_SENT,LOGIN_SUCCESS,
     LOGIN_UNSUCCESSFUL, PASSWORD_REST_SUCCESSFUL, STOP_LOADING,FILE_UPLOADED_FALIED, FILE_UPLOADED_SUCCESSFULL,
-    USER_ROLE_UPDATED_SUCCESSFUL,UNSUCCESSFUL_VERIFICATION,SUCCESS_ALERT, UNAUTHORIZED_USER, DISPLAY_ERROR, FETCH_USER,
+    USER_ROLE_UPDATED_SUCCESSFUL,RESET_VERIFY_FORM,
+    UNSUCCESSFUL_VERIFICATION,SUCCESS_ALERT, UNAUTHORIZED_USER, DISPLAY_ERROR, FETCH_USER,RESET_VERIFICATION_FORM
  } from "./types";
 import axios from "axios";
 import { fileUpload } from "../components/util/FileUploader";
@@ -20,9 +21,8 @@ export const registerUser = (userData) => {
                 ...data
             })
                 console.log(response.data);
-                console.log('here o')
                  localStorage.setItem('userRegDetails', JSON.stringify(data))
-                 dispatch({type: SUCCESS_ALERT, payload: 'Registration successful please check your mail to continue'})
+                //  dispatch({type: SUCCESS_ALERT, payload: 'Registration successful please check your mail to continue'})
                  dispatch({type: SUCCESSFUL_REGISTRATION, payload: ''})
                 // return window.location.href = window.origin + '/users/verify'
             
@@ -55,27 +55,34 @@ export const verifyEmail = (userData) => {
                 console.log('response', response.data)
                 //localStorage.removeItem('userRegDetails')
                 //dispatch({type: SUCCESSFUL_VERIFICATION, payload: response.data})
+                const response2 = await axios.get('/api/v1/user/get-user', {
+                    headers: {
+                        'x-access-token': response.data.token
+                    }
+                })
                 if(Array.isArray(response.data.user)){
                     localStorage.setItem('azonta-user', JSON.stringify({
-                        ...response.data.user[0]
+                        ...response.data.user[0], ...response2.data.user
                     }))
                 }else{
                     localStorage.setItem('azonta-user', JSON.stringify({
-                        ...response.data.user
+                        ...response.data.user, ...response2.data.user
                     }))
                 }
                 
                 //axios.defaults.headers.common['x-access-token'] = response.data.token
                 localStorage.setItem('x-access-token', response.data.token)
                 
+                
                 localStorage.removeItem('userRegDetails')
-                dispatch({type: SUCCESS_ALERT, payload: 'Account Verified successfully'})
+                //dispatch({type: SUCCESS_ALERT, payload: 'Account Verified successfully'})
                 return dispatch({type: EMAIL_VERIFICATION_SUCCESFFUL, payload: ''})
                 //return window.location.href = window.origin + '/users/profile'
            }
         }catch(error) {
+            dispatch({type: DISPLAY_ERROR, payload:'Some errors were encountered, please try to login'})
             dispatch({type: UNSUCCESSFUL_VERIFICATION, payload: error.response.data.message})
-            return dispatch({type: DISPLAY_ERROR, payload: error.response.data.message })
+           // return dispatch({type: DISPLAY_ERROR, payload: error.response.data.message })
             //dispatch({type: UNSUCCESSFUL_REGISTRATION, payload: 'Some errors where encountered'})
             //return window.location.href = window.origin + '/users/login'
         }
@@ -302,4 +309,12 @@ export const setPin = userData => {
             return dispatch({type: DISPLAY_ERROR, payload: error.response.data.substr(0, 100) })
         }
     }
+}
+
+export const resetVerifyForm = () => {
+    return {type: RESET_VERIFY_FORM, payload:''}
+}
+
+export const resetVerificationForm = () => {
+    return {type: RESET_VERIFICATION_FORM, payload: ''}
 }

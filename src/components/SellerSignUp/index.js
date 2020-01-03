@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import * as actions from "../../actions";
 import { withToastManager } from 'react-toast-notifications';
 import CustomInput from "../../common/CustomInput";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
+import Header from "../HeaderFooter/Header";
 
 class SellerSignUp extends Component {
     state = {
@@ -58,47 +59,19 @@ class SellerSignUp extends Component {
             })
         }
     }
-    agreeTotermsChange = e => {
-        this.setState({
-            agreeToTerms: !this.state.agreeToTerms
-        })
-    }
-    displayQuestions = () => {
-        const keys = Object.keys(this.props.questions)
-        return keys.map((element, index) => (
-            <div key={index}>
-                 <div>
-                     <label className="rl-label required">
-                     <span style={{paddingRight:8}}>
-                     { index + 1}.</span>  {this.props.questions[element]}
-                     </label>
-                </div>
-                 <CustomInput
-                     onIputChange={this.handleInputChange}
-                     name={element}
-                     placeholder={this.props.questions[element]}
-                     error={this.state.inValidElments.includes(`${element}`)}
-                     errorMessage={'Required, please provide'}
-                 />
-            </div>))
-    }
-    closeSnackBar = () => {
-        this.props.closeSnackBar()
-    }
-    renderQuestion = () => {
-        return Object.keys(this.props.questions).length > 0 ?
-         
-             this.displayQuestions()
-          : null
-     }
-     logout = () => {
-         this.props.logout()
-         return <Redirect to="/users/login" />
-     }
      validateFormData = (FormData) => {
         let isValid = true;
         let requiredField = []
         if(FormData.companyName.trim() === ''){
+            isValid = false;
+            requiredField.push('companyName')
+        }
+        if(FormData.headOfficeAddress.trim() === ''){
+            isValid = false;
+            requiredField.push('headOfficeAddress')
+        }
+        if(FormData.contactLine.trim() === ''){
+            isValid = false;
             requiredField.push('companyName')
         }
         this.setState({
@@ -115,9 +88,6 @@ class SellerSignUp extends Component {
     handleFormSubmit = (event) => {
         event.preventDefault();
         const {toastManager: { add}} = this.props;
-        if(!this.state.agreeToTerms){
-           return add('You must agree to Policy and Privacy', { appearance: 'error' })
-        }
         const isValid = this.validateFormData(this.state)
         if(isValid){
             console.log('form is valid')
@@ -138,126 +108,89 @@ class SellerSignUp extends Component {
         }else{
             //form is not valid display error
             
-            add('One or more fields not filled, please cheack and try again', { appearance: 'error' })
+            this.props.renderError('One or more fields not filled, please cheack and try again')
         }
     }
     render() {
         return (
-            <div className="form-popup custom-input" style={{ width: '80%',paddingBottom:'20px',
-             maxWidth: '800px' }}>
-                <div className="form-popup-headline secondary">
-                    <h2>Signup to be a Seller!</h2>
+            <div>
+                <Header />
+                
+                <div className="router-container">
+                    <nav aria-label="breadcrumb" className="breadcrumb-nav">
+                        <div className="container">
+                            <ol className="breadcrumb">
+                                <li className="breadcrumb-item"><Link to="/"><i className="icon-home"></i></Link></li>
+                                <li className="breadcrumb-item" aria-current="page"><Link to="/users/profile">Dashboard</Link></li>
+                                <li className="breadcrumb-item active" aria-current="page">Seller Signup</li>
+                            </ol>
+                        </div>
+                    </nav>
+                    <div className="form-popup custom-input" style={{
+                        width: '80%', paddingBottom: '20px',
+                        maxWidth: '800px'
+                    }}>
+                        <div className="form-popup-headline secondary">
+                            <h2>Signup to be a Seller!</h2>
+                        </div>
+                        <div className="container">
+                        <form action="#">
+                            <div className="row">
+                                <div className="col-sm-11">
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="form-group required-field">
+                                                <label htmlFor="acc-name">Company Name</label>
+                                                <input type="text" value={this.state.companyName} onChange={this.handleInputChange} placeholder="company name" className="form-control" id="acc-name" name="companyName" required="" />
+                                            </div>
+                                        </div>
+
+                                        <div className="col-md-6">
+                                            <div className="form-group required-field">
+                                                <label htmlFor="acc-mname">Head Office Address</label>
+                                                <input type="text" value={this.state.headOfficeAddress} onChange={this.handleInputChange} placeholder="head office address" className="form-control" id="acc-mname" name="headOfficeAddress" />
+                                            </div>
+                                        </div>
+
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-sm-11">
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="form-group required-field">
+                                                <label htmlFor="acc-lastname">Contact Number</label>
+                                                <input type="text" value={this.state.contactLine} onChange={this.handleInputChange} placeholder="contact line" className="form-control" id="acc-lastname3" name="contactLine" required="" />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="acc-lastname">Referred By</label>
+                                                <input type="text" value={this.state.referredBy} onChange={this.handleInputChange} placeholder="referral" className="form-control" id="acc-lastname4" name="referredBy" required="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div className="mb-2"></div>
+                            <div className="required text-right">* Required Field</div>
+                            <div className="form-footer">
+                                <Link to="/users/profile"><i className="icon-angle-double-left"></i>Back</Link>
+
+                                <div className="form-footer-right">
+                                    <button onClick={this.handleFormSubmit} type="submit" className="btn btn-primary">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
                 </div>
-                <form style={{ margin: '0 auto', width: '90%' }}>
-                    <div style={{ padding: '20px 10px 0 10px' }}>
-                        <h4 className="popup-title verify-email" style={{
-                            fontWeight: 'normal',
-                            fontFamily: 'Roboto, sans-serif'
-                        }}>Sellers Information</h4>
-                        <hr className="line-separator" />
-                    </div>
-
-                    <div className="container-fluid" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <div className="row">
-                            <div className="col-sm-12 col-md-6 shopLocationContainer">
-                                <label htmlFor="companyName" className="rl-label required">Company Name</label>
-                                <input className={`${this.state.inValidElments.includes('companyName') ? 'invalid' : ''}`} type="text" name="companyName" value={this.state.companyName} onChange={this.handleInputChange} placeholder="Company Name..." />
-                                {
-                                    this.state.inValidElments.includes('companyName') ?
-                                        (
-                                            <div className="error-message required">
-                                                {this.state.validationMessage['companyName']}
-                                            </div>
-                                        ) : null
-                                }
-                            </div>
-                            <div className="col-sm-12 col-md-6" >
-                                <label htmlFor="headOfficeAddress" className="rl-label">Head Office Address</label>
-                                <input className={`${this.state.inValidElments.includes('headOfficeAddress') ? 'invalid' : ''}`} type="text" name="headOfficeAddress" value={this.state.headOfficeAddress} onChange={this.handleInputChange} placeholder="Contact Address..." />
-                                {
-                                    this.state.inValidElments.includes('headOfficeAddress') ?
-                                        (
-                                            <div className="error-message required">
-                                                {this.state.validationMessage['headOfficeAddress']}
-                                            </div>
-                                        ) : null
-                                }
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-sm-12 col-md-12">
-                                <label htmlFor="contactLine" className="rl-label">Phone Number</label>
-                                <input className={`${this.state.inValidElments.includes('contactLine') ? 'invalid' : ''}`} type="text" name="contactLine" value={this.state.contactLine} onChange={this.handleInputChange} placeholder="Contact Line..." />
-                                {
-                                    this.state.inValidElments.includes('contactLine') ?
-                                        (
-                                            <div className="error-message required">
-                                                {this.state.validationMessage['contactLine']}
-                                            </div>
-                                        ) : null
-                                }
-                            </div>
-                        </div>
-                    </div>
-{/* 
-                    <div style={{ padding: '20px 10px 0 10px' }}>
-                        <h4 className="popup-title verify-email" style={{
-                            fontWeight: 'normal',
-                            fontFamily: 'Roboto, sans-serif'
-                        }}>Security Questions</h4>
-                        <hr className="line-separator" />
-                    </div>
-
-                    {this.renderQuestion()} */}
-                    <div style={{ padding: '20px 10px 0 10px' }}>
-                        <h4 className="popup-title verify-email" style={{
-                            fontWeight: 'normal',
-                            fontFamily: 'Roboto, sans-serif'
-                        }}>Referred By</h4>
-                        <hr className="line-separator" />
-                    </div>
-                    <label htmlFor="referredBy" className="rl-label">Referral Code</label>
-                    <input className={`${this.state.inValidElments.includes('referredBy') ? 'invalid' : ''}`} type="text" name="referredBy" value={this.state.referredBy} onChange={this.handleInputChange} placeholder="Referral Code" />
-                    {
-                        this.state.inValidElments.includes('referredBy') ?
-                            (
-                                <div className="error-message required">
-                                    {this.state.validationMessage['referredBy']}
-                                </div>
-                            ) : null
-                    }
-                    {/* <div style={{ padding: '20px 10px 0 10px' }}>
-                        <h4 className="popup-title verify-email" style={{
-                            fontWeight: 'normal',
-                            fontFamily: 'Roboto, sans-serif'
-                        }}>Setup Pincode</h4>
-                        <hr className="line-separator" />
-                    </div>
-                    <input className={`${this.state.inValidElments.includes('pincode') ? 'invalid' : ''}`} type="text" name="pincode" value={this.state.pincode} onChange={this.handleInputChange} placeholder="Enter Pincode" />
-                    {
-                        this.state.inValidElments.includes('pincode') ?
-                            (
-                                <div className="error-message required">
-                                    {this.state.validationMessage['pincode']}
-                                </div>
-                            ) : null */}
-                    
-                    <div className="terms-condition-container">
-                        <input type="checkbox" id="agreeToTerms"
-                           onChange={this.agreeTotermsChange} name="i agree" value="sellers" checked={this.state.agreeToTerms} />
-                        <label className="label-check" onClick={(event) => this.agreeTotermsChange(event)}>
-                            <span className="checkbox primary primary"><span></span></span>
-                            I agree To
-                                </label>
-                        <span className="terms">
-                            Privacy and Policy
-                                </span>
-                    </div>
-                    <div className="right-content">
-                        <button className="button mid secondary" onClick={this.handleFormSubmit}>Submit</button>
-                    </div>
-                </form>
             </div>
+            
         );
     }
 }

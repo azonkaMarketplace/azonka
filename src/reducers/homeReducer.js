@@ -1,10 +1,11 @@
 import { FETCH_USER, SWITCH_ACTIVE_LINK, TOGGLE_VIEW_TYPE, LOGOUT_USER,
      CLOSE_SNACKBAR, UPDATE_ACCOUNT, UNAUTHORIZED_USER,SUCCESS_ALERT,
       DISPLAY_ERROR, INITIAL_REGISTRATION, FILE_UPLOADED_SUCCESSFULL, 
-      FILE_UPLOADED_FALIED, ITEMS_FETCHED_SUCCESSFULLY, ERROR_FETCHING_ITEMS } from "../actions/types";
+      FILE_UPLOADED_FALIED, ITEMS_FETCHED_SUCCESSFULLY, ERROR_FETCHING_ITEMS, SET_ACTIVE_LINK } from "../actions/types";
 const INITIATL_STATE = {currentUser: null, 
     cart: 0, likes: 0, homeActiveLink:'profile',
     categories: [], subCategories: [],
+    dashboardActiveLink:'profile',
      viewType: 'grid',error: null, errorMessage:null,fileUrl: null,
      successMessage:null, success: null, showSuccessBar:null, message:'Updated Successfully'}
 
@@ -51,6 +52,9 @@ export default (state=INITIATL_STATE , actions) => {
         case ITEMS_FETCHED_SUCCESSFULLY:
             const {subCategories, categories} = actions.payload
             return {...state, subCategories, categories}
+
+        case SET_ACTIVE_LINK:
+            return {...state, dashboardActiveLink: actions.payload}
         default:
             return  {...state}
     }

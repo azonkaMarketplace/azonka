@@ -4,6 +4,8 @@ import * as actions from "../../actions";
 import StoreListItem from "../../common/StoreListItem";
 import NoRecordFound from "../../common/NoRecordFound";
 import AdminLayout from '../HOC/AdminLayout';
+import StoreDashboard from '../HOC/StoreDashboard';
+import StoreDataTable from '../../common/StoreDataTable';
 class Store extends Component {
     state = {
         name: '',
@@ -17,7 +19,7 @@ class Store extends Component {
         id: null
     }
     componentDidMount(){
-        this.props.switchActiveLink('shop')
+        this.props.setActiveLink('createShop')
         this.props.initiateRegistration()
         this.props.getStores()
     }
@@ -121,34 +123,10 @@ class Store extends Component {
         e.preventDefault();
         this.processForm('update')
     }
-    converToDate = timestamp => {
-        const MONTHS = ['January','February', 'March', 'April', 'May', 'June', 'July'
-            ,'August','September', 'October', 'November', 'Decemeber']
-        const date = new Date(timestamp)
-        return `${date.getDate()} ${MONTHS[date.getMonth()]}, ${date.getFullYear()}`
-    }
-    _renderStoreList = () => {
-            return this.props.stores.map((store, i) => {
-                const {id, country, state, address,name, createdAt} = store
-               return (<StoreListItem
-                    country={country}
-                    state={state}
-                    name={name}
-                    address={address}
-                    date={this.converToDate(createdAt)}
-                    key={id}
-                    id={id}
-                    handleRowClick={(id) => this._handleRowClick(id)}
-                />)
-            })
-        
-    }
     render() {
         return (
-            <AdminLayout>
-                <div className="headline buttons primary">
-                    <h4>Store</h4>
-                </div>
+                <StoreDashboard>
+                <h2>Create Store</h2>
                 <div className="add-bank">
                     <h4 className="popup-title verify-email" style={{
                             fontWeight: 'normal',
@@ -157,7 +135,7 @@ class Store extends Component {
                         }}>Add Store</h4>
                     <hr className="line-separator" />
                     <form>
-                            <div className="container-fluid">
+                            <div className="container">
                                 <div className="row">
                                     <div className="col-md-4 col-sm-12">
                                         <label htmlFor="name" className="rl-label">Store Name</label>
@@ -232,7 +210,7 @@ class Store extends Component {
                                             <div className="row">
                                                 <div className="col-md-8 col-sm-12"></div>
                                                 <div className="col-md-4 col-sm-12">
-                                                    <button onClick={this.handleFormSubmit} className="button primary" style={{margin:'0 auto'}}>Save</button>
+                                                    <button onClick={this.handleFormSubmit} className="btn btn-primary" style={{margin:'0 auto'}}>Save</button>
                                                 </div>
                                             </div>
                                         ) : (
@@ -258,46 +236,25 @@ class Store extends Component {
                         
                         </form>
                     <div>
+                    <div className="container">
                         <h4 className="popup-title verify-email" style={{
-                                fontWeight: 'normal',
-                                fontFamily: 'Roboto, sans-serif',
-                                marginLeft: 20,
-                                marginTop: 30,
-                                marginBottom: 10
-                            }}>Stores</h4>
+                                    fontWeight: 'normal',
+                                    fontFamily: 'Roboto, sans-serif',
+                                    marginLeft: 20,
+                                    marginTop: 30,
+                                    marginBottom: 10
+                                }}>Stores</h4>
 
-                        <table class="table table-hover">
-                            <thead class="thead-light">   
-                                <th scope="col">Country</th>
-                                <th scope="col">State</th>
-                                <th scope="col">Shop Adress</th>
-                                <th scope="col">Shop Name</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Action</th>
-                            </thead>
-                            {
-                                this.props.stores.length > 0 ?
-                                <tbody>
-                                {this._renderStoreList()}
-                                </tbody> 
-                                
-                                : <NoRecordFound />
-                            }
-                            
-                        </table>
-                        <div className="pager-wrap">
-                                <div className="pager primary">
-                                    <div className="pager-item active"><p>1</p></div>
-                                    <div className="pager-item "><p>2</p></div>
-                                    <div className="pager-item"><p>3</p></div>
-                                    <div className="pager-item"><p>...</p></div>
-                                    <div className="pager-item"><p>17</p></div>
-                                </div>
-                            </div>
+                            <StoreDataTable
+                                data={this.props.stores}
+                            />
+                    </div>
+                        
                         
                     </div>
                 </div>
-            </AdminLayout>
+                </StoreDashboard>
+            
         );
     }
 }

@@ -72,7 +72,6 @@ class UserLayout extends Component {
     }
     renderAvatar = () => {
         let {currentUser} = this.props
-        console.log('cu', currentUser)
          currentUser = Array.isArray(currentUser) ? currentUser[0] : currentUser;
         return currentUser ? currentUser.profileImage ? (
             <img src={currentUser.profileImage} alt="avatar" />            

@@ -332,7 +332,7 @@ a:focus {
     }
     h2,
     .h2 {
-        font-size: 2.4rem
+        font-size: 1.4rem
     }
 }
 
@@ -10948,4 +10948,30 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
 
 .header-middle{
     padding: 1rem 0;
+}
+.destktop-form{
+    display: none;
+}
+.mobile-form {
+    display: block;
+}
+
+@media screen and (min-width: 1024px){
+    .mobile-form{
+        display: none;
+    }
+    .destktop-form{
+        display: block;
+    }
+}
+
+.otp-input{
+    display: inline-block !important;
+    margin-left: 0.3rem;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    box-sizing: border-box;
+    width: 40px !important;
+    border-bottom: 1px solid #535d5f !important;
 }

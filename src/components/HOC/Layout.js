@@ -33,6 +33,7 @@ class Layout extends Component {
         this.props.closeSnackBar()
     }
     render() {
+        console.log(this.props.redirectToProfile)
         return (
             <ToastProvider>
                 
@@ -52,18 +53,24 @@ class Layout extends Component {
                 }
                 {this.renderLoadingSpinner()}
                 {
-                    this.props.error ? <SweetAlert 
-                    title={this.props.errorMessage} 
+                    this.props.error ? <SweetAlert  
                     danger
                     onConfirm={this.hideAlert} onCancel={this.hideAlert} 
-                    /> : null
+                    >
+                        <span style={{color:'#6e7075',fontWeight:'400',
+                        padding: '8px 0 8px 0',fontFamily:"Roboto, sans-serif",
+                         fontSize:'1.4rem'}}>{this.props.errorMessage}</span>
+                    </SweetAlert> : null
                 }
                 {
                     this.props.success ? <SweetAlert 
-                    title={this.props.successMessage} 
                     success
                     onConfirm={this.hideAlert} onCancel={this.hideAlert} 
-                    /> : null 
+                    >
+                        <span style={{color:'#6e7075',fontWeight:'400',
+                        padding: '8px 0 8px 0',fontFamily:"Roboto, sans-serif",
+                         fontSize:'1.4rem'}}>{this.props.successMessage}</span>
+                    </SweetAlert> : null 
 
                 }
             </ToastProvider>

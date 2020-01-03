@@ -3,10 +3,11 @@ import { SUCCESSFUL_REGISTRATION,INITIAL_REGISTRATION,
 ERROR_RESENDING_PASSCODE, SUCCESS_RESENDING_PASSCODE, GET_SEC_QUESTIONS,
  LOGOUT_USER, CLOSE_SNACKBAR, EMAIL_FORGOT_PASSWORD_SENT, GET_SAVED_ACCOUNTS,STOP_IMAGE_LOADING,
  LOGIN_UNSUCCESSFUL, LOGIN_SUCCESS, PASSWORD_REST_SUCCESSFUL, USER_ROLE_UPDATED_SUCCESSFUL,
- UNAUTHORIZED_USER, EMAIL_VERIFICATION_SUCCESFFUL, UNSUCCESSFUL_VERIFICATION, DISPLAY_ERROR, STOP_LOADING, FILE_UPLOADED_FALIED, FILE_UPLOADED_SUCCESSFULL } from "../actions/types";
+ UNAUTHORIZED_USER, EMAIL_VERIFICATION_SUCCESFFUL, UNSUCCESSFUL_VERIFICATION,RESET_VERIFY_FORM,
+  DISPLAY_ERROR, STOP_LOADING, FILE_UPLOADED_FALIED, FILE_UPLOADED_SUCCESSFULL, RESET_VERIFICATION_FORM } from "../actions/types";
 const INITIAL_STATE = {loading: false,verified:null, error: null,errorMessage: null,
      user: null, questions:{}, successMessage: null, showSuccessBar: null, 
-    redirectToProfile: false,unAuthorized: false, redirectToVerify: false, redirectToHome: false, redirectToLogin: false}
+    redirectToProfile: false,unAuthorized: false, redirectToVerify: false,verification:'none', redirectToHome: false, redirectToLogin: false}
 
 export default (state=INITIAL_STATE, actions) => {
     switch(actions.type){
@@ -16,9 +17,11 @@ export default (state=INITIAL_STATE, actions) => {
             localStorage.removeItem('x-access-token')
             localStorage.removeItem('userRegDetails')
             return {...state,redirectToLogin: true, redirectToVerify:false, unAuthorized: true}
+        case RESET_VERIFICATION_FORM:
+            return {...state, verification:'none'}
         case INITIAL_REGISTRATION:
                 return {...state,redirectToVerify:null, redirectToLogin: null,
-                    redirectToHome: false, loading:true, error: null}
+                    redirectToHome: false, loading:true,redirectToProfile: null, error: null}
         case FILE_UPLOADED_FALIED:
             return {...state, loading: false, error: true, errorMessage: 'File uploading failed'}
         case FILE_UPLOADED_SUCCESSFULL:
@@ -63,9 +66,9 @@ export default (state=INITIAL_STATE, actions) => {
         case USER_ROLE_UPDATED_SUCCESSFUL:
             return {...state,loading: false, redirectToProfile:true}
         case EMAIL_VERIFICATION_SUCCESFFUL:
-            return {...state,loading: false,unAuthorized:false,redirectToVerify:false,error:null, redirectToProfile: true}
+            return {...state,loading: false,unAuthorized:false,redirectToVerify:false,error:null,verification:'true', redirectToProfile: false}
         case UNSUCCESSFUL_VERIFICATION:
-            return {...state, loading: false,error:true, errorMessage: actions.payload}
+            return {...state, loading: false,error:true,verification:'false', errorMessage: actions.payload}
         default: 
             return {...state}
     }

@@ -1,6 +1,6 @@
 import { FETCH_USER, SWITCH_ACTIVE_LINK,TOGGLE_VIEW_TYPE,INITIAL_REGISTRATION,CLOSE_SNACKBAR,
     SUCCESS_ALERT,STOP_IMAGE_LOADING,
-     DISPLAY_ERROR, STOP_LOADING, ERROR_FETCHING_ITEMS, ITEMS_FETCHED_SUCCESSFULLY
+     DISPLAY_ERROR, STOP_LOADING, ERROR_FETCHING_ITEMS, ITEMS_FETCHED_SUCCESSFULLY, SET_ACTIVE_LINK
  } from "./types";
 import axios from "axios";
 
@@ -14,7 +14,6 @@ export const fetchUser = () => {
     let anonynmousUser = null
     //if there is no authenticated user, check if there is userdata stored in localstorage
     //this enables user to carry out operation without registering or logging
-    console.log('new user', user)
     // if(isEmpty(user))
     //     anonynmousUser = localStorage.getItem('anonynmous-azonta-user')
     //if there is an authenticated user get the cart and the likes  
@@ -41,7 +40,6 @@ export const fetchUser = () => {
         likes = user.likes ?  user.likes : 0
         userData = user;
     }
-    console.log('userData', userData)
 
     return {type: FETCH_USER, payload: {userData, likes, cart}}
 }
@@ -124,4 +122,8 @@ const isEmpty = (obj) => {
             return false;
     }
     return true;
+}
+
+export const setActiveLink = (link = '') => {
+    return {type: SET_ACTIVE_LINK, payload:link}
 }

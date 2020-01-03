@@ -1,4 +1,7 @@
-import { ITEMS_FETCHED_SUCCESSFULLY, STOP_LOADING, PRODUCTS_FETCED_SUCCESSFULLY, EDIT_ITEM, INIT_FORM, ITEM_CHANGE_ACTION, VALIDATE_FORM_DATA, INVALIDE_FORM_DATA } from "../actions/types";
+import { ITEMS_FETCHED_SUCCESSFULLY, STOP_LOADING, 
+    PRODUCTS_FETCED_SUCCESSFULLY, EDIT_ITEM, INIT_FORM, 
+    ITEM_CHANGE_ACTION, VALIDATE_FORM_DATA, INVALIDE_FORM_DATA,
+    SET_ITEM_IMAGE, INVALID_ITEM_FORM_DATA, CLEAR_ITEM_FORM_INPUTS } from "../actions/types";
 
 const INTIAL_STATE = {
     stores: [],
@@ -20,9 +23,11 @@ const INTIAL_STATE = {
     brandName:'',
     sellingPrice:'',
     finalPrice: '',
+    sellingPriceWithComma:'',
+    finalPriceWithComma:'',
     category: '',
-    store:'1',
-    subCategory: '1',
+    store:'',
+    subCategory: '',
     description: '',
     width: '',
     action:'save',
@@ -50,12 +55,18 @@ export default (state= INTIAL_STATE, actions) => {
         case INIT_FORM:
             return {...state,product: null}
         case ITEM_CHANGE_ACTION:
-            return handleItemChangeAction(state, actions.payload)
+            return {...handleItemChangeAction(state, actions.payload), resetForm: false}
         case VALIDATE_FORM_DATA:
             return validateData(state)
         case INVALIDE_FORM_DATA:
             const {validationMessage, inValidElments} = actions.payload
             return {...state, validationMessage, inValidElments}
+        case SET_ITEM_IMAGE:
+            return {...state, previewImage: actions.payload}
+        case CLEAR_ITEM_FORM_INPUTS:
+            return {...INTIAL_STATE, resetForm: true}
+        case INVALID_ITEM_FORM_DATA:
+            return {...state, inValidElments: actions.payload.inValidElments, validationMessage:actions.payload.validationMessage}
         default: 
             return {...state}
     }
@@ -70,31 +81,31 @@ const handleItemChangeAction = (state, e) => {
     }
 
     newInvalidElements = [...state.inValidElments]
-    if(name === 'category'){
-        const subcatgeories = state.subCategories
-                                    .filter(category => parseInt(category.parentCategory)  === parseInt(value))
-        return {...state, [name]:value, inValidElments: [...newInvalidElements],
-            filteredSubCategory:subcatgeories
-       
+    if(name === 'sellingPrice'){
+        newInvalidElements = [...state.inValidElments]
+       return {...state, inValidElments: [...newInvalidElements],
+         sellingPriceWithComma: numberWithCommas(value.split(',').join('')),
+        [name]: value.split(',').join(''),
         }
-    }
+   }
+   if( name === 'finalPrice'){
+       newInvalidElements = [...state.inValidElments]
+        return {...state, [name]:value.split(',').join(''), inValidElments: [...newInvalidElements], finalPriceWithComma:  numberWithCommas(value.split(',').join('')) }
+   }
+   if(name  === 'category'){
+    const subcatgeories = state.subCategories
+    .filter(category => parseInt(category.parentCategory)  === parseInt(value))
+    return {...state, filteredSubCategory: subcatgeories, [name]: value}
+   }
     return {...state, [name]:value, inValidElments: [...newInvalidElements] }
-    // this.setState({
-    //     [name]: value,
-    //     inValidElments: [...newInvalidElements]
-    // },() => {
-    //     if(name === 'category'){
-    //         const subcatgeories = state.subCategories
-    //                                 .filter(category => parseInt(category.parentCategory)  === parseInt(value))
-
-    //         this.setState({
-    //             filteredSubCategory: subcatgeories
-    //         })
-    //     }
-    // } )
 }
 
 const validateData = state => {
 
 
+}
+
+
+const numberWithCommas = (number = '') => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

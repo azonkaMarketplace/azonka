@@ -32,9 +32,14 @@ import ChangePassword from "./components/Auth/changePassword";
 import Store from "./components/Store";
 import ResetPassword from './components/Auth/ResetPassword';
 import  Layout from "./components/HOC/Layout";
+import ConfirmAccount from "./components/Auth/confirmAccount";
+import StoreDetail from "./components/StoreDetail";
 import ScrollTop from './common/ScrollTop';
 import { connect } from "react-redux";
 import * as actions from "./actions";
+
+
+import LoginSignup from "./components/Auth/LoginSignup";
 
 class Root extends Component {
     componentDidMount(){
@@ -55,9 +60,9 @@ class Root extends Component {
                                 
                                 <Route exact path="/" component={Home} />
                                 <AuthRoute redirectIfAuth noAuthRequired exact path="/users/register" component={Register} />
-                                <AuthRoute redirectIfAuth noAuthRequired  exact path="/users/verify" component={VerifyEmail} />
-                                <AuthRoute redirectIfAuth noAuthRequired exact path="/users/login" component={Login} />
-                                <AuthRoute redirectIfAuth exact path="/users/securityquestions" component={SecurityQuestion} />
+                                <AuthRoute redirectIfAuth noAuthRequired  exact path="/users/verify" component={ConfirmAccount} />
+                                <AuthRoute redirectIfAuth noAuthRequired exact path="/users/login" component={LoginSignup} />
+                                <AuthRoute  exact path="/users/securityquestions" component={SecurityQuestion} />
                                 <AuthRoute exact path="/users/profile" component={Profile} />
                                 <AuthRoute exact path="/users/profile/account" component={AccountSetting} />
                                 <AuthRoute noAuthRequired exact path="/users/purchases" component={Purchases} />
@@ -68,8 +73,9 @@ class Root extends Component {
                                 <AuthRoute redirectIfUser exact path="/users/commissions" component={Commission} />
                                 <AuthRoute redirectIfUser exact path="/users/withdrawal" component={WithDrawal} />
                                 <AuthRoute redirectIfUser exact path="/users/items/upload" component={UploadItem} />
+                                <AuthRoute redirectIfUser exact path="/users/store" component={StoreDetail} />
                                 <AuthRoute redirectIfUser exact path="/users/items/manage" component={ManageItems} />
-                                <AuthRoute redirectIfUser exact path="/users/referals" component={Referral} />
+                                <AuthRoute redirectIfUser exact path="/users/referrals" component={Referral} />
                                 <AuthRoute  exact path="/users/banks" component={Bank} />
                                 <AuthRoute exact path="/users/azonkaPay" component={AzonkaPay} />
                                 <AuthRoute exact path="/users/addressBook" component={AddressBook} />

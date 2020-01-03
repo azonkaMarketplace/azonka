@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import UserLayout from "../HOC/UserLayout";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import NoRecordFound from "../../common/NoRecordFound";
 import { withToastManager } from 'react-toast-notifications';
 import * as actions from "../../actions";
 import BankListItem from "../../common/BankListItem";
 import SweetAlert from 'react-bootstrap-sweetalert';
+import Dashboard from '../HOC/Dashboard';
 
 
 
@@ -20,6 +20,7 @@ class Bank extends Component {
         actionMode: 'save',
         pin: ''
     }
+    
     validateFormData = (formdata) => {
         const { accountNumber, accountName, longcode,} = formdata;
         let isValid = true;
@@ -77,7 +78,7 @@ class Bank extends Component {
         return lookupdata
     }
     componentDidMount(){
-        this.props.switchActiveLink('bank')
+        this.props.setActiveLink('bank')
         this.props.getBanks()
         this.props.getSavedBanks();
     }
@@ -110,7 +111,7 @@ class Bank extends Component {
         if(!isValid){
                 this.props.renderError('Action cannot be performed,one or more fields required', { appearance: 'error' })
            
-                this.setState({
+               return  this.setState({
                     inValidElments, validationMessage
                 })
             
@@ -207,7 +208,7 @@ class Bank extends Component {
     }
     render() {
         return (
-            <UserLayout>
+            <Dashboard>
                 <div style={{}}>
                     <div className="container">
                         <div className="row cards">
@@ -258,9 +259,10 @@ class Bank extends Component {
                             <div className="container">
                                 <div className="row">
                                     <div className="col-md-4 col-sm-12">
+                                    <div className="form-group required-field">
                                         <label htmlFor="bankName" className="rl-label">Bank Name</label>
                                             <select name="longcode" 
-                                                className={`${this.state.inValidElments.includes('longcode') ? 'invalid' : '' }`}
+                                                className={`form-control ${this.state.inValidElments.includes('longcode') ? 'invalid' : '' }`}
                                                 value={this.state.longcode} onChange={this.handleInputChange}>
                                                 <option value="">Select Bank</option>
                                                 {
@@ -270,6 +272,8 @@ class Bank extends Component {
                                                 }
                                                 
                                             </select>
+                                        
+                                        </div>
                                         {
                                                 this.state.inValidElments.includes('longcode') ?
                                                 (
@@ -280,11 +284,14 @@ class Bank extends Component {
                                         }
                                     </div>
                                     <div className="col-md-4 col-sm-12">
+                                        <div className="form-group required-field">
                                         <label htmlFor="accountName" className="rl-label">Account Name</label>
                                         <input type="text" id="password5" 
-                                            className={`${this.state.inValidElments.includes('accountName') ? 'invalid' : '' }`} 
+                                            className={`form-control ${this.state.inValidElments.includes('accountName') ? 'invalid' : '' }`} 
                                             value={this.state.accountName} onChange={this.handleInputChange} 
                                             name="accountName" placeholder="Account Name" />
+                                        
+                                        </div>
                                         {
                                                 this.state.inValidElments.includes('accountName') ?
                                                 (
@@ -295,11 +302,14 @@ class Bank extends Component {
                                         }
                                     </div>
                                     <div className="col-md-4 col-sm-12">
+                                        <div className="form-group required-field">
                                         <label htmlFor="accountNumber" className="rl-label">Account Number</label>
                                         <input type="text" id="password5" 
-                                            className={`${this.state.inValidElments.includes('accountNumber') ? 'invalid' : '' }`} 
+                                            className={`form-control ${this.state.inValidElments.includes('accountNumber') ? 'invalid' : '' }`} 
                                             value={this.state.accountNumber} onChange={this.handleInputChange} 
                                             name="accountNumber" placeholder="Account NUmber" />
+                                        
+                                        </div>
                                         {
                                                 this.state.inValidElments.includes('accountNumber') ?
                                                 (
@@ -315,8 +325,11 @@ class Bank extends Component {
                                         this.state.actionMode === 'save' ? (
                                             <div className="row">
                                                 <div className="col-md-8 col-sm-12"></div>
-                                                <div className="col-md-4 col-sm-12">
-                                                    <button onClick={this.handleFormSubmit} className="button primary" style={{margin:'0 auto'}}>Save</button>
+                                                <div className="form-footer">
+
+                                                    <div className="form-footer-right">
+                                                        <button onClick={this.handleFormSubmit} type="submit" className="btn btn-sm btn-primary">Save</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         ) : (
@@ -324,12 +337,12 @@ class Bank extends Component {
                                                 <div className="col-md-8 col-sm-12"></div>
                                                 <div className="col-md-4 col-sm-12">
                                                     <div style={{marginBottom: 10}}>
-                                                        <button  onClick={(e) => this.handleFormUpdate(e, 'update')} className="btn btn-warning" 
+                                                        <button  onClick={(e) => this.handleFormUpdate(e, 'update')} className="btn btn-sm btn-warning" 
                                                         style={{margin:'0 auto',borderColor:'#ffc107',
                                                          background: '#ffc107', width:'100%', color:"#fff"}}>Update</button>
                                                     </div>
                                                     <div style={{marginBottom: 10}}>
-                                                        <button onClick={(e) => this.handleFormDelete(e, 'delete')} className="btn btn-danger" 
+                                                        <button onClick={(e) => this.handleFormDelete(e, 'delete')} className="btn btn-sm btn-danger" 
                                                         style={{margin:'0 auto', width:'100%'}}>Delete</button>
                                                     </div>
                                                 </div>
@@ -390,7 +403,7 @@ class Bank extends Component {
 
                     }
                 </div>
-            </UserLayout>
+            </Dashboard>
         );
     }
 }

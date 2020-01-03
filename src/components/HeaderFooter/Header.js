@@ -11,7 +11,14 @@ import * as actions from "../../actions";
 class Header extends Component {
     state = {
         mobileMenu: false,
-        showSearchBar: false
+        showSearchBar: false,
+        currentUser: null
+    }
+    componentDidMount(){
+        const user = JSON.parse(localStorage.getItem('azonta-user'))
+        this.setState({
+            currentUser: user
+        })
     }
     _toggleMenu = () => {
         this.setState({
@@ -33,6 +40,7 @@ class Header extends Component {
         })
     }
     render() {
+        const {currentUser} = this.state
         return (
             <div>
                 <div className={`page-wrapper ${this.state.mobileMenu ? 'mmenu-active' : ''}`} style={{position:'fixed',zIndex:'1000', width:'100%'}}>
@@ -87,8 +95,8 @@ class Header extends Component {
                                 </div>
                                 <div className="header-right">
                                     <p className="welcome-msg" style={{color:'#bce1f4', fontSize:'1.1rem'}}>{
-                                        this.props.currentUser ?
-                                        `${this.props.currentUser.firstName} ${this.props.currentUser.lastName}`
+                                        currentUser ?
+                                        `${currentUser.firstName} ${currentUser.lastName}`
                                         : `Welcome to Azonka` 
 
                                     }</p>
@@ -101,7 +109,7 @@ class Header extends Component {
                                                 <li><Link to="#">MY WISHLIST </Link></li>
                                                 <li><Link to="#">Contact</Link></li>
                                                 {
-                                                    this.props.currentUser ? 
+                                                    currentUser  ? 
                                                     <li onClick={() => this.handleSideMenuClick('logout')}><Link to="#" className="login-link">Log Out</Link></li>
                                                     : <li><Link to="/users/login" className="login-link">Log In</Link></li>
                                                 }
@@ -327,7 +335,7 @@ class Header extends Component {
                                     <li className=""><Link to="/users/create/shop">Store</Link></li>
                                     <li><Link to="#">Special Offer!<span className="tip tip-hot">Hot!</span></Link></li>
                                     {
-                                        this.props.currentUser ?
+                                        currentUser ?
                                         <li className="" onClick={() => {this.handleSideMenuClick('logout')}}><Link to="#">Log Out</Link></li>
 
                                         :
@@ -340,7 +348,7 @@ class Header extends Component {
                             <div className="social-icons">
                                 <Link to="#" className="social-icon" target="_blank"><i className="icon-facebook"></i></Link>
                                 <Link to="#" className="social-icon" target="_blank"><i className="icon-twitter"></i></Link>
-                                <Link to="#" className="social-icon" target="_blank"><i class="icon-instagram"></i></Link>
+                                <Link to="#" className="social-icon" target="_blank"><i className="icon-instagram"></i></Link>
                             </div>
                         </div>
                     </div>
